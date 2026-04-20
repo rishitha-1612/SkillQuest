@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillQuest – Planet of Knowledge</title>
+  <meta name="description"
+    content="SkillQuest: A 3D gaming planet with 7 knowledge continents. Zoom in to discover skill states and city quests.">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Nunito:wght@400;600;700;900&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ─── RESET ─────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+
+    /* ─── SPACE BACKGROUND ──────────────────── */
+    body {
+      background: radial-gradient(ellipse at 50% 40%, #0d1b3e 0%, #060d1c 55%, #020509 100%);
+    }
+
+    /* ─── FONTS / BASE ──────────────────────── */
+    :root {
+      --gold: #f5c842;
+      --cyan: #00e5ff;
+      --panel-bg: rgba(6, 12, 30, 0.92);
+      --panel-border: rgba(255, 255, 255, 0.07);
+      --text: rgba(230, 235, 255, 0.9);
+      --logo-text-start: #f5c842;
+      --logo-text-mid: #fff;
+      --logo-text-end: #00e5ff;
+      --btn-text: rgba(255, 255, 255, .7);
+      --btn-bg: rgba(255, 255, 255, .04);
+      --btn-border: rgba(255, 255, 255, .1);
+    }
+    
+    body.light-mode {
+      background: radial-gradient(ellipse at 50% 10%, #fefeff 0%, #edf1f8 40%, #dbe4f2 100%);
+      --text: rgba(15, 23, 42, 0.9);
+      --panel-bg: rgba(255, 255, 255, 0.65);
+      --panel-border: rgba(255, 255, 255, 0.4);
+      --logo-text-start: #ff8c00;
+      --logo-text-mid: #ec4899;
+      --logo-text-end: #3b82f6;
+      --btn-text: rgba(15, 23, 42, 0.85);
+      --btn-bg: rgba(255, 255, 255, 0.7);
+      --btn-border: rgba(0, 0, 0, 0.08);
+      --gold: #f59e0b;
+      --cyan: #3b82f6;
+    }
+    
+    body.light-mode #panel {
+      box-shadow: 0 16px 40px rgba(0,0,0,0.06);
+      backdrop-filter: blur(24px);
+    }
+    
+    body.light-mode .z-btn {
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(0,0,0,0.08);
+      color: rgba(15, 23, 42, 0.85);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+    }
+
+    /* ─── HEADER ────────────────────────────── */
+    #hdr {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      z-index: 1000;
+      background: linear-gradient(180deg, rgba(6, 12, 30, .98) 0%, transparent 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      transition: background 0.4s;
+    }
+    
+    body.light-mode #hdr {
+      background: linear-gradient(180deg, rgba(240, 246, 255, .95) 0%, rgba(255, 255, 255, 0) 100%);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-gem {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #f5c842, #ff6b35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      box-shadow: 0 0 22px rgba(245, 200, 66, .55);
+    }
+
+    .logo-text {
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, var(--logo-text-start), var(--logo-text-mid) 60%, var(--logo-text-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: background 0.4s;
+    }
+
+    .hdr-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+    }
+
+    #level-title {
+      font-family: 'Cinzel', serif;
+      font-size: .85rem;
+      letter-spacing: 2px;
+      color: rgba(245, 200, 66, .8);
+    }
+
+    #level-sub {
+      font-size: .68rem;
+      color: var(--text);
+      opacity: 0.6;
+      margin-top: 2px;
+    }
+
+    .hdr-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .xp-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(245, 200, 66, .08);
+      border: 1px solid rgba(245, 200, 66, .25);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--gold);
+      font-family: 'Nunito', sans-serif;
+      backdrop-filter: blur(10px);
+    }
+
+    .hdr-btn {
+      height: 34px;
+      padding: 0 16px;
+      border-radius: 17px;
+      border: 1px solid var(--btn-border);
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      font-family: 'Nunito', sans-serif;
+      font-size: .78rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .3px;
+      transition: all .2s;
+      backdrop-filter: blur(10px);
+    }
+    
+    body.light-mode .hdr-btn {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .hdr-btn:hover {
+      background: rgba(245, 200, 66, .1);
+      border-color: rgba(245, 200, 66, .3);
+      color: #f5c842;
+    }
+
+    /* ─── CANVAS WRAP ───────────────────────── */
+    #canvas-wrap {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    #planet-canvas {
+      display: block;
+      cursor: grab;
+    }
+
+    #planet-canvas:active {
+      cursor: grabbing;
+    }
+
+    /* ─── ZOOM CONTROLS ─────────────────────── */
+    #zoom-ctrl {
+      position: fixed;
+      right: 28px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 1000;
+    }
+
+    .z-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      background: rgba(6, 12, 30, .85);
+      backdrop-filter: blur(10px);
+      color: rgba(255, 255, 255, .7);
+      font-size: 1.35rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .18s;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, .5);
+    }
+
+    .z-btn:hover {
+      background: rgba(245, 200, 66, .1);
+      border-color: rgba(245, 200, 66, .35);
+      color: #f5c842;
+    }
+
+    /* ─── SIDE PANEL ────────────────────────── */
+    #panel {
+      position: fixed;
+      top: 68px;
+      right: 20px;
+      width: 300px;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+      z-index: 500;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 18px;
+      padding: 18px;
+      backdrop-filter: blur(22px);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, .8), inset 0 1px 0 rgba(255, 255, 255, .04);
+      transform: translateX(140%);
+      transition: transform .42s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    #panel.open {
+      transform: translateX(0);
+    }
+
+    #panel::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    #panel::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, .08);
+      border-radius: 2px;
+    }
+
+    .p-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      background: rgba(255, 255, 255, .05);
+      border: none;
+      color: rgba(255, 255, 255, .4);
+      font-size: .9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+    }
+
+    .p-close:hover {
+      background: rgba(255, 80, 80, .15);
+      color: #ff6b6b;
+    }
+
+    .p-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 18px;
+      font-size: .66rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .p-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 5px;
+    }
+
+    .p-desc {
+      font-size: .75rem;
+      color: rgba(255, 255, 255, .45);
+      margin-bottom: 14px;
+      line-height: 1.55;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .p-sec {
+      font-size: .65rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .3);
+      font-weight: 700;
+      margin: 12px 0 6px;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .q-list {
+      display: grid;
+      gap: 6px;
+    }
+
+    .q-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 11px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .05);
+      cursor: pointer;
+      transition: all .18s;
+      position: relative;
+      overflow: hidden;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .q-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      border-radius: 0 2px 2px 0;
+      background: var(--qc, rgba(255, 255, 255, .2));
+    }
+
+    .q-item:hover {
+      background: rgba(255, 255, 255, .07);
+      border-color: rgba(255, 255, 255, .1);
+      transform: translateX(3px);
+    }
+
+    .q-ico {
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .q-inf {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .q-name {
+      font-size: .79rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .q-meta {
+      font-size: .67rem;
+      color: rgba(255, 255, 255, .38);
+      margin-top: 1px;
+    }
+
+    .q-xp {
+      font-size: .68rem;
+      font-weight: 700;
+      color: #f5c842;
+      flex-shrink: 0;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .s-lbl {
+      font-size: .71rem;
+      color: rgba(255, 255, 255, .4);
+    }
+
+    .s-val {
+      font-size: .71rem;
+      font-weight: 700;
+    }
+
+    .s-bar {
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, .05);
+      overflow: hidden;
+      margin-bottom: 9px;
+    }
+
+    .s-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width .5s;
+    }
+
+    .enter-btn {
+      width: 100%;
+      margin-top: 14px;
+      padding: 11px;
+      border-radius: 11px;
+      border: none;
+      font-family: 'Cinzel', serif;
+      font-size: .85rem;
+      font-weight: 700;
+      letter-spacing: .8px;
+      cursor: pointer;
+      transition: all .2s;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .enter-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(0, 0, 0, .55);
+    }
+
+    /* ─── BREADCRUMB ────────────────────────── */
+    #bc {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(6, 12, 30, .88);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 30px;
+      padding: 7px 18px;
+      backdrop-filter: blur(16px);
+      z-index: 1000;
+      font-size: .76rem;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, .6);
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .bc-item {
+      color: rgba(255, 255, 255, .4);
+      cursor: pointer;
+      transition: color .15s;
+    }
+
+    .bc-item:hover,
+    .bc-item.active {
+      color: #f5c842;
+      font-weight: 700;
+    }
+
+    .bc-sep {
+      color: rgba(255, 255, 255, .18);
+    }
+
+    /* ─── HINT ──────────────────────────────── */
+    #hint {
+      position: fixed;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(6, 12, 30, .75);
+      border: 1px solid rgba(245, 200, 66, .15);
+      border-radius: 20px;
+      padding: 6px 18px;
+      font-size: .72rem;
+      color: rgba(255, 255, 255, .5);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(10px);
+      font-family: 'Nunito', sans-serif;
+      pointer-events: none;
+      animation: fadeHint 1s 1.5s both;
+    }
+
+    @keyframes fadeHint {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    .hint-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #f5c842;
+      box-shadow: 0 0 8px #f5c842;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .25
+      }
+    }
+
+    /* ─── TOOLTIP ───────────────────────────── */
+    #tt {
+      position: fixed;
+      pointer-events: none;
+      z-index: 900;
+      display: none;
+      background: rgba(6, 12, 30, .95);
+      border: 1px solid rgba(255, 255, 255, .09);
+      border-radius: 9px;
+      padding: 7px 13px;
+      font-family: 'Nunito', sans-serif;
+      backdrop-filter: blur(12px);
+    }
+
+    #tt .tn {
+      font-size: .82rem;
+      font-weight: 700;
+    }
+
+    #tt .ts {
+      font-size: .67rem;
+      color: rgba(255, 255, 255, .42);
+      margin-top: 1px;
+    }
+
+    /* ─── LOADING ───────────────────────────── */
+    #loading {
+      position: fixed;
+      inset: 0;
+      background: #020509;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 18px;
+      transition: opacity .6s;
+    }
+
+    #loading.gone {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .l-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #f5c842, #fff, #00e5ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .l-bar {
+      width: 180px;
+      height: 2px;
+      border-radius: 1px;
+      background: rgba(255, 255, 255, .06);
+      overflow: hidden;
+    }
+
+    .l-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f5c842, #00e5ff);
+      animation: lp 1.8s ease forwards;
+    }
+
+    @keyframes lp {
+      from {
+        width: 0
+      }
+
+      to {
+        width: 100%
+      }
+    }
+
+    .l-sub {
+      font-size: .7rem;
+      color: rgba(255, 255, 255, .3);
+      letter-spacing: 2px;
+      font-family: 'Nunito', sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="loading">
+    <div class="l-logo">⚔ SkillQuest</div>
+    <div class="l-bar">
+      <div class="l-fill"></div>
+    </div>
+    <div class="l-sub">GENERATING THE PLANET OF KNOWLEDGE…</div>
+  </div>
+
+  <header id="hdr">
+    <div class="logo">
+      <div class="logo-gem">⚔</div>
+      <span class="logo-text">SkillQuest</span>
+    </div>
+    <div class="hdr-center">
+      <div id="level-title">PLANET OF KNOWLEDGE</div>
+      <div id="level-sub">Drag to rotate · Scroll to zoom · Click a continent</div>
+    </div>
+    <div class="hdr-right">
+      <div class="xp-pill">★ 2,450 XP</div>
+      <button class="hdr-btn" id="btn-theme">🌞</button>
+      <button class="hdr-btn" id="btn-world">🌍 World View</button>
+      <button class="hdr-btn">👤 Profile</button>
+    </div>
+  </header>
+
+  <div id="canvas-wrap">
+    <canvas id="planet-canvas"></canvas>
+  </div>
+
+  <div id="zoom-ctrl">
+    <button class="z-btn" id="btn-zoom-in">+</button>
+    <button class="z-btn" id="btn-zoom-out">−</button>
+  </div>
+
+  <div id="panel">
+    <button class="p-close" id="panel-close">✕</button>
+    <div id="panel-body"></div>
+  </div>
+
+  <div id="bc">
+    <span class="bc-item active" id="bc0" onclick="goWorld()">🌍 Planet</span>
+    <span class="bc-sep" id="bcs1" style="display:none">›</span>
+    <span class="bc-item" id="bc1" style="display:none"></span>
+    <span class="bc-sep" id="bcs2" style="display:none">›</span>
+    <span class="bc-item" id="bc2" style="display:none"></span>
+  </div>
+
+  <div id="hint">
+    <span class="hint-dot"></span>
+    Drag · Scroll to zoom · Click a continent to explore deep
+  </div>
+
+  <div id="tt">
+    <div class="tn" id="tt-n"></div>
+    <div class="ts" id="tt-s"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    // ══════════════════════════════════════════════════════════
+    //  WORLD DATA  — 7 domains → states → cities
+    // ══════════════════════════════════════════════════════════
+    const DOMAINS = [
+      {
+        id: 'aethermind', name: 'Aethermind', subtitle: 'AI & Machine Learning',
+        emoji: '🧠', hex: '#7c3aed', glow: 'rgba(124,58,237,.7)', accent: '#c4b5fd',
+        fill: '#1e0a44', centerLon: -100, centerLat: 45,
+        // lon/lat outline (Like North America)
+        outline: [
+          [-168, 72], [-140, 70], [-125, 72], [-100, 74], [-80, 76], [-65, 83],
+          [-22, 84], [-14, 82], [-20, 76], [-30, 72], [-60, 72], [-64, 68],
+          [-68, 62], [-60, 55], [-54, 48], [-52, 44], [-64, 44], [-70, 46],
+          [-75, 45], [-80, 43], [-82, 42], [-88, 43], [-92, 47], [-97, 50],
+          [-110, 50], [-117, 49], [-124, 48], [-124, 43], [-120, 37],
+          [-117, 32], [-108, 22], [-105, 20], [-92, 16], [-87, 14],
+          [-84, 10], [-78, 8], [-76, 9], [-80, 10], [-84, 10], [-88, 14],
+          [-90, 14], [-92, 17], [-96, 20], [-100, 22], [-106, 22],
+          [-115, 30], [-120, 34], [-124, 38], [-124, 49], [-126, 50],
+          [-128, 53], [-133, 57], [-138, 59], [-143, 60], [-150, 60],
+          [-155, 59], [-162, 60], [-165, 63], [-168, 67]
+        ],
+        states: [
+          {
+            id: 'foundations', name: 'Foundation Plains', emoji: '🏔', desc: 'Math & theory bedrock',
+            centerLon: -148, centerLat: 62,
+            bounds: [[-168, 72], [-115, 72], [-115, 52], [-168, 52]],
+            cities: [
+              { id: 'linalg', name: 'Linear Algebra Keep', lon: -160, lat: 66, icon: '📐', xp: 150, type: 'Theory' },
+              { id: 'prob', name: 'Probability Peaks', lon: -140, lat: 63, icon: '🎲', xp: 200, type: 'Theory' },
+              { id: 'calc', name: 'Calculus Caverns', lon: -130, lat: 60, icon: '📊', xp: 180, type: 'Math' },
+              { id: 'stats', name: 'Statistics Stronghold', lon: -118, lat: 56, icon: '📈', xp: 220, type: 'Theory' },
+            ]
+          },
+          {
+            id: 'supervised', name: 'Supervised Sanctum', emoji: '🏛', desc: 'Labeled data sorcery',
+            centerLon: -90, centerLat: 44,
+            bounds: [[-115, 52], [-65, 52], [-65, 38], [-115, 38]],
+            cities: [
+              { id: 'regression', name: 'Regression Ridge', lon: -108, lat: 48, icon: '📉', xp: 250, type: 'Algorithm' },
+              { id: 'classify', name: 'Classification Castle', lon: -90, lat: 46, icon: '🏰', xp: 300, type: 'Algorithm' },
+              { id: 'svm', name: 'SVM Citadel', lon: -80, lat: 42, icon: '⚔', xp: 350, type: 'Algorithm' },
+              { id: 'dtree', name: 'Decision Tree Forest', lon: -100, lat: 40, icon: '🌳', xp: 280, type: 'Algorithm' },
+            ]
+          },
+          {
+            id: 'deep_learning', name: 'Neural Nexus', emoji: '⚡', desc: 'Deep learning forge',
+            centerLon: -112, centerLat: 27,
+            bounds: [[-128, 38], [-88, 38], [-88, 14], [-128, 14]],
+            cities: [
+              { id: 'cnn', name: 'CNN Colosseum', lon: -122, lat: 34, icon: '🖼', xp: 450, type: 'Deep Learning' },
+              { id: 'rnn', name: 'RNN Ruins', lon: -110, lat: 28, icon: '🔄', xp: 400, type: 'Deep Learning' },
+              { id: 'transformers', name: 'Transformer Temple', lon: -100, lat: 22, icon: '🤖', xp: 600, type: 'Deep Learning' },
+              { id: 'gans', name: 'GAN Gauntlet', lon: -92, lat: 16, icon: '🎨', xp: 550, type: 'Deep Learning' },
+            ]
+          },
+          {
+            id: 'nlp', name: 'Lexicon Lands', emoji: '📜', desc: 'Language enchantments',
+            centerLon: -74, centerLat: 26,
+            bounds: [[-88, 38], [-65, 38], [-65, 14], [-88, 14]],
+            cities: [
+              { id: 'tokenize', name: 'Tokenize Tavern', lon: -84, lat: 32, icon: '✂', xp: 200, type: 'NLP' },
+              { id: 'embed', name: 'Embedding Enclave', lon: -74, lat: 24, icon: '💠', xp: 350, type: 'NLP' },
+              { id: 'llm', name: 'LLM Labyrinth', lon: -68, lat: 16, icon: '🗝', xp: 700, type: 'NLP' },
+            ]
+          },
+        ]
+      },
+      {
+        id: 'visionary', name: 'Visionary Vale', subtitle: 'Product & Design',
+        emoji: '🎨', hex: '#92400e', glow: 'rgba(146,64,14,.7)', accent: '#fde68a',
+        fill: '#2d1200', centerLon: -55, centerLat: -15,
+        outline: [
+          [-80, 10], [-75, 12], [-68, 12], [-62, 11], [-60, 8],
+          [-52, 4], [-50, 2], [-50, -1], [-48, -2], [-44, -3],
+          [-37, -4], [-35, -8], [-36, -12], [-38, -15], [-40, -20],
+          [-43, -22], [-44, -23], [-48, -28], [-52, -33], [-58, -36],
+          [-62, -38], [-65, -42], [-66, -46], [-65, -50], [-68, -54],
+          [-65, -55], [-60, -52], [-56, -50], [-50, -46], [-48, -40],
+          [-52, -34], [-60, -30], [-62, -24], [-60, -20], [-58, -15],
+          [-58, -10], [-60, -6], [-62, -2], [-65, 1], [-68, 2], [-72, 5], [-76, 6], [-78, 8]
+        ],
+        states: [
+          {
+            id: 'ux', name: 'UX Utopia', emoji: '✨', desc: 'Human-centred design',
+            centerLon: -62, centerLat: 4,
+            bounds: [[-80, 12], [-50, 12], [-50, -10], [-80, -10]],
+            cities: [
+              { id: 'research', name: 'Research Refuge', lon: -72, lat: 8, icon: '🔬', xp: 250, type: 'UX' },
+              { id: 'wireframe', name: 'Wireframe Wilds', lon: -60, lat: 6, icon: '📐', xp: 200, type: 'Design' },
+              { id: 'prototype', name: 'Prototype Peak', lon: -55, lat: 2, icon: '🧪', xp: 300, type: 'Design' },
+            ]
+          },
+          {
+            id: 'pm', name: 'Product Palace', emoji: '👑', desc: 'Strategy & roadmaps',
+            centerLon: -55, centerLat: -25,
+            bounds: [[-70, -10], [-40, -10], [-40, -42], [-70, -42]],
+            cities: [
+              { id: 'roadmap', name: 'Roadmap Ridge', lon: -66, lat: -16, icon: '🗺', xp: 350, type: 'Strategy' },
+              { id: 'metrics', name: 'Metrics Mountain', lon: -55, lat: -24, icon: '📊', xp: 300, type: 'Analytics' },
+              { id: 'agile', name: 'Agile Arena', lon: -46, lat: -32, icon: '🔄', xp: 280, type: 'Process' },
+              { id: 'launch', name: 'Launch Lagoon', lon: -58, lat: -38, icon: '🚀', xp: 400, type: 'GTM' },
+            ]
+          },
+          {
+            id: 'design_sys', name: 'Design Dunes', emoji: '🎨', desc: 'Consistent beautiful systems',
+            centerLon: -62, centerLat: -48,
+            bounds: [[-70, -42], [-50, -42], [-50, -56], [-70, -56]],
+            cities: [
+              { id: 'figma', name: 'Figma Fortress', lon: -66, lat: -45, icon: '🎭', xp: 300, type: 'Tool' },
+              { id: 'tokens', name: 'Token Territory', lon: -60, lat: -50, icon: '🪙', xp: 250, type: 'Design' },
+              { id: 'components', name: 'Component Canyon', lon: -54, lat: -47, icon: '🧱', xp: 350, type: 'System' },
+            ]
+          },
+        ]
+      },
+      {
+        id: 'cloudspire', name: 'Cloudspire Empire', subtitle: 'Cloud & Infrastructure',
+        emoji: '☁', hex: '#0c4a6e', glow: 'rgba(12,74,110,.8)', accent: '#bae6fd',
+        fill: '#041a2e', centerLon: 15, centerLat: 55,
+        outline: [
+          [-10, 36], [-6, 37], [0, 38], [3, 43], [5, 44], [7, 44],
+          [8, 46], [10, 47], [12, 47], [14, 46], [16, 48], [18, 49],
+          [20, 50], [22, 54], [24, 57], [26, 60], [28, 65], [26, 68],
+          [20, 70], [16, 70], [14, 68], [12, 66], [8, 62], [6, 58],
+          [5, 55], [8, 55], [10, 58], [12, 56], [12, 55], [8, 55],
+          [5, 55], [2, 52], [0, 51], [-2, 51], [-3, 50],
+          [-5, 48], [-5, 44], [-8, 44], [-9, 39], [-8, 37]
+        ],
+        states: [
+          {
+            id: 'aws', name: 'AWS Archipelago', emoji: '🏝', desc: 'Largest cloud kingdom',
+            centerLon: 5, centerLat: 47,
+            bounds: [[-10, 56], [16, 56], [16, 40], [-10, 40]],
+            cities: [
+              { id: 'ec2', name: 'EC2 Encampment', lon: -2, lat: 52, icon: '💻', xp: 200, type: 'Compute' },
+              { id: 's3', name: 'S3 Storehouse', lon: 7, lat: 48, icon: '🗄', xp: 150, type: 'Storage' },
+              { id: 'lambda', name: 'Lambda Lighthouse', lon: 13, lat: 43, icon: '⚡', xp: 300, type: 'Serverless' },
+            ]
+          },
+          {
+            id: 'devops', name: 'DevOps Dominion', emoji: '⚙', desc: 'Automation & pipeline masters',
+            centerLon: 22, centerLat: 62,
+            bounds: [[14, 70], [30, 70], [30, 55], [14, 55]],
+            cities: [
+              { id: 'docker', name: 'Docker Docks', lon: 17, lat: 66, icon: '🐳', xp: 300, type: 'Container' },
+              { id: 'k8s', name: 'K8s Kingdom', lon: 24, lat: 62, icon: '🎡', xp: 500, type: 'Orchestration' },
+              { id: 'cicd', name: 'CI/CD Cross', lon: 22, lat: 57, icon: '🔧', xp: 350, type: 'Pipeline' },
+            ]
+          },
+          {
+            id: 'networking', name: 'Network Narrows', emoji: '🌐', desc: 'Connecting all realms',
+            centerLon: 15, centerLat: 42,
+            bounds: [[3, 42], [26, 42], [26, 35], [3, 35]],
+            cities: [
+              { id: 'vpc', name: 'VPC Vaultway', lon: 7, lat: 40, icon: '🔒', xp: 280, type: 'Networking' },
+              { id: 'dns', name: 'DNS Dungeon', lon: 15, lat: 38, icon: '🗺', xp: 200, type: 'Networking' },
+              { id: 'loadbal', name: 'Load Balancer Bastion', lon: 23, lat: 37, icon: '⚖', xp: 320, type: 'Networking' },
+            ]
+          },
+        ]
+      },
+      {
+        id: 'shadowveil', name: 'Shadowveil', subtitle: 'Cybersecurity',
+        emoji: '🛡', hex: '#7f1d1d', glow: 'rgba(127,29,29,.8)', accent: '#fca5a5',
+        fill: '#1a0202', centerLon: 20, centerLat: 5,
+        outline: [
+          [-6, 35], [0, 35], [10, 37], [13, 33], [25, 31], [33, 31],
+          [37, 28], [42, 12], [44, 12], [50, 12], [44, 8], [42, 4],
+          [40, 0], [41, -4], [40, -12], [35, -18], [33, -26],
+          [30, -30], [26, -34], [18, -34], [16, -28], [12, -18],
+          [12, -12], [8, -4], [2, 6], [-4, 5], [-15, 10],
+          [-16, 12], [-17, 15], [-16, 20], [-13, 27], [-8, 35]
+        ],
+        states: [
+          {
+            id: 'net_sec', name: 'Network Ramparts', emoji: '🏯', desc: 'Defending the perimeter',
+            centerLon: 18, centerLat: 25,
+            bounds: [[-18, 36], [50, 36], [50, 10], [-18, 10]],
+            cities: [
+              { id: 'firewall', name: 'Firewall Fortress', lon: 4, lat: 30, icon: '🔥', xp: 300, type: 'Defense' },
+              { id: 'ids', name: 'IDS Intersection', lon: 20, lat: 25, icon: '👁', xp: 350, type: 'Detection' },
+              { id: 'vpn', name: 'VPN Veil', lon: 36, lat: 19, icon: '🕵', xp: 280, type: 'Privacy' },
+            ]
+          },
+          {
+            id: 'pentest', name: 'Pentest Peaks', emoji: '⚔', desc: 'Offensive red guild arts',
+            centerLon: 20, centerLat: -4,
+            bounds: [[-5, 10], [46, 10], [46, -15], [-5, -15]],
+            cities: [
+              { id: 'recon', name: 'Recon Ruins', lon: 4, lat: 7, icon: '🔭', xp: 350, type: 'OSINT' },
+              { id: 'exploit', name: 'Exploit Enclave', lon: 22, lat: -4, icon: '💣', xp: 600, type: 'Exploitation' },
+              { id: 'metasploit', name: 'Metasploit Maze', lon: 38, lat: -10, icon: '🗡', xp: 500, type: 'Tool' },
+            ]
+          },
+          {
+            id: 'crypto', name: 'Cipher Citadel', emoji: '🔐', desc: 'Ancient cipher secrets',
+            centerLon: 22, centerLat: -26,
+            bounds: [[5, -15], [42, -15], [42, -35], [5, -35]],
+            cities: [
+              { id: 'sym', name: 'Symmetric Spires', lon: 12, lat: -20, icon: '🔑', xp: 300, type: 'Crypto' },
+              { id: 'asym', name: 'Asymmetric Abyss', lon: 23, lat: -28, icon: '🗝', xp: 400, type: 'Crypto' },
+              { id: 'blockchain', name: 'Blockchain Bastion', lon: 35, lat: -30, icon: '⛓', xp: 500, type: 'Crypto' },
+            ]
+          },
+        ]
+      },
+      {
+        id: 'dataforge', name: 'Dataforge', subtitle: 'Data Engineering',
+        emoji: '🔥', hex: '#7c2d12', glow: 'rgba(124,45,18,.8)', accent: '#fdba74',
+        fill: '#1e0800', centerLon: 95, centerLat: 40,
+        outline: [
+          [26, 72], [45, 73], [70, 74], [95, 74], [110, 74], [130, 72],
+          [140, 72], [140, 64], [134, 58], [130, 52], [133, 48],
+          [135, 44], [140, 44], [142, 46], [145, 44], [141, 40],
+          [138, 36], [132, 32], [120, 32], [120, 24], [110, 20],
+          [105, 12], [100, 4], [104, 2], [104, -2], [108, -8],
+          [115, -8], [116, -4], [120, 2], [108, 4], [100, 8],
+          [98, 12], [92, 22], [88, 26], [80, 28], [72, 24],
+          [68, 24], [64, 24], [62, 28], [60, 30], [56, 30],
+          [56, 36], [60, 38], [58, 42], [52, 44], [46, 42],
+          [42, 38], [36, 36], [36, 32], [30, 30], [28, 36],
+          [28, 42], [30, 48], [32, 52], [30, 56], [26, 58], [26, 62]
+        ],
+        states: [
+          {
+            id: 'pipelines', name: 'Pipeline Province', emoji: '🔩', desc: 'Data flows through conduits',
+            centerLon: 72, centerLat: 60,
+            bounds: [[26, 74], [115, 74], [115, 50], [26, 50]],
+            cities: [
+              { id: 'etl', name: 'ETL Emporium', lon: 48, lat: 66, icon: '⚙', xp: 280, type: 'Engineering' },
+              { id: 'airflow', name: 'Airflow Aqueduct', lon: 72, lat: 60, icon: '💨', xp: 350, type: 'Orchestration' },
+              { id: 'spark', name: 'Spark Smithy', lon: 96, lat: 56, icon: '✨', xp: 450, type: 'Processing' },
+            ]
+          },
+          {
+            id: 'warehouses', name: 'Warehouse Wilds', emoji: '🏚', desc: 'Vast structured treasure stores',
+            centerLon: 95, centerLat: 36,
+            bounds: [[56, 50], [138, 50], [138, 24], [56, 24]],
+            cities: [
+              { id: 'snowflake', name: 'Snowflake Summit', lon: 70, lat: 44, icon: '❄', xp: 400, type: 'Warehouse' },
+              { id: 'bigquery', name: 'BigQuery Bay', lon: 96, lat: 35, icon: '🔍', xp: 380, type: 'Warehouse' },
+              { id: 'redshift', name: 'Redshift Rift', lon: 122, lat: 30, icon: '🌋', xp: 360, type: 'Warehouse' },
+            ]
+          },
+          {
+            id: 'streaming', name: 'Streaming Shores', emoji: '🌊', desc: 'Real-time data oceans',
+            centerLon: 108, centerLat: 8,
+            bounds: [[80, 24], [145, 24], [145, -8], [80, -8]],
+            cities: [
+              { id: 'kafka', name: 'Kafka Cliffs', lon: 100, lat: 16, icon: '🌊', xp: 500, type: 'Streaming' },
+              { id: 'flink', name: 'Flink Fortress', lon: 118, lat: 9, icon: '⚡', xp: 420, type: 'Streaming' },
+              { id: 'kinesis', name: 'Kinesis Keep', lon: 108, lat: -2, icon: '🌀', xp: 380, type: 'Streaming' },
+            ]
+          },
+        ]
+      },
+      {
+        id: 'algorithmia', name: 'Algorithmia', subtitle: 'DSA & Problem Solving',
+        emoji: '⚙', hex: '#1e3a5f', glow: 'rgba(30,58,95,.8)', accent: '#93c5fd',
+        fill: '#050f20', centerLon: 135, centerLat: -27,
+        outline: [
+          [114, -22], [118, -20], [122, -18], [128, -14], [136, -12],
+          [138, -14], [136, -18], [138, -22], [140, -26], [142, -28],
+          [148, -30], [152, -28], [154, -24], [152, -20], [148, -18],
+          [146, -20], [144, -18], [140, -18], [136, -20], [134, -24],
+          [130, -30], [128, -34], [122, -34], [116, -34], [114, -30], [112, -26]
+        ],
+        states: [
+          {
+            id: 'arrays', name: 'Array Archipelago', emoji: '📊', desc: 'Fundamental steel structures',
+            centerLon: 128, centerLat: -20,
+            bounds: [[112, -14], [145, -14], [145, -28], [112, -28]],
+            cities: [
+              { id: 'sorting', name: 'Sorting Summit', lon: 120, lat: -18, icon: '🔢', xp: 200, type: 'Algorithm' },
+              { id: 'searching', name: 'Searching Sanctum', lon: 130, lat: -22, icon: '🔍', xp: 180, type: 'Algorithm' },
+              { id: 'two_ptr', name: 'Two Pointer Pass', lon: 140, lat: -18, icon: '👉', xp: 250, type: 'Technique' },
+              { id: 'sliding', name: 'Sliding Window', lon: 143, lat: -25, icon: '🪟', xp: 280, type: 'Technique' },
+            ]
+          },
+          {
+            id: 'trees_graphs', name: 'Tree & Graph Groves', emoji: '🌲', desc: 'Ancient towering structures',
+            centerLon: 138, centerLat: -30,
+            bounds: [[126, -28], [156, -28], [156, -38], [126, -38]],
+            cities: [
+              { id: 'bfs_dfs', name: 'BFS/DFS Dens', lon: 132, lat: -30, icon: '🌿', xp: 350, type: 'Traversal' },
+              { id: 'binary_tree', name: 'Binary Tree Barracks', lon: 142, lat: -32, icon: '🌳', xp: 300, type: 'Tree' },
+              { id: 'graphs', name: 'Graph Galaxy', lon: 150, lat: -28, icon: '🕸', xp: 500, type: 'Graph' },
+            ]
+          },
+          {
+            id: 'dp', name: 'Dynamic Dominion', emoji: '🧩', desc: 'Optimal substructure realm',
+            centerLon: 124, centerLat: -35,
+            bounds: [[112, -38], [140, -38], [140, -48], [112, -48]],
+            cities: [
+              { id: 'memo', name: 'Memo Mine', lon: 117, lat: -40, icon: '💽', xp: 400, type: 'DP' },
+              { id: 'tabulation', name: 'Tabulation Tower', lon: 126, lat: -42, icon: '📋', xp: 450, type: 'DP' },
+              { id: 'knapsack', name: 'Knapsack Kingdom', lon: 134, lat: -39, icon: '🎒', xp: 500, type: 'DP' },
+            ]
+          },
+        ]
+      },
+      {
+        id: 'codex_isles', name: 'Codex Isles', subtitle: 'Web Development',
+        emoji: '🌐', hex: '#052e16', glow: 'rgba(5,46,22,.8)', accent: '#86efac',
+        fill: '#011a0b', centerLon: 0, centerLat: -74,
+        // Southern continent (like Antarctica but green for Web Dev)
+        outline: [
+          [-180, -65], [-140, -62], [-100, -64], [-60, -62], [-20, -66],
+          [20, -64], [60, -62], [100, -64], [140, -62], [180, -65],
+          [180, -88], [-180, -88]
+        ],
+        states: [
+          {
+            id: 'frontend', name: 'Frontlands', emoji: '🎨', desc: 'Visual realm of UI sorcerers',
+            centerLon: -90, centerLat: -72,
+            bounds: [[-180, -65], [-60, -65], [-60, -80], [-180, -80]],
+            cities: [
+              { id: 'html_css', name: 'HTML/CSS Hamlet', lon: -162, lat: -70, icon: '🎨', xp: 150, type: 'Frontend' },
+              { id: 'react', name: 'React Republic', lon: -122, lat: -72, icon: '⚛', xp: 400, type: 'Framework' },
+              { id: 'typescript', name: 'TypeScript Tower', lon: -90, lat: -70, icon: '📘', xp: 350, type: 'Language' },
+              { id: 'nextjs', name: 'Next.js Nexus', lon: -68, lat: -74, icon: '▲', xp: 450, type: 'Framework' },
+            ]
+          },
+          {
+            id: 'backend', name: 'Backzone', emoji: '🏗', desc: 'Server-side strongholds',
+            centerLon: 30, centerLat: -72,
+            bounds: [[-60, -65], [100, -65], [100, -80], [-60, -80]],
+            cities: [
+              { id: 'nodejs', name: 'Node.js Nook', lon: -20, lat: -70, icon: '🟢', xp: 350, type: 'Backend' },
+              { id: 'pythonb', name: 'Python Palace', lon: 10, lat: -73, icon: '🐍', xp: 300, type: 'Language' },
+              { id: 'apis', name: 'API Arches', lon: 40, lat: -70, icon: '🔌', xp: 380, type: 'Architecture' },
+              { id: 'graphql', name: 'GraphQL Grotto', lon: 72, lat: -74, icon: '🕸', xp: 420, type: 'API' },
+            ]
+          },
+          {
+            id: 'databases', name: 'Database Deltas', emoji: '💾', desc: 'Where data persists eternally',
+            centerLon: 150, centerLat: -72,
+            bounds: [[100, -65], [180, -65], [180, -80], [100, -80]],
+            cities: [
+              { id: 'postgres', name: 'PostgreSQL Pass', lon: 112, lat: -70, icon: '🐘', xp: 300, type: 'SQL' },
+              { id: 'mongodb', name: 'MongoDB Marshes', lon: 135, lat: -73, icon: '🍃', xp: 280, type: 'NoSQL' },
+              { id: 'redis', name: 'Redis Rapids', lon: 158, lat: -70, icon: '⚡', xp: 250, type: 'Cache' },
+            ]
+          },
+        ]
+      },
+    ];
+
+    // ══════════════════════════════════════════════════════════
+    //  THREE.JS SETUP
+    // ══════════════════════════════════════════════════════════
+    const pCanvas = document.getElementById('planet-canvas');
+    pCanvas.width = window.innerWidth;
+    pCanvas.height = window.innerHeight;
+
+    const renderer = new THREE.WebGLRenderer({ canvas: pCanvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 2.85;
+
+    // Handle resize
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    });
+
+    // ── Lights ──────────────────────────────
+    const ambi = new THREE.AmbientLight(0x220033, 0.4);
+    scene.add(ambi);
+    const keyLight = new THREE.DirectionalLight(0xffeedd, 1.1);
+    keyLight.position.set(3, 2, 4);
+    scene.add(keyLight);
+    const rimLight = new THREE.DirectionalLight(0x3366ff, 0.4);
+    rimLight.position.set(-4, -1, -3);
+    scene.add(rimLight);
+
+    // ── Space background ─────────────────────
+    let spaceBgMesh = null;
+    function buildSpaceBg() {
+      const isLight = document.body.classList.contains('light-mode');
+      const bgCanvas = document.createElement('canvas');
+      bgCanvas.width = 1024; bgCanvas.height = 512;
+      const bctx = bgCanvas.getContext('2d');
+      
+      if (isLight) {
+        const g = bctx.createLinearGradient(0, 0, 0, 512);
+        g.addColorStop(0, '#e0e7ff'); g.addColorStop(1, '#93c5fd');
+        bctx.fillStyle = g; bctx.fillRect(0, 0, 1024, 512);
+        bctx.fillStyle = 'rgba(255,255,255,0.4)';
+        // Light sky clouds
+        const rng = seeded(42);
+        for(let i=0; i<40; i++) {
+           const cx = rng()*1024, cy = rng()*512, cr = 20 + rng()*80;
+           const cgr = bctx.createRadialGradient(cx, cy, 0, cx, cy, cr);
+           cgr.addColorStop(0, 'rgba(255,255,255,0.4)');
+           cgr.addColorStop(0.5, 'rgba(255,255,255,0.15)');
+           cgr.addColorStop(1, 'rgba(255,255,255,0)');
+           bctx.fillStyle = cgr;
+           bctx.beginPath();
+           bctx.arc(cx, cy, cr, 0, Math.PI*2);
+           bctx.fill();
+        }
+      } else {
+        // Deep space gradient
+        const g = bctx.createRadialGradient(512, 256, 0, 512, 256, 560);
+        g.addColorStop(0, '#0d1b3e'); g.addColorStop(.4, '#060d1c'); g.addColorStop(1, '#020509');
+        bctx.fillStyle = g; bctx.fillRect(0, 0, 1024, 512);
+        // Stars
+        const rng = seeded(42);
+        for (let i = 0; i < 1800; i++) {
+          const x = rng() * 1024, y = rng() * 512, r = rng() * 1.2 + .2, op = rng() * .75 + .2;
+          bctx.beginPath(); bctx.arc(x, y, r, 0, Math.PI * 2);
+          bctx.fillStyle = `rgba(255,255,255,${op})`; bctx.fill();
+        }
+        // Nebula wisps
+        [{ x: .2, y: .3, hue: 260 }, { x: .7, y: .6, hue: 30 }, { x: .5, y: .15, hue: 200 }].forEach(({ x, y, hue }) => {
+          const ng = bctx.createRadialGradient(x * 1024, y * 512, 0, x * 1024, y * 512, 200);
+          ng.addColorStop(0, `hsla(${hue},70%,55%,0.08)`); ng.addColorStop(1, 'transparent');
+          bctx.fillStyle = ng; bctx.fillRect(0, 0, 1024, 512);
+        });
+      }
+      
+      const tex = new THREE.CanvasTexture(bgCanvas);
+      if (!spaceBgMesh) {
+        const sphereGeo = new THREE.SphereGeometry(500, 32, 32);
+        const sphereMat = new THREE.MeshBasicMaterial({ map: tex, side: THREE.BackSide });
+        spaceBgMesh = new THREE.Mesh(sphereGeo, sphereMat);
+        scene.add(spaceBgMesh);
+      } else {
+        spaceBgMesh.material.map.dispose();
+        spaceBgMesh.material.map = tex;
+        spaceBgMesh.material.needsUpdate = true;
+      }
+    }
+    buildSpaceBg();
+
+    function seeded(s) { return function () { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+    // ══════════════════════════════════════════════════════════
+    //  PLANET TEXTURE BUILDING
+    // ══════════════════════════════════════════════════════════
+    const TEX_W = 2048, TEX_H = 1024;
+    const texCanvas = document.createElement('canvas');
+    texCanvas.width = TEX_W; texCanvas.height = TEX_H;
+    const tctx = texCanvas.getContext('2d');
+
+    // lon/lat → pixel
+    const ll = (lon, lat) => [(lon + 180) / 360 * TEX_W, (90 - lat) / 180 * TEX_H];
+
+    function drawContPath(coords) {
+      tctx.beginPath();
+      const [x0, y0] = ll(...coords[0]); tctx.moveTo(x0, y0);
+      for (let i = 1; i < coords.length; i++) { const [xi, yi] = ll(...coords[i]); tctx.lineTo(xi, yi); }
+      tctx.closePath();
+    }
+
+    // ─── Zoom / selection state ───────────────
+    let zoomLevel = 'world';  // 'world' | 'continent' | 'state'
+    let selDomain = null;
+    let selState = null;
+
+    // UV-space hit zones (built fresh every texture rebuild)
+    let continentZones = [];
+    let stateZones = [];
+    let cityZones = [];
+
+    function buildTexture() {
+      tctx.clearRect(0, 0, TEX_W, TEX_H);
+      continentZones = []; stateZones = []; cityZones = [];
+
+      // ── Ocean ─────────────────────────────
+      const isLight = document.body.classList.contains('light-mode');
+      const og = tctx.createLinearGradient(0, 0, 0, TEX_H);
+      if (isLight) {
+        og.addColorStop(0, '#93c5fd'); og.addColorStop(.5, '#60a5fa'); og.addColorStop(1, '#3b82f6');
+      } else {
+        og.addColorStop(0, '#0b1a38'); og.addColorStop(.5, '#08122a'); og.addColorStop(1, '#050c1e');
+      }
+      tctx.fillStyle = og; tctx.fillRect(0, 0, TEX_W, TEX_H);
+      // Subtle hex grid overlay
+      tctx.strokeStyle = isLight ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.025)'; tctx.lineWidth = 1;
+      for (let x = 0; x < TEX_W; x += 80) { tctx.beginPath(); tctx.moveTo(x, 0); tctx.lineTo(x, TEX_H); tctx.stroke(); }
+      for (let y = 0; y < TEX_H; y += 80) { tctx.beginPath(); tctx.moveTo(0, y); tctx.lineTo(TEX_W, y); tctx.stroke(); }
+      // Wave marks
+      tctx.strokeStyle = isLight ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.04)'; tctx.lineWidth = 1.5;
+      for (let y = 30; y < TEX_H; y += 62) {
+        for (let x = 0; x < TEX_W; x += 110) {
+          tctx.beginPath(); tctx.moveTo(x, y);
+          tctx.bezierCurveTo(x + 14, y - 5, x + 30, y + 5, x + 44, y); tctx.stroke();
+        }
+      }
+
+      // ── Draw each continent ────────────────
+      DOMAINS.forEach((dom, idx) => {
+        const isSelected = selDomain && selDomain.id === dom.id;
+        // Glow + fill
+        tctx.save();
+        drawContPath(dom.outline);
+        tctx.shadowColor = dom.hex; tctx.shadowBlur = (isSelected) ? 30 : 12;
+        tctx.fillStyle = isSelected ? lightenHex(dom.fill, 0.4) : dom.fill;
+        tctx.fill();
+        tctx.restore();
+        // Border
+        tctx.save();
+        drawContPath(dom.outline);
+        tctx.lineWidth = isSelected ? 3 : 1.8;
+        tctx.strokeStyle = isSelected ? dom.accent : hexAlpha(dom.accent, .5);
+        tctx.shadowColor = dom.hex; tctx.shadowBlur = isSelected ? 20 : 8;
+        tctx.stroke();
+        tctx.restore();
+        // Biome pattern inside
+        drawBiome(dom);
+        // Register hit zone polygon (UV space)
+        continentZones.push({ domain: dom, outline: dom.outline });
+
+        if (zoomLevel === 'world' || !isSelected) {
+          // Continent label
+          const [cx, cy] = ll(dom.centerLon + 3, dom.centerLat);
+          tctx.save();
+          tctx.textAlign = 'center'; tctx.textBaseline = 'middle';
+          // Emoji
+          const ef = Math.round(isSelected ? 38 : 28);
+          tctx.font = `${ef}px serif`;
+          tctx.fillText(dom.emoji, cx, cy - ef);
+          // Name
+          const nf = Math.round(isSelected ? 22 : 16);
+          tctx.font = `900 ${nf}px Cinzel,serif`;
+          tctx.fillStyle = dom.accent;
+          tctx.shadowColor = dom.hex; tctx.shadowBlur = 12;
+          tctx.fillText(dom.name, cx, cy + 2);
+          tctx.shadowBlur = 0;
+          // Sub
+          tctx.font = `700 ${Math.round(nf * .7)}px Nunito,sans-serif`;
+          tctx.fillStyle = hexAlpha(dom.accent, .75);
+          tctx.fillText(dom.subtitle, cx, cy + nf + 8);
+          // State count chip
+          const chip = `${dom.states.length} States`;
+          const cw = nf * chip.length * .38, ch = 16; const cx2 = cx - cw / 2, cy2 = cy + nf + 20;
+          tctx.fillStyle = hexAlpha(dom.hex, .5); tctx.fillRect(cx2, cy2, cw, ch);
+          tctx.strokeStyle = hexAlpha(dom.accent, .4); tctx.lineWidth = 1; tctx.strokeRect(cx2, cy2, cw, ch);
+          tctx.font = `700 ${Math.round(nf * .62)}px Nunito`; tctx.fillStyle = '#fff';
+          tctx.fillText(chip, cx, cy2 + ch / 2 + 1);
+          tctx.restore();
+        }
+
+        // ── States (shown when this continent is selected) ───
+        if (isSelected && (zoomLevel === 'continent' || zoomLevel === 'state')) {
+          dom.states.forEach(st => {
+            const isSelSt = selState && selState.id === st.id;
+            const bnds = st.bounds;
+            const [x0u, y0u] = ll(bnds[0][0], bnds[0][1]);
+            const [x1u, y1u] = ll(bnds[2][0], bnds[2][1]);
+            const rx = Math.min(x0u, x1u), ry = Math.min(y0u, y1u);
+            const rw = Math.abs(x1u - x0u), rh = Math.abs(y1u - y0u);
+
+            // State region box
+            tctx.save();
+            tctx.shadowColor = dom.accent; tctx.shadowBlur = isSelSt ? 18 : 8;
+            tctx.fillStyle = isSelSt ? hexAlpha(dom.hex, .6) : hexAlpha(dom.hex, .35);
+            tctx.strokeStyle = isSelSt ? dom.accent : hexAlpha(dom.accent, .6);
+            tctx.lineWidth = isSelSt ? 2.5 : 1.5;
+            tctx.fillRect(rx, ry, rw, rh);
+            tctx.strokeRect(rx, ry, rw, rh);
+            tctx.restore();
+
+            // State label
+            const scx = rx + rw / 2, scy = ry + rh / 2;
+            tctx.save();
+            tctx.textAlign = 'center'; tctx.textBaseline = 'middle';
+            tctx.font = `${Math.round(rh * .22)}px serif`;
+            tctx.fillText(st.emoji, scx, scy - rh * .22);
+            tctx.font = `900 ${Math.round(Math.min(rw, rh) * .11)}px Cinzel,serif`;
+            tctx.fillStyle = dom.accent; tctx.shadowColor = dom.hex; tctx.shadowBlur = 8;
+            tctx.fillText(st.name, scx, scy + 2);
+            tctx.shadowBlur = 0;
+            tctx.font = `600 ${Math.round(Math.min(rw, rh) * .075)}px Nunito,sans-serif`;
+            tctx.fillStyle = hexAlpha(dom.accent, .6);
+            tctx.fillText(`${st.cities.length} Cities`, scx, scy + Math.min(rw, rh) * .13 + 4);
+            tctx.restore();
+
+            stateZones.push({ state: st, domain: dom, x0: bnds[0][0], y0: bnds[0][1], x1: bnds[2][0], y1: bnds[2][1] });
+
+            // ── Cities (shown when this state is selected) ──
+            if (isSelSt && zoomLevel === 'state') {
+              st.cities.forEach(city => {
+                const [cx, cy2] = ll(city.lon, city.lat);
+                // Glow dot
+                const grad = tctx.createRadialGradient(cx, cy2, 0, cx, cy2, 22);
+                grad.addColorStop(0, dom.accent); grad.addColorStop(.4, hexAlpha(dom.accent, .4));
+                grad.addColorStop(1, 'transparent');
+                tctx.fillStyle = grad; tctx.beginPath(); tctx.arc(cx, cy2, 22, 0, Math.PI * 2); tctx.fill();
+                tctx.fillStyle = dom.accent; tctx.beginPath(); tctx.arc(cx, cy2, 5, 0, Math.PI * 2); tctx.fill();
+                // Icon above dot
+                tctx.font = '20px serif'; tctx.textAlign = 'center'; tctx.textBaseline = 'bottom';
+                tctx.fillText(city.icon, cx, cy2 - 8);
+                // Label below
+                tctx.font = `800 13px Cinzel,serif`; tctx.textAlign = 'center'; tctx.textBaseline = 'top';
+                tctx.fillStyle = '#fff'; tctx.shadowColor = dom.hex; tctx.shadowBlur = 8;
+                tctx.fillText(city.name, cx, cy2 + 9);
+                tctx.shadowBlur = 0;
+                tctx.font = `700 11px Nunito,sans-serif`;
+                tctx.fillStyle = hexAlpha(dom.accent, .7);
+                tctx.fillText(`${city.type} · ⭐${city.xp}`, cx, cy2 + 25);
+                cityZones.push({ city, domain: dom, state: st, lon: city.lon, lat: city.lat });
+              });
+            }
+          });
+        }
+      });
+    }
+
+    // ── Color helpers ─────────────────────────
+    function lightenHex(hex, amt) {
+      const n = parseInt(hex.replace('#', ''), 16);
+      const r = Math.min(255, ((n >> 16) & 255) + amt * 180 | 0);
+      const g = Math.min(255, ((n >> 8) & 255) + amt * 60 | 0);
+      const b = Math.min(255, (n & 255) + amt * 80 | 0);
+      return `rgb(${r},${g},${b})`;
+    }
+    function hexAlpha(hex, a) {
+      hex = hex.replace('#', '');
+      if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+      return `rgba(${parseInt(hex.substr(0, 2), 16)},${parseInt(hex.substr(2, 2), 16)},${parseInt(hex.substr(4, 2), 16)},${a})`;
+    }
+
+    // ── Biome texture per continent ────────────
+    function drawBiome(dom) {
+      tctx.save();
+      drawContPath(dom.outline); tctx.clip();
+      const rng = seeded(dom.id.charCodeAt(0) * 137);
+      const biomes = {
+        aethermind: () => {
+          for (let i = 0; i < 40; i++) { const [bx, by] = ll(dom.centerLon + (rng() - .5) * 30, dom.centerLat + (rng() - .5) * 25); const gr = tctx.createRadialGradient(bx, by, 0, bx, by, 20); gr.addColorStop(0, 'rgba(167,139,250,.22)'); gr.addColorStop(1, 'transparent'); tctx.fillStyle = gr; tctx.beginPath(); tctx.arc(bx, by, 20, 0, Math.PI * 2); tctx.fill(); }
+        },
+        visionary: () => {
+          for (let i = 0; i < 20; i++) { const [bx, by] = ll(dom.centerLon + (rng() - .5) * 28, dom.centerLat + (rng() - .5) * 35); tctx.fillStyle = `rgba(253,230,138,${.05 + rng() * .08})`; tctx.beginPath(); tctx.arc(bx, by, 8 + rng() * 12, 0, Math.PI * 2); tctx.fill(); }
+        },
+        cloudspire: () => {
+          for (let i = 0; i < 12; i++) { const [bx, by] = ll(dom.centerLon + (rng() - .5) * 20, dom.centerLat + (rng() - .5) * 15); const gr = tctx.createRadialGradient(bx, by, 0, bx, by, 28); gr.addColorStop(0, 'rgba(186,230,253,.18)'); gr.addColorStop(1, 'transparent'); tctx.fillStyle = gr; tctx.beginPath(); tctx.arc(bx, by, 28, 0, Math.PI * 2); tctx.fill(); }
+        },
+        shadowveil: () => {
+          for (let i = 0; i < 8; i++) { const [bx, by] = ll(dom.centerLon + (rng() - .5) * 25, dom.centerLat + (rng() - .5) * 28); tctx.fillStyle = `rgba(127,29,29,${.12 + rng() * .1})`; tctx.beginPath(); tctx.moveTo(bx, by - 18); tctx.lineTo(bx - 10, by + 8); tctx.lineTo(bx + 10, by + 8); tctx.fill(); }
+        },
+        dataforge: () => {
+          for (let i = 0; i < 15; i++) { const [bx, by] = ll(dom.centerLon + (rng() - .5) * 40, dom.centerLat + (rng() - .5) * 30); const gr = tctx.createRadialGradient(bx, by, 0, bx, by, 22); gr.addColorStop(0, 'rgba(251,146,60,.18)'); gr.addColorStop(1, 'transparent'); tctx.fillStyle = gr; tctx.beginPath(); tctx.ellipse(bx, by, 22, 10, rng() * Math.PI, 0, Math.PI * 2); tctx.fill(); }
+        },
+        algorithmia: () => {
+          for (let i = 0; i < 6; i++) { const [bx, by] = ll(dom.centerLon + (rng() - .5) * 18, dom.centerLat + (rng() - .5) * 12); tctx.strokeStyle = 'rgba(147,197,253,.14)'; tctx.lineWidth = 1; tctx.beginPath(); tctx.arc(bx, by, 10 + rng() * 14, 0, Math.PI * 2); tctx.stroke(); tctx.beginPath(); tctx.arc(bx, by, 5 + rng() * 6, 0, Math.PI * 2); tctx.stroke(); }
+        },
+        codex_isles: () => {
+          for (let i = 0; i < 30; i++) { const [bx, by] = ll((rng() - .5) * 340, dom.centerLat + (rng() - .5) * 16); const gr = tctx.createRadialGradient(bx, by, 0, bx, by, 14); gr.addColorStop(0, 'rgba(134,239,172,.18)'); gr.addColorStop(1, 'transparent'); tctx.fillStyle = gr; tctx.beginPath(); tctx.arc(bx, by, 14, 0, Math.PI * 2); tctx.fill(); }
+        },
+      };
+      (biomes[dom.id] || biomes.cloudspire)();
+      tctx.restore();
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  EARTH MESH
+    // ══════════════════════════════════════════════════════════
+    const pivot = new THREE.Group(); scene.add(pivot);
+
+    // Build initial texture
+    buildTexture();
+    let planetTex = new THREE.CanvasTexture(texCanvas);
+
+    // Bump / spec from CDN
+    const texLoader = new THREE.TextureLoader();
+    const bumpTex = texLoader.load('https://threejs.org/examples/textures/planets/earth_bump_4096.jpg');
+    const specTex = texLoader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg');
+
+    // Planet sphere
+    const planetMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 96, 96),
+      new THREE.MeshPhongMaterial({ map: planetTex, bumpMap: bumpTex, bumpScale: .025, specularMap: specTex, specular: new THREE.Color(0x111122), shininess: 8 })
+    );
+    pivot.add(planetMesh);
+
+    // Atmosphere glow (outer rim)
+    pivot.add(new THREE.Mesh(
+      new THREE.SphereGeometry(1.06, 64, 64),
+      new THREE.MeshPhongMaterial({ color: 0x2255aa, transparent: true, opacity: .07, side: THREE.BackSide })
+    ));
+    // Inner haze
+    pivot.add(new THREE.Mesh(
+      new THREE.SphereGeometry(1.015, 64, 64),
+      new THREE.MeshPhongMaterial({ color: 0x4488ff, transparent: true, opacity: .04, side: THREE.FrontSide })
+    ));
+
+    // Glowing ring
+    (function makeRing() {
+      const rc = document.createElement('canvas'); rc.width = 512; rc.height = 64;
+      const rctx = rc.getContext('2d');
+      const rg = rctx.createLinearGradient(0, 0, 512, 0);
+      rg.addColorStop(0, 'rgba(255,200,80,0)');
+      rg.addColorStop(.2, 'rgba(255,200,80,0.25)');
+      rg.addColorStop(.5, 'rgba(100,200,255,0.35)');
+      rg.addColorStop(.8, 'rgba(255,200,80,0.25)');
+      rg.addColorStop(1, 'rgba(255,200,80,0)');
+      rctx.fillStyle = rg; rctx.fillRect(0, 0, 512, 64);
+      const ringMesh = new THREE.Mesh(
+        new THREE.TorusGeometry(1.38, .018, 2, 80),
+        new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(rc), transparent: true, opacity: .35, side: THREE.DoubleSide })
+      );
+      ringMesh.rotation.x = Math.PI * 0.42;
+      scene.add(ringMesh);
+      // Store for animation
+      window._ring = ringMesh;
+    })();
+
+    function refreshPlanetTex() {
+      buildTexture();
+      if (planetMesh.material.map) planetMesh.material.map.dispose();
+      planetMesh.material.map = new THREE.CanvasTexture(texCanvas);
+      planetMesh.material.needsUpdate = true;
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  RAYCASTING & HIT DETECTION
+    // ══════════════════════════════════════════════════════════
+    const raycaster = new THREE.Raycaster();
+    const ndcMouse = new THREE.Vector2();
+
+    function getUV(clientX, clientY) {
+      const rect = pCanvas.getBoundingClientRect();
+      ndcMouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      ndcMouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(ndcMouse, camera);
+      const hits = raycaster.intersectObject(planetMesh);
+      if (!hits.length || !hits[0].uv) return null;
+      return { u: hits[0].uv.x, v: 1 - hits[0].uv.y };
+    }
+
+    function uvToLonLat(u, v) { return [u * 360 - 180, 90 - v * 180]; }
+
+    // Point-in-polygon (lon/lat)
+    function pip(lon, lat, poly) {
+      let inside = false; let j = poly.length - 1;
+      for (let i = 0; i < poly.length; i++) {
+        const xi = poly[i][0], yi = poly[i][1], xj = poly[j][0], yj = poly[j][1];
+        if (((yi > lat) !== (yj > lat)) && lon < (xj - xi) * (lat - yi) / (yj - yi) + xi) inside = !inside;
+        j = i;
+      }
+      return inside;
+    }
+    function inBounds(lon, lat, bnds) {
+      const lns = bnds.map(b => b[0]), lts = bnds.map(b => b[1]);
+      return lon >= Math.min(...lns) && lon <= Math.max(...lns) && lat >= Math.min(...lts) && lat <= Math.max(...lts);
+    }
+    function nearCity(lon, lat, clon, clat, thresh = 4) { return Math.abs(lon - clon) < thresh && Math.abs(lat - clat) < thresh; }
+
+    function hitTest(clientX, clientY) {
+      const uv = getUV(clientX, clientY);
+      if (!uv) return null;
+      const [lon, lat] = uvToLonLat(uv.u, uv.v);
+
+      if (zoomLevel === 'state' && selState) {
+        for (const cz of cityZones) {
+          if (nearCity(lon, lat, cz.lon, cz.lat)) return { type: 'city', city: cz.city, domain: cz.domain, state: cz.state };
+        }
+      }
+      if ((zoomLevel === 'continent' || zoomLevel === 'state') && selDomain) {
+        for (const sz of stateZones) {
+          if (inBounds(lon, lat, sz.state.bounds)) return { type: 'state', state: sz.state, domain: sz.domain };
+        }
+      }
+      for (const cz of continentZones) {
+        if (pip(lon, lat, cz.domain.outline)) return { type: 'continent', domain: cz.domain };
+      }
+      return null;
+    }
+
+    // ── Hover state ────────────────────────────
+    let hoveredItem = null;
+    const tt = document.getElementById('tt');
+    const ttn = document.getElementById('tt-n');
+    const tts = document.getElementById('tt-s');
+
+    function updateHover(clientX, clientY) {
+      try {
+        const h = hitTest(clientX, clientY);
+        const hid = h ? (h.type === 'city' ? h.city.id : h.type === 'state' ? h.state.id : h.domain.id) : null;
+        const oid = hoveredItem ? (hoveredItem.type === 'city' ? hoveredItem.city.id : hoveredItem.type === 'state' ? hoveredItem.state.id : hoveredItem.domain.id) : null;
+
+        if (hid !== oid) {
+          hoveredItem = h;
+          pCanvas.style.cursor = h ? 'pointer' : 'grab';
+        }
+        if (h) {
+          const name = h.type === 'continent' ? h.domain.name
+            : h.type === 'state' ? h.state.name
+              : h.city.name;
+          const sub = h.type === 'continent' ? h.domain.subtitle
+            : h.type === 'state' ? h.state.desc
+              : `${h.city.type} · ⭐${h.city.xp} XP`;
+          ttn.textContent = name; tts.textContent = sub;
+          tt.style.display = 'block';
+          tt.style.left = (clientX + 14) + 'px'; tt.style.top = (clientY - 10) + 'px';
+        } else { tt.style.display = 'none'; }
+      } catch (e) { console.error("Hover error", e); }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  ROTATION — Globe Physics (Euler YXZ)
+    // ══════════════════════════════════════════════════════════
+    let currentRotX = 0;
+    let currentRotY = 0;
+    let targetQuat = null;
+    let targetZ = 2.85, autoRotate = true;
+    let velYaw = 0, velPitch = 0;
+    let isDragging = false, prevX = 0, prevY = 0;
+    let dragDist = 0;
+    const SENS = 0.0055;
+
+    // Face a specific coordinate
+    function faceContinent(lon, lat) {
+      const rx = lat * Math.PI / 180;
+      const ry = -(lon + 90) * Math.PI / 180;
+      targetQuat = new THREE.Quaternion().setFromEuler(new THREE.Euler(rx, ry, 0, 'YXZ'));
+    }
+
+    function startDrag(cx, cy) { 
+      isDragging = true; autoRotate = false; velYaw = velPitch = dragDist = 0; prevX = cx; prevY = cy; 
+    }
+    
+    function moveDrag(cx, cy) {
+      if (!isDragging) return;
+      const dx = cx - prevX, dy = cy - prevY;
+      dragDist += Math.abs(dx) + Math.abs(dy);
+      prevX = cx; prevY = cy;
+      
+      velYaw = dx * SENS; 
+      velPitch = dy * SENS;
+      
+      currentRotY += velYaw;
+      currentRotX += velPitch;
+      
+      // Prevent flipping over the poles
+      currentRotX = Math.max(-Math.PI/2, Math.min(Math.PI/2, currentRotX));
+      
+      pivot.quaternion.setFromEuler(new THREE.Euler(currentRotX, currentRotY, 0, 'YXZ'));
+      targetQuat = null; // cancel any rotation animation
+    }
+    
+    function endDrag(cx, cy) {
+      isDragging = false; autoRotate = true;
+      if (dragDist < 20) handleClick(cx, cy);
+    }
+
+    async function handleClick(cx, cy) {
+      const h = hitTest(cx, cy);
+      if (!h) return;
+      if (h.type === 'continent') selectContinent(h.domain);
+      else if (h.type === 'state') selectState(h.state, h.domain);
+      else if (h.type === 'city') openCityPanel(h.city, h.domain, h.state);
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  SELECTION LOGIC
+    // ══════════════════════════════════════════════════════════
+    function selectContinent(dom) {
+      selDomain = dom; selState = null; zoomLevel = 'continent';
+      targetZ = 2.0; autoRotate = false;
+      faceContinent(dom.centerLon, dom.centerLat);
+      refreshPlanetTex();
+      updateBreadcrumb();
+      updateHeader(`${dom.emoji} ${dom.name}`, dom.subtitle);
+      openContinentPanel(dom);
+    }
+
+    function selectState(st, dom) {
+      selDomain = dom; selState = st; zoomLevel = 'state';
+      targetZ = 1.5; autoRotate = false;
+      faceContinent(st.centerLon, st.centerLat);
+      refreshPlanetTex();
+      updateBreadcrumb();
+      updateHeader(`${st.emoji} ${st.name}`, `${dom.name} · ${st.cities.length} Cities`);
+      openStatePanel(st, dom);
+    }
+
+    function goWorld() {
+      selDomain = null; selState = null; zoomLevel = 'world';
+      targetZ = 2.85; autoRotate = true; targetQuat = null;
+      refreshPlanetTex();
+      updateBreadcrumb();
+      updateHeader('PLANET OF KNOWLEDGE', 'Drag to rotate · Scroll to zoom · Click a continent');
+      closePanel();
+    }
+
+    function goContinent() {
+      if (selDomain) selectContinent(selDomain);
+    }
+
+    // ── Header label ───────────────────────────
+    function updateHeader(title, sub) {
+      document.getElementById('level-title').textContent = title;
+      document.getElementById('level-sub').textContent = sub;
+    }
+
+    // ── Breadcrumb ─────────────────────────────
+    function updateBreadcrumb() {
+      const b0 = document.getElementById('bc0');
+      const s1 = document.getElementById('bcs1'), b1 = document.getElementById('bc1');
+      const s2 = document.getElementById('bcs2'), b2 = document.getElementById('bc2');
+      b0.classList.toggle('active', zoomLevel === 'world');
+      b1.classList.remove('active'); b2.classList.remove('active');
+      if (zoomLevel === 'world') { s1.style.display = 'none'; b1.style.display = 'none'; s2.style.display = 'none'; b2.style.display = 'none'; }
+      else if (zoomLevel === 'continent') {
+        s1.style.display = ''; b1.style.display = ''; b1.textContent = `${selDomain.emoji} ${selDomain.name}`;
+        b1.classList.add('active'); b1.onclick = goContinent;
+        s2.style.display = 'none'; b2.style.display = 'none';
+      } else {
+        s1.style.display = ''; b1.style.display = ''; b1.textContent = `${selDomain.emoji} ${selDomain.name}`;
+        b1.onclick = goContinent;
+        s2.style.display = ''; b2.style.display = '';
+        b2.textContent = `${selState.emoji} ${selState.name}`; b2.classList.add('active');
+      }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  SIDE PANEL
+    // ══════════════════════════════════════════════════════════
+    function openContinentPanel(dom) {
+      const totalCities = dom.states.reduce((a, s) => a + s.cities.length, 0);
+      document.getElementById('panel-body').innerHTML = `
+    <div class="p-badge" style="background:${hexAlpha(dom.hex, .15)};border:1px solid ${hexAlpha(dom.accent, .3)};color:${dom.accent}">
+      ${dom.emoji} Domain
+    </div>
+    <div class="p-title" style="color:${dom.accent}">${dom.name}</div>
+    <div class="p-desc">${dom.subtitle}</div>
+    <div class="p-sec">Skill States (${dom.states.length})</div>
+    <div class="q-list">
+      ${dom.states.map(st => `
+        <div class="q-item" style="--qc:${dom.accent}" onclick="selectState(DOMAINS.find(d=>d.id==='${dom.id}').states.find(s=>s.id==='${st.id}'),DOMAINS.find(d=>d.id==='${dom.id}'))">
+          <span class="q-ico">${st.emoji}</span>
+          <div class="q-inf">
+            <div class="q-name">${st.name}</div>
+            <div class="q-meta">${st.cities.length} cities · ${st.desc}</div>
+          </div>
+          <span class="q-xp">›</span>
+        </div>
+      `).join('')}
+    </div>
+    <div class="p-sec">Stats</div>
+    <div class="stat-row"><span class="s-lbl">Total Cities</span><span class="s-val">${totalCities}</span></div>
+    <div class="s-bar"><div class="s-fill" style="width:${Math.min(100, totalCities * 6)}%;background:${dom.accent}"></div></div>
+    <button class="enter-btn" style="background:linear-gradient(135deg,${hexAlpha(dom.hex, .8)},${hexAlpha(dom.accent, .15)});color:${dom.accent};border:1px solid ${hexAlpha(dom.accent, .3)}"
+      onclick="selectState(DOMAINS.find(d=>d.id==='${dom.id}').states[0],DOMAINS.find(d=>d.id==='${dom.id}'))">
+      ⚔ Enter ${dom.name}
+    </button>
+  `;
+      document.getElementById('panel').classList.add('open');
+    }
+
+    function openStatePanel(st, dom) {
+      const totalXP = st.cities.reduce((a, c) => a + c.xp, 0);
+      document.getElementById('panel-body').innerHTML = `
+    <div class="p-badge" style="background:${hexAlpha(dom.hex, .15)};border:1px solid ${hexAlpha(dom.accent, .3)};color:${dom.accent}">
+      ${st.emoji} Skill State
+    </div>
+    <div class="p-title" style="color:var(--text)">${st.name}</div>
+    <div class="p-desc">${st.desc}</div>
+    <div class="p-sec">Quests (${st.cities.length})</div>
+    <div class="q-list">
+      ${st.cities.map(c => `
+        <div class="q-item" style="--qc:${dom.accent}">
+          <span class="q-ico">${c.icon}</span>
+          <div class="q-inf">
+            <div class="q-name" style="font-size:.75rem">${c.name}</div>
+            <div class="q-meta">${c.type}</div>
+          </div>
+          <span class="q-xp">⭐${c.xp}</span>
+        </div>
+      `).join('')}
+    </div>
+    <div class="p-sec">State Stats</div>
+    <div class="stat-row"><span class="s-lbl">Total XP</span><span class="s-val" style="color:var(--gold)">${totalXP.toLocaleString()}</span></div>
+    <div class="s-bar"><div class="s-fill" style="width:80%;background:linear-gradient(90deg,var(--gold),#f97316)"></div></div>
+    <div class="stat-row"><span class="s-lbl">Completion</span><span class="s-val">0/${st.cities.length}</span></div>
+    <div class="s-bar"><div class="s-fill" style="width:0%;background:${dom.accent}"></div></div>
+    <button class="enter-btn" style="background:linear-gradient(135deg,${hexAlpha(dom.hex, .8)},${hexAlpha(dom.accent, .15)});color:var(--text);border:1px solid ${hexAlpha(dom.accent, .3)}">
+      🗺 View All Quests
+    </button>
+  `;
+      document.getElementById('panel').classList.add('open');
+    }
+
+    function openCityPanel(city, dom, st) {
+      document.getElementById('panel-body').innerHTML = `
+    <div class="p-badge" style="background:${hexAlpha(dom.hex, .15)};border:1px solid ${hexAlpha(dom.accent, .3)};color:${dom.accent}">
+      ${city.icon} Quest
+    </div>
+    <div class="p-title" style="color:var(--text)">${city.name}</div>
+    <div class="p-desc">Type: ${city.type}</div>
+    <div class="p-sec">Quest Info</div>
+    <div class="stat-row"><span class="s-lbl">XP Reward</span><span class="s-val" style="color:var(--gold)">⭐ ${city.xp}</span></div>
+    <div class="s-bar"><div class="s-fill" style="width:${Math.min(100, city.xp / 7)}%;background:linear-gradient(90deg,var(--gold),#f97316)"></div></div>
+    <div class="stat-row"><span class="s-lbl">Domain</span><span class="s-val" style="color:${dom.accent}">${dom.name}</span></div>
+    <div class="stat-row"><span class="s-lbl">State</span><span class="s-val">${st.name}</span></div>
+    <div class="stat-row"><span class="s-lbl">Status</span><span class="s-val" style="color:#4ade80">🔓 Unlocked</span></div>
+    <button class="enter-btn" style="background:linear-gradient(135deg,${hexAlpha(dom.hex, .9)},${hexAlpha(dom.accent, .2)});color:var(--text);border:1px solid ${hexAlpha(dom.accent, .35)}">
+      ⚔ Start Quest
+    </button>
+    <button class="enter-btn" style="background:var(--btn-bg);color:var(--btn-text);border:1px solid var(--btn-border);margin-top:6px"
+      onclick="openStatePanel(DOMAINS.find(d=>d.id==='${dom.id}').states.find(s=>s.id==='${st.id}'),DOMAINS.find(d=>d.id==='${dom.id}'))">
+      ← Back to ${st.name}
+    </button>
+  `;
+      document.getElementById('panel').classList.add('open');
+    }
+
+    function closePanel() { document.getElementById('panel').classList.remove('open'); }
+
+    // ══════════════════════════════════════════════════════════
+    //  EVENT LISTENERS
+    // ══════════════════════════════════════════════════════════
+    function shouldIgnoreEvent(e) {
+      return e.target.closest('#panel') || e.target.closest('#hdr') || e.target.closest('#zoom-ctrl') || e.target.closest('#bc');
+    }
+
+    window.addEventListener('mousedown', e => {
+      if (shouldIgnoreEvent(e)) return;
+      startDrag(e.clientX, e.clientY);
+    });
+    window.addEventListener('mousemove', e => {
+      if (shouldIgnoreEvent(e)) return;
+      moveDrag(e.clientX, e.clientY); updateHover(e.clientX, e.clientY);
+    });
+    window.addEventListener('mouseup', e => {
+      if (shouldIgnoreEvent(e)) return;
+      endDrag(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('touchstart', e => {
+      if (shouldIgnoreEvent(e)) return;
+      startDrag(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: false });
+    window.addEventListener('touchmove', e => {
+      if (shouldIgnoreEvent(e)) return;
+      moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: false });
+    window.addEventListener('touchend', e => {
+      if (shouldIgnoreEvent(e)) return;
+      const t = e.changedTouches[0]; endDrag(t.clientX, t.clientY);
+    });
+
+    window.addEventListener('wheel', e => {
+      if (shouldIgnoreEvent(e)) return;
+      targetZ = Math.max(1.2, Math.min(5, targetZ + e.deltaY * .003));
+    }, { passive: false });
+
+    document.getElementById('btn-zoom-in').onclick = () => { targetZ = Math.max(1.2, targetZ - .3); };
+    document.getElementById('btn-zoom-out').onclick = () => { targetZ = Math.min(5, targetZ + .3); };
+    document.getElementById('btn-world').onclick = goWorld;
+    document.getElementById('panel-close').onclick = closePanel;
+    document.getElementById('btn-theme').onclick = () => {
+      document.body.classList.toggle('light-mode');
+      const isLight = document.body.classList.contains('light-mode');
+      document.getElementById('btn-theme').textContent = isLight ? '🌙' : '🌞';
+      
+      // Update Three.js lighting for the new mode
+      if (isLight) {
+        ambi.color.setHex(0xeef2ff);
+        ambi.intensity = 0.8;
+        keyLight.intensity = 1.3;
+        keyLight.color.setHex(0xffffff);
+        rimLight.color.setHex(0x93c5fd);
+        rimLight.intensity = 0.6;
+      } else {
+        ambi.color.setHex(0x220033);
+        ambi.intensity = 0.4;
+        keyLight.intensity = 1.1;
+        keyLight.color.setHex(0xffeedd);
+        rimLight.color.setHex(0x3366ff);
+        rimLight.intensity = 0.4;
+      }
+      
+      buildSpaceBg();
+      buildTexture();
+      planetTex.needsUpdate = true;
+    };
+
+    // Expose for onclick strings in innerHTML
+    window.selectState = selectState;
+    window.goContinent = goContinent;
+    window.openStatePanel = openStatePanel;
+
+    // ══════════════════════════════════════════════════════════
+    //  ANIMATION LOOP
+    // ══════════════════════════════════════════════════════════
+    let t = 0;
+    (function animate() {
+      requestAnimationFrame(animate);
+      t += 0.016;
+
+      // Smooth zoom
+      camera.position.z += (targetZ - camera.position.z) * 0.09;
+
+      // Smooth auto-rotation to face selected continent or idle
+      if (targetQuat && !isDragging) {
+        pivot.quaternion.slerp(targetQuat, 0.055);
+        // Sync Euler values back to prevent jumping on next drag
+        const eu = new THREE.Euler().setFromQuaternion(pivot.quaternion, 'YXZ');
+        currentRotX = eu.x;
+        currentRotY = eu.y;
+        velYaw = 0; velPitch = 0;
+        
+        if (pivot.quaternion.angleTo(targetQuat) < 0.008) targetQuat = null;
+      } else if (!isDragging) {
+        // Inertia
+        if (Math.abs(velYaw) > .00004 || Math.abs(velPitch) > .00004) {
+          currentRotY += velYaw;
+          currentRotX += velPitch;
+          currentRotX = Math.max(-Math.PI/2, Math.min(Math.PI/2, currentRotX));
+          pivot.quaternion.setFromEuler(new THREE.Euler(currentRotX, currentRotY, 0, 'YXZ'));
+          velYaw *= .91; velPitch *= .91;
+        } else if (autoRotate) {
+          currentRotY += 0.0008;
+          pivot.quaternion.setFromEuler(new THREE.Euler(currentRotX, currentRotY, 0, 'YXZ'));
+        }
+      }
+
+      // Ring gentle rotate
+      if (window._ring) window._ring.rotation.z = t * .015;
+
+      renderer.render(scene, camera);
+    })();
+
+    // ─── Remove loading screen ─────────────────
+    setTimeout(() => {
+      const ld = document.getElementById('loading');
+      ld.classList.add('gone');
+      setTimeout(() => ld.remove(), 700);
+    }, 1800);
+  </script>
+</body>
+
+</html>
