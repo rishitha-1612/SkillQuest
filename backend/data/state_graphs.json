@@ -1,0 +1,217 @@
+{
+  "state_graphs": [
+    {
+      "state_id": "python_programming",
+      "title": "Python Programming",
+      "entry_nodes": ["python_basics"],
+      "final_assessment_node": "python_capstone",
+      "nodes": [
+        {"id": "python_basics", "title": "Python Basics", "type": "lesson", "description": "Variables, control flow, and syntax.", "estimated_time_minutes": 45, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "data_structures", "title": "Data Structures", "type": "interactive_game", "description": "Lists, tuples, sets, and dictionaries.", "estimated_time_minutes": 40, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "functions_modules", "title": "Functions and Modules", "type": "lesson", "description": "Reusable code and modularity.", "estimated_time_minutes": 45, "xp_reward": 20, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "oop_files", "title": "OOP and File Handling", "type": "challenge", "description": "Classes, objects, and persistent data.", "estimated_time_minutes": 55, "xp_reward": 30, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "testing_debugging", "title": "Testing and Debugging", "type": "quiz", "description": "Verify and troubleshoot Python code.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
+        {"id": "python_capstone", "title": "Python Project", "type": "challenge", "description": "Build a small end-to-end Python solution.", "estimated_time_minutes": 75, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
+      ],
+      "edges": [
+        ["python_basics", "data_structures"],
+        ["data_structures", "functions_modules"],
+        ["functions_modules", "oop_files"],
+        ["functions_modules", "testing_debugging"],
+        ["oop_files", "python_capstone"],
+        ["testing_debugging", "python_capstone"]
+      ]
+    },
+    {
+      "state_id": "mathematics_statistics",
+      "title": "Mathematics & Statistics",
+      "entry_nodes": ["algebra_foundations"],
+      "final_assessment_node": "math_case_study",
+      "nodes": [
+        {"id": "algebra_foundations", "title": "Algebra Foundations", "type": "lesson", "description": "Equations and symbolic reasoning.", "estimated_time_minutes": 40, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "linear_algebra_probability", "title": "Linear Algebra and Probability", "type": "lesson", "description": "Vectors, matrices, and uncertainty.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "descriptive_statistics", "title": "Descriptive Statistics", "type": "interactive_game", "description": "Summaries, spread, and distributions.", "estimated_time_minutes": 35, "xp_reward": 20, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "inferential_methods", "title": "Inferential Methods", "type": "lesson", "description": "Sampling, confidence, and testing.", "estimated_time_minutes": 55, "xp_reward": 30, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "optimization_bayesian", "title": "Optimization and Bayesian Thinking", "type": "quiz", "description": "Decision making under uncertainty.", "estimated_time_minutes": 40, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
+        {"id": "math_case_study", "title": "Statistics Case Study", "type": "challenge", "description": "Analyze a realistic data scenario.", "estimated_time_minutes": 70, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
+      ],
+      "edges": [
+        ["algebra_foundations", "linear_algebra_probability"],
+        ["linear_algebra_probability", "descriptive_statistics"],
+        ["linear_algebra_probability", "inferential_methods"],
+        ["descriptive_statistics", "optimization_bayesian"],
+        ["inferential_methods", "optimization_bayesian"],
+        ["optimization_bayesian", "math_case_study"]
+      ]
+    },
+    {
+      "state_id": "machine_learning",
+      "title": "Machine Learning",
+      "entry_nodes": ["data_preprocessing"],
+      "final_assessment_node": "ml_projects",
+      "nodes": [
+        {"id": "data_preprocessing", "title": "Data Preprocessing", "type": "lesson", "description": "Clean and prepare model-ready data.", "estimated_time_minutes": 40, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "feature_engineering", "title": "Feature Engineering", "type": "interactive_game", "description": "Create stronger model signals.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "supervised_learning", "title": "Supervised Learning", "type": "lesson", "description": "Learn from labeled data.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "unsupervised_learning", "title": "Unsupervised Learning", "type": "lesson", "description": "Find structure without labels.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "model_evaluation", "title": "Model Evaluation", "type": "quiz", "description": "Measure model quality and risk.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
+        {"id": "ml_projects", "title": "ML Projects", "type": "challenge", "description": "Apply ML end-to-end in a portfolio scenario.", "estimated_time_minutes": 80, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
+      ],
+      "edges": [
+        ["data_preprocessing", "feature_engineering"],
+        ["feature_engineering", "supervised_learning"],
+        ["feature_engineering", "unsupervised_learning"],
+        ["supervised_learning", "model_evaluation"],
+        ["unsupervised_learning", "model_evaluation"],
+        ["model_evaluation", "ml_projects"]
+      ]
+    },
+    {
+      "state_id": "deep_learning",
+      "title": "Deep Learning",
+      "entry_nodes": ["tensor_foundations"],
+      "final_assessment_node": "deployment_project",
+      "nodes": [
+        {"id": "tensor_foundations", "title": "Tensor Foundations", "type": "lesson", "description": "Shapes, dimensions, and tensor operations.", "estimated_time_minutes": 40, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "neural_networks", "title": "Neural Networks", "type": "lesson", "description": "Layered models and activations.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "backprop_optimization", "title": "Backpropagation and Optimization", "type": "interactive_game", "description": "Gradient flow and optimizers.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "regularization_architectures", "title": "Regularization and Architectures", "type": "lesson", "description": "CNNs, sequence models, and stability.", "estimated_time_minutes": 55, "xp_reward": 30, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "transfer_learning", "title": "Transfer Learning", "type": "quiz", "description": "Fine-tune pretrained models effectively.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
+        {"id": "deployment_project", "title": "Inference and Deployment Project", "type": "challenge", "description": "Serve a deep learning model inside an app flow.", "estimated_time_minutes": 80, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
+      ],
+      "edges": [
+        ["tensor_foundations", "neural_networks"],
+        ["neural_networks", "backprop_optimization"],
+        ["backprop_optimization", "regularization_architectures"],
+        ["regularization_architectures", "transfer_learning"],
+        ["transfer_learning", "deployment_project"]
+      ]
+    },
+    {
+      "state_id": "data_visualization",
+      "title": "Data Visualization",
+      "entry_nodes": ["chart_selection"],
+      "final_assessment_node": "dashboard_storytelling_project",
+      "nodes": [
+        {"id": "chart_selection", "title": "Chart Selection", "type": "lesson", "description": "Choose the right chart for the question.", "estimated_time_minutes": 35, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "exploratory_plots", "title": "Exploratory Plots", "type": "interactive_game", "description": "Inspect patterns and outliers visually.", "estimated_time_minutes": 40, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "python_plotting", "title": "Python Plotting", "type": "lesson", "description": "Matplotlib and seaborn workflows.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "dashboard_design", "title": "Dashboard Design", "type": "lesson", "description": "KPIs, interaction, and accessibility.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "data_storytelling", "title": "Data Storytelling", "type": "quiz", "description": "Turn charts into decisions and narratives.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
+        {"id": "dashboard_storytelling_project", "title": "Dashboard Storytelling Project", "type": "challenge", "description": "Present insights with an actionable dashboard.", "estimated_time_minutes": 75, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
+      ],
+      "edges": [
+        ["chart_selection", "exploratory_plots"],
+        ["exploratory_plots", "python_plotting"],
+        ["python_plotting", "dashboard_design"],
+        ["dashboard_design", "data_storytelling"],
+        ["data_storytelling", "dashboard_storytelling_project"]
+      ]
+    },
+    {
+      "state_id": "cloud_platforms",
+      "title": "Cloud Platforms",
+      "entry_nodes": ["iam_basics"],
+      "final_assessment_node": "cloud_platform_project",
+      "nodes": [
+        {"id": "iam_basics", "title": "Identity and Access", "type": "lesson", "description": "Least privilege and secure access.", "estimated_time_minutes": 40, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "compute_storage", "title": "Compute and Storage", "type": "lesson", "description": "Core cloud workloads and persistence.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "databases_networking", "title": "Managed Databases and Networking", "type": "interactive_game", "description": "Service connectivity and data systems.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "serverless_monitoring", "title": "Serverless and Monitoring", "type": "lesson", "description": "Event-driven compute and observability.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "cost_iac", "title": "Cost and Infrastructure as Code", "type": "quiz", "description": "Repeatability and cost-aware architecture.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
+        {"id": "cloud_platform_project", "title": "Cloud Architecture Project", "type": "challenge", "description": "Design and justify a cloud deployment plan.", "estimated_time_minutes": 75, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
+      ],
+      "edges": [
+        ["iam_basics", "compute_storage"],
+        ["compute_storage", "databases_networking"],
+        ["databases_networking", "serverless_monitoring"],
+        ["serverless_monitoring", "cost_iac"],
+        ["cost_iac", "cloud_platform_project"]
+      ]
+    },
+    {
+      "state_id": "networking_fundamentals",
+      "title": "Networking Fundamentals",
+      "entry_nodes": ["ip_addressing"],
+      "final_assessment_node": "network_design_case",
+      "nodes": [
+        {"id": "ip_addressing", "title": "IP Addressing", "type": "lesson", "description": "Addresses, subnets, and ranges.", "estimated_time_minutes": 35, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "dns_http", "title": "DNS and HTTP(S)", "type": "lesson", "description": "Naming, requests, and transport security.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "routing_firewalls", "title": "Routing and Firewalls", "type": "interactive_game", "description": "Traffic paths and access control.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "load_balancing_tls", "title": "Load Balancing and TLS", "type": "lesson", "description": "Availability and secure traffic handling.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "network_observability", "title": "Network Observability", "type": "quiz", "description": "Latency, health, and delivery tuning.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
+        {"id": "network_design_case", "title": "Network Design Case Study", "type": "challenge", "description": "Design a secure and performant network path.", "estimated_time_minutes": 70, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
+      ],
+      "edges": [
+        ["ip_addressing", "dns_http"],
+        ["dns_http", "routing_firewalls"],
+        ["routing_firewalls", "load_balancing_tls"],
+        ["load_balancing_tls", "network_observability"],
+        ["network_observability", "network_design_case"]
+      ]
+    },
+    {
+      "state_id": "containers_orchestration",
+      "title": "Containers & Orchestration",
+      "entry_nodes": ["linux_basics"],
+      "final_assessment_node": "orchestration_project",
+      "nodes": [
+        {"id": "linux_basics", "title": "Linux Basics", "type": "lesson", "description": "Processes, files, and permissions.", "estimated_time_minutes": 35, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "images_dockerfiles", "title": "Images and Dockerfiles", "type": "lesson", "description": "Build portable container images.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "runtime_networking", "title": "Runtime, Volumes, and Networking", "type": "interactive_game", "description": "Run, inspect, and connect containers.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "kubernetes_basics", "title": "Kubernetes Basics", "type": "lesson", "description": "Pods, services, and deployments.", "estimated_time_minutes": 55, "xp_reward": 30, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "scaling_logging", "title": "Scaling and Logging", "type": "quiz", "description": "Operate clustered workloads safely.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
+        {"id": "orchestration_project", "title": "Orchestration Project", "type": "challenge", "description": "Deploy and scale a containerized service.", "estimated_time_minutes": 80, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
+      ],
+      "edges": [
+        ["linux_basics", "images_dockerfiles"],
+        ["images_dockerfiles", "runtime_networking"],
+        ["runtime_networking", "kubernetes_basics"],
+        ["kubernetes_basics", "scaling_logging"],
+        ["scaling_logging", "orchestration_project"]
+      ]
+    },
+    {
+      "state_id": "ci_cd_pipelines",
+      "title": "CI/CD Pipelines",
+      "entry_nodes": ["version_control"],
+      "final_assessment_node": "pipeline_project",
+      "nodes": [
+        {"id": "version_control", "title": "Version Control", "type": "lesson", "description": "Commits, branches, and collaboration.", "estimated_time_minutes": 35, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "build_test_automation", "title": "Build and Test Automation", "type": "lesson", "description": "Reliable build and test stages.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "artifacts_orchestration", "title": "Artifacts and Pipeline Orchestration", "type": "interactive_game", "description": "Manage outputs and workflow stages.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "promotion_secrets", "title": "Promotion and Secrets", "type": "lesson", "description": "Environment flow and secure delivery.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "rollback_observability", "title": "Rollback and Pipeline Observability", "type": "quiz", "description": "Recover quickly and measure delivery quality.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
+        {"id": "pipeline_project", "title": "Pipeline Project", "type": "challenge", "description": "Design a safe delivery workflow for production.", "estimated_time_minutes": 75, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
+      ],
+      "edges": [
+        ["version_control", "build_test_automation"],
+        ["build_test_automation", "artifacts_orchestration"],
+        ["artifacts_orchestration", "promotion_secrets"],
+        ["promotion_secrets", "rollback_observability"],
+        ["rollback_observability", "pipeline_project"]
+      ]
+    },
+    {
+      "state_id": "system_design",
+      "title": "System Design",
+      "entry_nodes": ["requirements_analysis"],
+      "final_assessment_node": "system_design_capstone",
+      "nodes": [
+        {"id": "requirements_analysis", "title": "Requirements Analysis", "type": "lesson", "description": "Define goals, users, and constraints.", "estimated_time_minutes": 40, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "api_data_modeling", "title": "API and Data Modeling", "type": "lesson", "description": "Interfaces and schema design.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "easy", "count": 8}},
+        {"id": "caching_async", "title": "Caching and Asynchronous Processing", "type": "interactive_game", "description": "Performance and background workflows.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "scalability_reliability", "title": "Scalability and Reliability", "type": "lesson", "description": "Grow safely and handle failures.", "estimated_time_minutes": 55, "xp_reward": 30, "question_refs": {"difficulty": "medium", "count": 8}},
+        {"id": "observability_security", "title": "Observability and Security", "type": "quiz", "description": "Production visibility and defensive design.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
+        {"id": "system_design_capstone", "title": "System Design Capstone", "type": "challenge", "description": "Design a production-ready learning platform architecture.", "estimated_time_minutes": 85, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
+      ],
+      "edges": [
+        ["requirements_analysis", "api_data_modeling"],
+        ["api_data_modeling", "caching_async"],
+        ["caching_async", "scalability_reliability"],
+        ["scalability_reliability", "observability_security"],
+        ["observability_security", "system_design_capstone"]
+      ]
+    }
+  ]
+}

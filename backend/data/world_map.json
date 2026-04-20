@@ -1,0 +1,32 @@
+{
+  "continents": [
+    {
+      "id": "ai_data",
+      "title": "AI & Data",
+      "focus": "Intelligence, prediction, automation, and data-driven decision-making",
+      "countries": [
+        {"id": "ai_engineer", "title": "AI Engineer", "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "data_visualization"]},
+        {"id": "machine_learning_engineer", "title": "Machine Learning Engineer", "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "data_visualization"]},
+        {"id": "data_scientist", "title": "Data Scientist", "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "data_visualization"]},
+        {"id": "data_analyst", "title": "Data Analyst", "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "data_visualization"]},
+        {"id": "ai_researcher", "title": "AI Researcher", "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "data_visualization"]},
+        {"id": "nlp_engineer", "title": "NLP Engineer", "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "data_visualization"]},
+        {"id": "mlops_engineer", "title": "MLOps Engineer", "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "data_visualization"]}
+      ]
+    },
+    {
+      "id": "cloud_infrastructure",
+      "title": "Cloud & Infrastructure",
+      "focus": "Scalability, system design, deployment, and reliability",
+      "countries": [
+        {"id": "cloud_architect", "title": "Cloud Architect", "states": ["cloud_platforms", "networking_fundamentals", "containers_orchestration", "ci_cd_pipelines", "system_design"]},
+        {"id": "devops_engineer", "title": "DevOps Engineer", "states": ["cloud_platforms", "networking_fundamentals", "containers_orchestration", "ci_cd_pipelines", "system_design"]},
+        {"id": "site_reliability_engineer", "title": "Site Reliability Engineer (SRE)", "states": ["cloud_platforms", "networking_fundamentals", "containers_orchestration", "ci_cd_pipelines", "system_design"]},
+        {"id": "cloud_engineer", "title": "Cloud Engineer", "states": ["cloud_platforms", "networking_fundamentals", "containers_orchestration", "ci_cd_pipelines", "system_design"]},
+        {"id": "platform_engineer", "title": "Platform Engineer", "states": ["cloud_platforms", "networking_fundamentals", "containers_orchestration", "ci_cd_pipelines", "system_design"]},
+        {"id": "cloud_security_engineer", "title": "Cloud Security Engineer", "states": ["cloud_platforms", "networking_fundamentals", "containers_orchestration", "ci_cd_pipelines", "system_design"]},
+        {"id": "infrastructure_automation_engineer", "title": "Infrastructure Automation Engineer", "states": ["cloud_platforms", "networking_fundamentals", "containers_orchestration", "ci_cd_pipelines", "system_design"]}
+      ]
+    }
+  ]
+}
