@@ -11,7 +11,7 @@
     href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Nunito:wght@400;600;700;900&display=swap"
     rel="stylesheet">
   <style>
-    /* ─── RESET ─────────────────────────────── */
+    
     *,
     *::before,
     *::after {
@@ -31,12 +31,11 @@
       touch-action: none;
     }
 
-    /* ─── SPACE BACKGROUND ──────────────────── */
+    
     body {
       background: radial-gradient(ellipse at 50% 40%, #0d1b3e 0%, #060d1c 55%, #020509 100%);
     }
 
-    /* ─── FONTS / BASE ──────────────────────── */
     :root {
       --gold: #f5c842;
       --cyan: #00e5ff;
@@ -78,7 +77,6 @@
       box-shadow: 0 8px 24px rgba(0,0,0,0.05);
     }
 
-    /* ─── HEADER ────────────────────────────── */
     #hdr {
       position: fixed;
       top: 0;
@@ -197,7 +195,6 @@
       color: #f5c842;
     }
 
-    /* ─── CANVAS WRAP ───────────────────────── */
     #canvas-wrap {
       position: fixed;
       inset: 0;
@@ -216,7 +213,6 @@
       cursor: grabbing;
     }
 
-    /* ─── ZOOM CONTROLS ─────────────────────── */
     #zoom-ctrl {
       position: fixed;
       right: 28px;
@@ -251,7 +247,6 @@
       color: #f5c842;
     }
 
-    /* ─── SIDE PANEL ────────────────────────── */
     #panel {
       position: fixed;
       top: 68px;
@@ -467,7 +462,6 @@
       box-shadow: 0 6px 28px rgba(0, 0, 0, .55);
     }
 
-    /* ─── BREADCRUMB ────────────────────────── */
     #bc {
       position: fixed;
       bottom: 28px;
@@ -503,7 +497,6 @@
       color: rgba(255, 255, 255, .18);
     }
 
-    /* ─── HINT ──────────────────────────────── */
     #hint {
       position: fixed;
       bottom: 70px;
@@ -558,7 +551,6 @@
       }
     }
 
-    /* ─── TOOLTIP ───────────────────────────── */
     #tt {
       position: fixed;
       pointer-events: none;
@@ -583,7 +575,6 @@
       margin-top: 1px;
     }
 
-    /* ─── LOADING ───────────────────────────── */
     #loading {
       position: fixed;
       inset: 0;
@@ -665,8 +656,8 @@
     </div>
     <div class="hdr-right">
       <div class="xp-pill">★ 2,450 XP</div>
-      <button class="hdr-btn" id="btn-theme">🌞</button>
-      <button class="hdr-btn" id="btn-world">🌍 World View</button>
+      <button class="hdr-btn" id="btn-theme"></button>
+      <button class="hdr-btn" id="btn-world"> World View</button>
       <button class="hdr-btn">👤 Profile</button>
     </div>
   </header>
@@ -686,7 +677,7 @@
   </div>
 
   <div id="bc">
-    <span class="bc-item active" id="bc0" onclick="goWorld()">🌍 Planet</span>
+    <span class="bc-item active" id="bc0" onclick="goWorld()"> Planet</span>
     <span class="bc-sep" id="bcs1" style="display:none">›</span>
     <span class="bc-item" id="bc1" style="display:none"></span>
     <span class="bc-sep" id="bcs2" style="display:none">›</span>
@@ -705,9 +696,6 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
-    // ══════════════════════════════════════════════════════════
-    //  WORLD DATA  — 7 domains → states → cities
-    // ══════════════════════════════════════════════════════════
     const DOMAINS = [
       {
         id: 'aethermind', name: 'Aethermind', subtitle: 'AI & Machine Learning',
@@ -775,7 +763,7 @@
       },
       {
         id: 'visionary', name: 'Visionary Vale', subtitle: 'Product & Design',
-        emoji: '🎨', hex: '#92400e', glow: 'rgba(146,64,14,.7)', accent: '#fde68a',
+        emoji: '', hex: '#92400e', glow: 'rgba(146,64,14,.7)', accent: '#fde68a',
         fill: '#2d1200', centerLon: -55, centerLat: -15,
         outline: [
           [-80, 10], [-75, 12], [-68, 12], [-62, 11], [-60, 8],
@@ -789,7 +777,7 @@
         ],
         states: [
           {
-            id: 'ux', name: 'UX Utopia', emoji: '✨', desc: 'Human-centred design',
+            id: 'ux', name: 'UX Utopia', emoji: '', desc: 'Human-centred design',
             centerLon: -62, centerLat: 4,
             bounds: [[-80, 12], [-50, 12], [-50, -10], [-80, -10]],
             cities: [
@@ -799,7 +787,7 @@
             ]
           },
           {
-            id: 'pm', name: 'Product Palace', emoji: '👑', desc: 'Strategy & roadmaps',
+            id: 'pm', name: 'Product Palace', emoji: '', desc: 'Strategy & roadmaps',
             centerLon: -55, centerLat: -25,
             bounds: [[-70, -10], [-40, -10], [-40, -42], [-70, -42]],
             cities: [
@@ -810,20 +798,20 @@
             ]
           },
           {
-            id: 'design_sys', name: 'Design Dunes', emoji: '🎨', desc: 'Consistent beautiful systems',
+            id: 'design_sys', name: 'Design Dunes', emoji: '', desc: 'Consistent beautiful systems',
             centerLon: -62, centerLat: -48,
             bounds: [[-70, -42], [-50, -42], [-50, -56], [-70, -56]],
             cities: [
-              { id: 'figma', name: 'Figma Fortress', lon: -66, lat: -45, icon: '🎭', xp: 300, type: 'Tool' },
-              { id: 'tokens', name: 'Token Territory', lon: -60, lat: -50, icon: '🪙', xp: 250, type: 'Design' },
-              { id: 'components', name: 'Component Canyon', lon: -54, lat: -47, icon: '🧱', xp: 350, type: 'System' },
+              { id: 'figma', name: 'Figma Fortress', lon: -66, lat: -45, icon: '', xp: 300, type: 'Tool' },
+              { id: 'tokens', name: 'Token Territory', lon: -60, lat: -50, icon: '', xp: 250, type: 'Design' },
+              { id: 'components', name: 'Component Canyon', lon: -54, lat: -47, icon: '', xp: 350, type: 'System' },
             ]
           },
         ]
       },
       {
         id: 'cloudspire', name: 'Cloudspire Empire', subtitle: 'Cloud & Infrastructure',
-        emoji: '☁', hex: '#0c4a6e', glow: 'rgba(12,74,110,.8)', accent: '#bae6fd',
+        emoji: '', hex: '#0c4a6e', glow: 'rgba(12,74,110,.8)', accent: '#bae6fd',
         fill: '#041a2e', centerLon: 15, centerLat: 55,
         outline: [
           [-10, 36], [-6, 37], [0, 38], [3, 43], [5, 44], [7, 44],
@@ -895,18 +883,18 @@
             centerLon: 20, centerLat: -4,
             bounds: [[-5, 10], [46, 10], [46, -15], [-5, -15]],
             cities: [
-              { id: 'recon', name: 'Recon Ruins', lon: 4, lat: 7, icon: '🔭', xp: 350, type: 'OSINT' },
-              { id: 'exploit', name: 'Exploit Enclave', lon: 22, lat: -4, icon: '💣', xp: 600, type: 'Exploitation' },
-              { id: 'metasploit', name: 'Metasploit Maze', lon: 38, lat: -10, icon: '🗡', xp: 500, type: 'Tool' },
+              { id: 'recon', name: 'Recon Ruins', lon: 4, lat: 7, icon: '', xp: 350, type: 'OSINT' },
+              { id: 'exploit', name: 'Exploit Enclave', lon: 22, lat: -4, icon: '', xp: 600, type: 'Exploitation' },
+              { id: 'metasploit', name: 'Metasploit Maze', lon: 38, lat: -10, icon: '', xp: 500, type: 'Tool' },
             ]
           },
           {
-            id: 'crypto', name: 'Cipher Citadel', emoji: '🔐', desc: 'Ancient cipher secrets',
+            id: 'crypto', name: 'Cipher Citadel', emoji: '', desc: 'Ancient cipher secrets',
             centerLon: 22, centerLat: -26,
             bounds: [[5, -15], [42, -15], [42, -35], [5, -35]],
             cities: [
-              { id: 'sym', name: 'Symmetric Spires', lon: 12, lat: -20, icon: '🔑', xp: 300, type: 'Crypto' },
-              { id: 'asym', name: 'Asymmetric Abyss', lon: 23, lat: -28, icon: '🗝', xp: 400, type: 'Crypto' },
+              { id: 'sym', name: 'Symmetric Spires', lon: 12, lat: -20, icon: '', xp: 300, type: 'Crypto' },
+              { id: 'asym', name: 'Asymmetric Abyss', lon: 23, lat: -28, icon: '', xp: 400, type: 'Crypto' },
               { id: 'blockchain', name: 'Blockchain Bastion', lon: 35, lat: -30, icon: '⛓', xp: 500, type: 'Crypto' },
             ]
           },
@@ -914,7 +902,7 @@
       },
       {
         id: 'dataforge', name: 'Dataforge', subtitle: 'Data Engineering',
-        emoji: '🔥', hex: '#7c2d12', glow: 'rgba(124,45,18,.8)', accent: '#fdba74',
+        emoji: '', hex: '#7c2d12', glow: 'rgba(124,45,18,.8)', accent: '#fdba74',
         fill: '#1e0800', centerLon: 95, centerLat: 40,
         outline: [
           [26, 72], [45, 73], [70, 74], [95, 74], [110, 74], [130, 72],
@@ -1054,9 +1042,6 @@
       },
     ];
 
-    // ══════════════════════════════════════════════════════════
-    //  THREE.JS SETUP
-    // ══════════════════════════════════════════════════════════
     const pCanvas = document.getElementById('planet-canvas');
     pCanvas.width = window.innerWidth;
     pCanvas.height = window.innerHeight;
@@ -1076,7 +1061,6 @@
       camera.updateProjectionMatrix();
     });
 
-    // ── Lights ──────────────────────────────
     const ambi = new THREE.AmbientLight(0x220033, 0.4);
     scene.add(ambi);
     const keyLight = new THREE.DirectionalLight(0xffeedd, 1.1);
@@ -1086,7 +1070,6 @@
     rimLight.position.set(-4, -1, -3);
     scene.add(rimLight);
 
-    // ── Space background ─────────────────────
     let spaceBgMesh = null;
     function buildSpaceBg() {
       const isLight = document.body.classList.contains('light-mode');
@@ -1099,7 +1082,6 @@
         g.addColorStop(0, '#e0e7ff'); g.addColorStop(1, '#93c5fd');
         bctx.fillStyle = g; bctx.fillRect(0, 0, 1024, 512);
         bctx.fillStyle = 'rgba(255,255,255,0.4)';
-        // Light sky clouds
         const rng = seeded(42);
         for(let i=0; i<40; i++) {
            const cx = rng()*1024, cy = rng()*512, cr = 20 + rng()*80;
@@ -1113,7 +1095,6 @@
            bctx.fill();
         }
       } else {
-        // Deep space gradient
         const g = bctx.createRadialGradient(512, 256, 0, 512, 256, 560);
         g.addColorStop(0, '#0d1b3e'); g.addColorStop(.4, '#060d1c'); g.addColorStop(1, '#020509');
         bctx.fillStyle = g; bctx.fillRect(0, 0, 1024, 512);
@@ -1124,7 +1105,6 @@
           bctx.beginPath(); bctx.arc(x, y, r, 0, Math.PI * 2);
           bctx.fillStyle = `rgba(255,255,255,${op})`; bctx.fill();
         }
-        // Nebula wisps
         [{ x: .2, y: .3, hue: 260 }, { x: .7, y: .6, hue: 30 }, { x: .5, y: .15, hue: 200 }].forEach(({ x, y, hue }) => {
           const ng = bctx.createRadialGradient(x * 1024, y * 512, 0, x * 1024, y * 512, 200);
           ng.addColorStop(0, `hsla(${hue},70%,55%,0.08)`); ng.addColorStop(1, 'transparent');
@@ -1148,15 +1128,11 @@
 
     function seeded(s) { return function () { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 
-    // ══════════════════════════════════════════════════════════
-    //  PLANET TEXTURE BUILDING
-    // ══════════════════════════════════════════════════════════
     const TEX_W = 2048, TEX_H = 1024;
     const texCanvas = document.createElement('canvas');
     texCanvas.width = TEX_W; texCanvas.height = TEX_H;
     const tctx = texCanvas.getContext('2d');
 
-    // lon/lat → pixel
     const ll = (lon, lat) => [(lon + 180) / 360 * TEX_W, (90 - lat) / 180 * TEX_H];
 
     function drawContPath(coords) {
@@ -1166,12 +1142,10 @@
       tctx.closePath();
     }
 
-    // ─── Zoom / selection state ───────────────
-    let zoomLevel = 'world';  // 'world' | 'continent' | 'state'
+    let zoomLevel = 'world';  
     let selDomain = null;
     let selState = null;
 
-    // UV-space hit zones (built fresh every texture rebuild)
     let continentZones = [];
     let stateZones = [];
     let cityZones = [];
@@ -1180,7 +1154,6 @@
       tctx.clearRect(0, 0, TEX_W, TEX_H);
       continentZones = []; stateZones = []; cityZones = [];
 
-      // ── Ocean ─────────────────────────────
       const isLight = document.body.classList.contains('light-mode');
       const og = tctx.createLinearGradient(0, 0, 0, TEX_H);
       if (isLight) {
@@ -1189,11 +1162,9 @@
         og.addColorStop(0, '#0b1a38'); og.addColorStop(.5, '#08122a'); og.addColorStop(1, '#050c1e');
       }
       tctx.fillStyle = og; tctx.fillRect(0, 0, TEX_W, TEX_H);
-      // Subtle hex grid overlay
       tctx.strokeStyle = isLight ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.025)'; tctx.lineWidth = 1;
       for (let x = 0; x < TEX_W; x += 80) { tctx.beginPath(); tctx.moveTo(x, 0); tctx.lineTo(x, TEX_H); tctx.stroke(); }
       for (let y = 0; y < TEX_H; y += 80) { tctx.beginPath(); tctx.moveTo(0, y); tctx.lineTo(TEX_W, y); tctx.stroke(); }
-      // Wave marks
       tctx.strokeStyle = isLight ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.04)'; tctx.lineWidth = 1.5;
       for (let y = 30; y < TEX_H; y += 62) {
         for (let x = 0; x < TEX_W; x += 110) {
@@ -1202,17 +1173,14 @@
         }
       }
 
-      // ── Draw each continent ────────────────
       DOMAINS.forEach((dom, idx) => {
         const isSelected = selDomain && selDomain.id === dom.id;
-        // Glow + fill
         tctx.save();
         drawContPath(dom.outline);
         tctx.shadowColor = dom.hex; tctx.shadowBlur = (isSelected) ? 30 : 12;
         tctx.fillStyle = isSelected ? lightenHex(dom.fill, 0.4) : dom.fill;
         tctx.fill();
         tctx.restore();
-        // Border
         tctx.save();
         drawContPath(dom.outline);
         tctx.lineWidth = isSelected ? 3 : 1.8;
@@ -1220,32 +1188,25 @@
         tctx.shadowColor = dom.hex; tctx.shadowBlur = isSelected ? 20 : 8;
         tctx.stroke();
         tctx.restore();
-        // Biome pattern inside
         drawBiome(dom);
-        // Register hit zone polygon (UV space)
         continentZones.push({ domain: dom, outline: dom.outline });
 
         if (zoomLevel === 'world' || !isSelected) {
-          // Continent label
           const [cx, cy] = ll(dom.centerLon + 3, dom.centerLat);
           tctx.save();
           tctx.textAlign = 'center'; tctx.textBaseline = 'middle';
-          // Emoji
           const ef = Math.round(isSelected ? 38 : 28);
           tctx.font = `${ef}px serif`;
           tctx.fillText(dom.emoji, cx, cy - ef);
-          // Name
           const nf = Math.round(isSelected ? 22 : 16);
           tctx.font = `900 ${nf}px Cinzel,serif`;
           tctx.fillStyle = dom.accent;
           tctx.shadowColor = dom.hex; tctx.shadowBlur = 12;
           tctx.fillText(dom.name, cx, cy + 2);
           tctx.shadowBlur = 0;
-          // Sub
           tctx.font = `700 ${Math.round(nf * .7)}px Nunito,sans-serif`;
           tctx.fillStyle = hexAlpha(dom.accent, .75);
           tctx.fillText(dom.subtitle, cx, cy + nf + 8);
-          // State count chip
           const chip = `${dom.states.length} States`;
           const cw = nf * chip.length * .38, ch = 16; const cx2 = cx - cw / 2, cy2 = cy + nf + 20;
           tctx.fillStyle = hexAlpha(dom.hex, .5); tctx.fillRect(cx2, cy2, cw, ch);
@@ -1255,7 +1216,6 @@
           tctx.restore();
         }
 
-        // ── States (shown when this continent is selected) ───
         if (isSelected && (zoomLevel === 'continent' || zoomLevel === 'state')) {
           dom.states.forEach(st => {
             const isSelSt = selState && selState.id === st.id;
@@ -1265,7 +1225,6 @@
             const rx = Math.min(x0u, x1u), ry = Math.min(y0u, y1u);
             const rw = Math.abs(x1u - x0u), rh = Math.abs(y1u - y0u);
 
-            // State region box
             tctx.save();
             tctx.shadowColor = dom.accent; tctx.shadowBlur = isSelSt ? 18 : 8;
             tctx.fillStyle = isSelSt ? hexAlpha(dom.hex, .6) : hexAlpha(dom.hex, .35);
@@ -1275,7 +1234,6 @@
             tctx.strokeRect(rx, ry, rw, rh);
             tctx.restore();
 
-            // State label
             const scx = rx + rw / 2, scy = ry + rh / 2;
             tctx.save();
             tctx.textAlign = 'center'; tctx.textBaseline = 'middle';
@@ -1292,20 +1250,16 @@
 
             stateZones.push({ state: st, domain: dom, x0: bnds[0][0], y0: bnds[0][1], x1: bnds[2][0], y1: bnds[2][1] });
 
-            // ── Cities (shown when this state is selected) ──
             if (isSelSt && zoomLevel === 'state') {
               st.cities.forEach(city => {
                 const [cx, cy2] = ll(city.lon, city.lat);
-                // Glow dot
                 const grad = tctx.createRadialGradient(cx, cy2, 0, cx, cy2, 22);
                 grad.addColorStop(0, dom.accent); grad.addColorStop(.4, hexAlpha(dom.accent, .4));
                 grad.addColorStop(1, 'transparent');
                 tctx.fillStyle = grad; tctx.beginPath(); tctx.arc(cx, cy2, 22, 0, Math.PI * 2); tctx.fill();
                 tctx.fillStyle = dom.accent; tctx.beginPath(); tctx.arc(cx, cy2, 5, 0, Math.PI * 2); tctx.fill();
-                // Icon above dot
                 tctx.font = '20px serif'; tctx.textAlign = 'center'; tctx.textBaseline = 'bottom';
                 tctx.fillText(city.icon, cx, cy2 - 8);
-                // Label below
                 tctx.font = `800 13px Cinzel,serif`; tctx.textAlign = 'center'; tctx.textBaseline = 'top';
                 tctx.fillStyle = '#fff'; tctx.shadowColor = dom.hex; tctx.shadowBlur = 8;
                 tctx.fillText(city.name, cx, cy2 + 9);
