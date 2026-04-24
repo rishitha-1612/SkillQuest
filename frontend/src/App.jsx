@@ -175,7 +175,7 @@ function WorldLobby() {
         </article>
         <article className="mission-card mission-card-accent">
           <span>Flow</span>
-          <strong>World -> Country -> Province -> City</strong>
+          <strong>World -&gt; Country -&gt; Province -&gt; City</strong>
         </article>
       </section>
 
