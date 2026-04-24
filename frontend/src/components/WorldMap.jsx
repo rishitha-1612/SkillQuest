@@ -1,31 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
-
-const CLUSTER_ANCHORS = {
-  ai_data: { lat: 40, lon: -105 },
-  cloud_infrastructure: { lat: 28, lon: 92 },
-};
-
-const CLUSTER_OFFSETS = {
-  ai_data: [
-    { lat: 8, lon: -18 },
-    { lat: 14, lon: -4 },
-    { lat: 10, lon: 10 },
-    { lat: 2, lon: -16 },
-    { lat: 2, lon: 0 },
-    { lat: -4, lon: 14 },
-    { lat: -8, lon: -2 },
-  ],
-  cloud_infrastructure: [
-    { lat: 10, lon: -20 },
-    { lat: 14, lon: -5 },
-    { lat: 10, lon: 10 },
-    { lat: 4, lon: -16 },
-    { lat: 2, lon: 0 },
-    { lat: -4, lon: 14 },
-    { lat: -10, lon: -2 },
-  ],
-};
+import { geoCentroid } from 'd3-geo';
+import { feature } from 'topojson-client';
+import countries110m from 'world-atlas/countries-110m.json';
+import { getClusterTheme, getRoleWorldProfile } from '../data/worldConfig';
 
 function latLonToVector3(lat, lon, radius = 1.02) {
   const phi = (90 - lat) * (Math.PI / 180);
@@ -59,7 +37,7 @@ function buildOverlayTexture(countryMetrics, selectedCountryId) {
 
   function radiusFor(complexity) {
     const normalized = max === min ? 0.5 : (complexity - min) / (max - min);
-    return 26 + normalized * 42;
+    return 22 + normalized * 34;
   }
 
   function lonLatToCanvas(lat, lon) {
@@ -69,22 +47,19 @@ function buildOverlayTexture(countryMetrics, selectedCountryId) {
     };
   }
 
-  countryMetrics.forEach((country, idx) => {
-    const cluster = CLUSTER_ANCHORS[country.continentId] || { lat: 0, lon: 0 };
-    const offsets = CLUSTER_OFFSETS[country.continentId] || [{ lat: 0, lon: 0 }];
-    const offset = offsets[idx % offsets.length];
-    const lat = cluster.lat + offset.lat;
-    const lon = cluster.lon + offset.lon;
+  countryMetrics.forEach((country) => {
+    const { lat = 0, lon = 0 } = country;
     const radius = radiusFor(country.complexity || 1);
     const { x, y } = lonLatToCanvas(lat, lon);
     const active = country.id === selectedCountryId;
+    const theme = getClusterTheme(country.continentId);
 
     ctx.beginPath();
-    ctx.ellipse(x, y, radius * 1.4, radius, 0, 0, Math.PI * 2);
-    ctx.fillStyle = active ? 'rgba(255, 227, 122, 0.54)' : 'rgba(110, 221, 120, 0.24)';
+    ctx.ellipse(x, y, radius * 1.3, radius, 0, 0, Math.PI * 2);
+    ctx.fillStyle = active ? 'rgba(255, 241, 168, 0.7)' : theme.glow;
     ctx.fill();
     ctx.lineWidth = active ? 4 : 2;
-    ctx.strokeStyle = active ? 'rgba(255, 244, 188, 0.96)' : 'rgba(190, 255, 210, 0.52)';
+    ctx.strokeStyle = active ? 'rgba(255, 247, 204, 1)' : theme.accent;
     ctx.stroke();
 
     hitAreas.push({ country, lat, lon });
@@ -94,201 +69,6 @@ function buildOverlayTexture(countryMetrics, selectedCountryId) {
     texture: new THREE.CanvasTexture(canvas),
     hitAreas,
   };
-}
-
-function buildLevels(nodes, edges) {
-  const indeg = new Map(nodes.map((n) => [n.id, 0]));
-  const outgoing = new Map(nodes.map((n) => [n.id, []]));
-  edges.forEach(([from, to]) => {
-    if (outgoing.has(from) && indeg.has(to)) {
-      outgoing.get(from).push(to);
-      indeg.set(to, indeg.get(to) + 1);
-    }
-  });
-  const queue = [];
-  indeg.forEach((v, k) => {
-    if (v === 0) queue.push(k);
-  });
-  const level = new Map(nodes.map((n) => [n.id, 0]));
-  for (let i = 0; i < queue.length; i += 1) {
-    const cur = queue[i];
-    outgoing.get(cur).forEach((nxt) => {
-      level.set(nxt, Math.max(level.get(nxt), level.get(cur) + 1));
-      indeg.set(nxt, indeg.get(nxt) - 1);
-      if (indeg.get(nxt) === 0) queue.push(nxt);
-    });
-  }
-  return level;
-}
-
-const COUNTRY_SHAPES = {
-  ai_data: {
-    name: 'India',
-    silhouette: 'M335,52 L420,66 L490,118 L546,154 L579,240 L558,336 L492,418 L440,508 L362,522 L316,468 L260,448 L208,384 L194,300 L220,214 L268,162 L300,102 Z',
-    states: [
-      { id: 'python_programming', title: 'Python', path: 'M282,162 L344,156 L362,214 L318,252 L266,226 Z' },
-      { id: 'mathematics_statistics', title: 'Math', path: 'M360,154 L436,168 L444,244 L368,246 Z' },
-      { id: 'machine_learning', title: 'ML', path: 'M454,186 L520,204 L512,292 L444,276 Z' },
-      { id: 'deep_learning', title: 'Deep Learning', path: 'M298,272 L380,266 L402,352 L332,386 L274,340 Z' },
-      { id: 'data_visualization', title: 'Data Viz', path: 'M402,286 L496,302 L474,388 L396,394 Z' },
-    ],
-  },
-  cloud_infrastructure: {
-    name: 'Japan',
-    silhouette: 'M424,60 L458,96 L446,152 L476,188 L456,252 L492,316 L466,402 L420,488 L382,466 L394,392 L356,334 L372,266 L338,194 L366,122 L392,84 Z',
-    states: [
-      { id: 'cloud_platforms', title: 'Cloud', path: 'M392,108 L430,114 L424,176 L390,164 Z' },
-      { id: 'networking_fundamentals', title: 'Network', path: 'M406,186 L446,200 L434,264 L396,246 Z' },
-      { id: 'containers_orchestration', title: 'Containers', path: 'M420,274 L468,292 L450,344 L406,328 Z' },
-      { id: 'ci_cd_pipelines', title: 'CI/CD', path: 'M432,352 L474,370 L456,420 L416,408 Z' },
-      { id: 'system_design', title: 'System Design', path: 'M414,426 L452,442 L438,482 L404,470 Z' },
-    ],
-  },
-};
-
-function CountryPopup({ country, roleDetails, stateById, selectedStateId, onStateSelect, onBack }) {
-  const states = country?.states || [];
-  const shape = COUNTRY_SHAPES[country?.continentId] || COUNTRY_SHAPES.ai_data;
-  const stateShapes = shape.states.filter((item) => states.includes(item.id));
-  const nodeCounts = states.map((stateId) => stateById.get(stateId)?.nodes?.length || 1);
-  const maxNodes = Math.max(...nodeCounts, 1);
-
-  return (
-    <div className="map-popup map-popup-country">
-      <div className="map-toolbar">
-        <button className="back-btn" onClick={onBack}>Close Country</button>
-        <div>
-          <h3>{shape.name} / {country.title}</h3>
-          <p>{roleDetails?.summary || 'Open a skill cluster to inspect its learning pathway.'}</p>
-        </div>
-      </div>
-
-      <svg className="country-map-svg" viewBox="0 0 760 580">
-        <path d={shape.silhouette} className="country-silhouette" />
-        {stateShapes.map((stateShape) => {
-          const state = stateById.get(stateShape.id);
-          const active = selectedStateId === stateShape.id;
-          const complexityScale = ((state?.nodes?.length || 1) / maxNodes) * 0.12;
-          return (
-            <g key={stateShape.id} onClick={() => onStateSelect(stateShape.id)} className="state-region-group">
-              <path
-                d={stateShape.path}
-                className={active ? 'state-region active' : 'state-region'}
-                style={{ transformOrigin: '380px 290px', transform: `scale(${1 + complexityScale})` }}
-              />
-              <text x={380} y={290} textAnchor="middle" className="state-region-title state-region-title-hidden">
-                {stateShape.title}
-              </text>
-              <text
-                x={stateShape.id === 'python_programming' ? 310 : stateShape.id === 'mathematics_statistics' ? 402 : stateShape.id === 'machine_learning' ? 478 : stateShape.id === 'deep_learning' ? 338 : stateShape.id === 'data_visualization' ? 438 : stateShape.id === 'cloud_platforms' ? 408 : stateShape.id === 'networking_fundamentals' ? 420 : stateShape.id === 'containers_orchestration' ? 434 : stateShape.id === 'ci_cd_pipelines' ? 444 : 424}
-                y={stateShape.id === 'python_programming' ? 204 : stateShape.id === 'mathematics_statistics' ? 206 : stateShape.id === 'machine_learning' ? 246 : stateShape.id === 'deep_learning' ? 330 : stateShape.id === 'data_visualization' ? 344 : stateShape.id === 'cloud_platforms' ? 146 : stateShape.id === 'networking_fundamentals' ? 226 : stateShape.id === 'containers_orchestration' ? 310 : stateShape.id === 'ci_cd_pipelines' ? 390 : 458}
-                textAnchor="middle"
-                className="state-region-title"
-              >
-                {stateShape.title}
-              </text>
-              <text
-                x={stateShape.id === 'python_programming' ? 310 : stateShape.id === 'mathematics_statistics' ? 402 : stateShape.id === 'machine_learning' ? 478 : stateShape.id === 'deep_learning' ? 338 : stateShape.id === 'data_visualization' ? 438 : stateShape.id === 'cloud_platforms' ? 408 : stateShape.id === 'networking_fundamentals' ? 420 : stateShape.id === 'containers_orchestration' ? 434 : stateShape.id === 'ci_cd_pipelines' ? 444 : 424}
-                y={stateShape.id === 'python_programming' ? 224 : stateShape.id === 'mathematics_statistics' ? 226 : stateShape.id === 'machine_learning' ? 266 : stateShape.id === 'deep_learning' ? 350 : stateShape.id === 'data_visualization' ? 364 : stateShape.id === 'cloud_platforms' ? 164 : stateShape.id === 'networking_fundamentals' ? 244 : stateShape.id === 'containers_orchestration' ? 328 : stateShape.id === 'ci_cd_pipelines' ? 408 : 476}
-                textAnchor="middle"
-                className="state-region-sub"
-              >
-                {state?.nodes?.length || 0} cities
-              </text>
-            </g>
-          );
-        })}
-      </svg>
-    </div>
-  );
-}
-
-function StatePopup({ stateDetails, onBack }) {
-  const nodes = stateDetails?.nodes || [];
-  const edges = stateDetails?.edges || [];
-  if (!stateDetails) return null;
-
-  const levels = buildLevels(nodes, edges);
-  const grouped = new Map();
-  nodes.forEach((node) => {
-    const l = levels.get(node.id) || 0;
-    if (!grouped.has(l)) grouped.set(l, []);
-    grouped.get(l).push(node);
-  });
-
-  const cols = [...grouped.keys()].sort((a, b) => a - b);
-  const positions = new Map();
-  cols.forEach((colId, colIndex) => {
-    grouped.get(colId).forEach((node, rowIndex) => {
-      positions.set(node.id, {
-        x: 110 + colIndex * 190,
-        y: 120 + rowIndex * 110,
-      });
-    });
-  });
-
-  return (
-    <div className="map-popup map-popup-state">
-      <div className="map-toolbar">
-        <button className="back-btn" onClick={onBack}>Close State</button>
-        <div>
-          <h3>{stateDetails.title}</h3>
-          <p>District-style state map with cities renamed to subskills. Arrows show the learning order.</p>
-        </div>
-      </div>
-
-      <div className="state-map-scroll">
-        <svg className="state-map-svg" width="980" height={Math.max(420, 180 + nodes.length * 54)}>
-          <defs>
-            <marker id="path-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-              <path d="M0,0 L8,4 L0,8 Z" fill="#678cd8" />
-            </marker>
-          </defs>
-          {edges.map(([from, to]) => {
-            const a = positions.get(from);
-            const b = positions.get(to);
-            if (!a || !b) return null;
-            return (
-              <line
-                key={`${from}-${to}`}
-                x1={a.x + 68}
-                y1={a.y}
-                x2={b.x - 68}
-                y2={b.y}
-                className="state-path-edge"
-                markerEnd="url(#path-arrow)"
-              />
-            );
-          })}
-          {nodes.map((node) => {
-            const p = positions.get(node.id);
-            return (
-              <g key={node.id}>
-                <rect x={p.x - 54} y={p.y - 54} width="108" height="108" rx="22" className="district-cell" />
-                <circle cx={p.x} cy={p.y} r="34" className="city-node" />
-                <text x={p.x} y={p.y - 4} textAnchor="middle" className="city-label">
-                  {node.title}
-                </text>
-                <text x={p.x} y={p.y + 14} textAnchor="middle" className="city-meta">
-                  {node.type}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
-      </div>
-
-      <div className="city-list-inline">
-        {nodes.map((node) => (
-          <article key={node.id} className="city-card">
-            <h4>{node.title}</h4>
-            <p>{node.description}</p>
-            <small>{node.type} • {node.estimated_time_minutes} mins • {node.xp_reward} XP</small>
-          </article>
-        ))}
-      </div>
-    </div>
-  );
 }
 
 function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
@@ -308,12 +88,12 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
     if (!mount) return undefined;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(38, mount.clientWidth / 620, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(38, mount.clientWidth / 680, 0.1, 1000);
     camera.position.z = 3;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(mount.clientWidth, 620);
+    renderer.setSize(mount.clientWidth, 680);
     mount.appendChild(renderer.domElement);
 
     const textureLoader = new THREE.TextureLoader();
@@ -321,11 +101,11 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
     const bumpMap = textureLoader.load('https://threejs.org/examples/textures/planets/earth_bump_4096.jpg');
     const specMap = textureLoader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg');
 
-    scene.add(new THREE.AmbientLight(0xffffff, 1.1));
-    const keyLight = new THREE.DirectionalLight(0xffffff, 0.95);
+    scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.05);
     keyLight.position.set(3, 2, 4);
     scene.add(keyLight);
-    const rimLight = new THREE.DirectionalLight(0x9bd6ff, 0.45);
+    const rimLight = new THREE.DirectionalLight(0xb3f1ff, 0.68);
     rimLight.position.set(-4, -2, -3);
     scene.add(rimLight);
 
@@ -334,10 +114,10 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
       new THREE.MeshPhongMaterial({
         map: earthMap,
         bumpMap,
-        bumpScale: 0.05,
+        bumpScale: 0.04,
         specularMap: specMap,
-        specular: new THREE.Color(0x444444),
-        shininess: 10,
+        specular: new THREE.Color(0x888888),
+        shininess: 14,
       })
     );
 
@@ -351,11 +131,11 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
     );
 
     const atmosphere = new THREE.Mesh(
-      new THREE.SphereGeometry(1.05, 64, 64),
+      new THREE.SphereGeometry(1.06, 64, 64),
       new THREE.MeshPhongMaterial({
-        color: 0x7fc8ff,
+        color: 0x7ce7ff,
         transparent: true,
-        opacity: 0.09,
+        opacity: 0.16,
         side: THREE.BackSide,
       })
     );
@@ -372,7 +152,7 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
 
     function updateLabels() {
       const width = mount.clientWidth;
-      const height = 620;
+      const height = 680;
       const nextLabels = labelsRef.current.map((item) => {
         const pos = projectLabel(latLonToVector3(item.lat, item.lon, 1.08), camera, width, height);
         const frontFacing = latLonToVector3(item.lat, item.lon, 1.02).applyQuaternion(earth.quaternion).z > -0.15;
@@ -428,9 +208,9 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
     }
 
     function onResize() {
-      camera.aspect = mount.clientWidth / 620;
+      camera.aspect = mount.clientWidth / 680;
       camera.updateProjectionMatrix();
-      renderer.setSize(mount.clientWidth, 620);
+      renderer.setSize(mount.clientWidth, 680);
     }
 
     mount.addEventListener('pointerdown', onPointerDown);
@@ -439,7 +219,6 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
     window.addEventListener('resize', onResize);
 
     overlayRef.current = overlay;
-
     animate();
 
     return () => {
@@ -473,56 +252,60 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
       <div className="globe-stage" ref={mountRef} />
       <div className="label-layer">
         {projected.map((item) => (
-          <button
+          <div
             key={item.id}
-            className={item.id === selectedCountryId ? 'globe-label active' : 'globe-label'}
+            className={item.id === selectedCountryId ? 'globe-marker active' : 'globe-marker'}
             style={{
               left: item.x,
               top: item.y,
               opacity: item.visible ? 1 : 0,
               transform: `translate(-50%, -50%) scale(${item.id === selectedCountryId ? 1.08 : 1})`,
             }}
-            onClick={() => onCountrySelect(item.continentId, item.country)}
           >
-            {item.label}
-          </button>
+            <button
+              className={item.id === selectedCountryId ? 'globe-label active' : 'globe-label'}
+              onClick={() => onCountrySelect(item.continentId, item.country)}
+            >
+              {item.label}
+            </button>
+            <span className="globe-pin" />
+          </div>
         ))}
       </div>
       <div className="globe-caption">
-        <span>Large countries = more complex jobs with more sub-skills.</span>
-        <span>Click a job label to open that country map and display its skill-cluster states.</span>
+        <span>Click any realm.</span>
+        <span>It opens in a new window.</span>
       </div>
     </div>
   );
 }
 
-export default function WorldMap(props) {
-  const {
-    roleDetails,
-    stateDetails,
-    selectedCountry,
-    selectedStateId,
-    onStateSelect,
-    onBackToGlobe,
-    onBackToCountry,
-  } = props;
+function buildCountryPositions(countryMetrics) {
+  const world = feature(countries110m, countries110m.objects.countries);
+  const centroidByName = new Map(world.features.map((item) => [item.properties.name, geoCentroid(item)]));
+
+  return countryMetrics.map((country) => {
+    const profile = getRoleWorldProfile(country.id);
+    const centroid = centroidByName.get(profile.countryName) || [0, 0];
+    return {
+      ...country,
+      lon: centroid[0],
+      lat: centroid[1],
+      profile,
+    };
+  });
+}
+
+export default function WorldMap({ countryMetrics, selectedCountryId, onCountrySelect }) {
+  const positionedMetrics = useMemo(() => buildCountryPositions(countryMetrics), [countryMetrics]);
 
   return (
     <div className="map-mode-shell">
-      <GlobeMode {...props} />
-      {selectedCountry && (
-        <CountryPopup
-          country={selectedCountry}
-          roleDetails={roleDetails}
-          stateById={props.stateById}
-          selectedStateId={selectedStateId}
-          onStateSelect={onStateSelect}
-          onBack={onBackToGlobe}
-        />
-      )}
-      {selectedCountry && selectedStateId && stateDetails && (
-        <StatePopup stateDetails={stateDetails} onBack={onBackToCountry} />
-      )}
+      <GlobeMode
+        countryMetrics={positionedMetrics}
+        selectedCountryId={selectedCountryId}
+        onCountrySelect={onCountrySelect}
+      />
     </div>
   );
 }

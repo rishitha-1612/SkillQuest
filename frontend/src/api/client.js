@@ -1,4 +1,6 @@
-const API_BASE = 'http://127.0.0.1:8000/career-globe';
+const API_BASE =
+  import.meta.env.VITE_API_BASE ||
+  'http://127.0.0.1:8010/career-globe';
 
 async function request(path) {
   const res = await fetch(`${API_BASE}${path}`);
