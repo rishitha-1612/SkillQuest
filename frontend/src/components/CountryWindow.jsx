@@ -3,6 +3,7 @@ import { geoMercator, geoPath } from 'd3-geo';
 import { api } from '../api/client';
 import { getClusterTheme, getRoleWorldProfile } from '../data/worldConfig';
 import India3DMap from './India3DMap';
+import Korea3DMap from './Korea3DMap';
 
 function buildLevels(nodes, edges) {
   const indeg = new Map(nodes.map((n) => [n.id, 0]));
@@ -186,6 +187,7 @@ export default function CountryWindow({ countryId }) {
   const theme = getClusterTheme(roleDetails?.continent_id || selectedCountry?.continentId || 'ai_data');
   const selectedState = stateById.get(selectedStateId) || null;
   const useIndiaCraftedMap = profile.iso3 === 'IND';
+  const useKoreaCraftedMap = profile.iso3 === 'KOR';
 
   const projection = useMemo(() => {
     if (!mapData) return null;
@@ -244,6 +246,13 @@ export default function CountryWindow({ countryId }) {
           <div className="window-body">
             {useIndiaCraftedMap ? (
               <India3DMap
+                roleDetails={roleDetails}
+                stateById={stateById}
+                selectedStateId={selectedStateId}
+                onStateSelect={setSelectedStateId}
+              />
+            ) : useKoreaCraftedMap ? (
+              <Korea3DMap
                 roleDetails={roleDetails}
                 stateById={stateById}
                 selectedStateId={selectedStateId}

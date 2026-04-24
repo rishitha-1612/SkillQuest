@@ -48,11 +48,11 @@ export const ACTIVE_REALMS = [
   },
   {
     roleId: 'ml_engineer',
-    iso3: 'BRA',
-    countryName: 'Brazil',
-    realm: 'Model Rainforest',
-    borderFile: '/maps/bra-adm0.json',
-    stateMapFile: '/maps/bra-adm1.json',
+    iso3: 'KOR',
+    countryName: 'South Korea',
+    realm: 'Model Peninsula',
+    borderFile: '/maps/kor-adm0.json',
+    stateMapFile: '/maps/kor-adm1.json',
   },
   {
     roleId: 'ai_engineer',
@@ -96,14 +96,14 @@ export const ACTIVE_REALMS = [
   },
 ];
 
-export const LOCKED_WORLD_REGIONS = ['Europe', 'Japan', 'Korea', 'Middle micro-realms'];
+export const LOCKED_WORLD_REGIONS = ['Europe', 'Japan', 'Middle micro-realms'];
 
 export const ROLE_WORLD_PROFILES = {
   cloud_architect: { iso3: 'RUS', countryName: 'Russia', realm: 'Skyforge Dominion', borderFile: '/maps/rus-adm0.json', stateMapFile: '/maps/rus-adm1.json' },
   full_stack_engineer: { iso3: 'CAN', countryName: 'Canada', realm: 'Northern Buildlands', borderFile: '/maps/can-adm0.json', stateMapFile: '/maps/can-adm1.json' },
   cybersecurity_specialist: { iso3: 'CHN', countryName: 'China', realm: 'Firewall Empire', borderFile: '/maps/chn-adm0.json', stateMapFile: '/maps/chn-adm1.json' },
   data_engineer: { iso3: 'USA', countryName: 'United States of America', realm: 'Pipeline Federation', borderFile: '/maps/usa-adm0.json', stateMapFile: '/maps/usa-adm1.json' },
-  ml_engineer: { iso3: 'BRA', countryName: 'Brazil', realm: 'Model Rainforest', borderFile: '/maps/bra-adm0.json', stateMapFile: '/maps/bra-adm1.json' },
+  ml_engineer: { iso3: 'KOR', countryName: 'South Korea', realm: 'Model Peninsula', borderFile: '/maps/kor-adm0.json', stateMapFile: '/maps/kor-adm1.json' },
   ai_engineer: { iso3: 'IND', countryName: 'India', realm: 'Insight Republic', borderFile: '/maps/ind-adm0.json', stateMapFile: '/maps/ind-adm1.json' },
   data_scientist: { iso3: 'AUS', countryName: 'Australia', realm: 'Signal Outback', borderFile: '/maps/aus-adm0.json', stateMapFile: '/maps/aus-adm1.json' },
   blockchain_developer: { iso3: 'KAZ', countryName: 'Kazakhstan', realm: 'Ledger Steppe', borderFile: '/maps/kaz-adm0.json', stateMapFile: '/maps/kaz-adm1.json' },
