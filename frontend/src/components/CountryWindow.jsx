@@ -2,45 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { geoMercator, geoPath } from 'd3-geo';
 import { api } from '../api/client';
 import { getClusterTheme, getRoleWorldProfile } from '../data/worldConfig';
-
-const INDIA_SKILL_LAYOUT = {
-  python_programming: {
-    stateName: 'Karnataka',
-    path: 'M314,498 L364,484 L382,524 L364,566 L320,572 L294,532 Z',
-    x: 338,
-    y: 526,
-  },
-  mathematics_statistics: {
-    stateName: 'Rajasthan',
-    path: 'M192,196 L272,172 L324,206 L312,286 L232,302 L180,248 Z',
-    x: 248,
-    y: 236,
-  },
-  machine_learning: {
-    stateName: 'Maharashtra',
-    path: 'M224,360 L326,344 L360,404 L334,466 L242,472 L194,424 Z',
-    x: 278,
-    y: 404,
-  },
-  deep_learning: {
-    stateName: 'Telangana',
-    path: 'M404,392 L454,382 L478,424 L456,466 L410,472 L386,434 Z',
-    x: 432,
-    y: 426,
-  },
-  data_visualization: {
-    stateName: 'West Bengal',
-    path: 'M560,254 L620,236 L652,286 L632,346 L586,360 L548,316 Z',
-    x: 600,
-    y: 296,
-  },
-};
-
-const INDIA_BASE_REGIONS = [
-  'M248,82 L338,92 L406,126 L470,136 L552,188 L618,236 L664,318 L642,406 L590,478 L562,574 L514,646 L454,722 L398,768 L350,744 L314,682 L280,650 L222,616 L194,556 L170,500 L146,404 L158,326 L138,246 L166,194 L214,166 L236,118 Z',
-  'M602,146 L652,142 L688,174 L704,216 L684,244 L636,234 L602,198 Z',
-  'M366,748 L394,792 L438,816 L474,806 L462,848 L416,876 L366,860 L340,816 Z',
-];
+import India3DMap from './India3DMap';
 
 function buildLevels(nodes, edges) {
   const indeg = new Map(nodes.map((n) => [n.id, 0]));
@@ -172,60 +134,6 @@ function ProgressWindow({ stateDetails }) {
   );
 }
 
-function IndiaStylizedMap({ roleDetails, stateById, selectedStateId, onStateSelect }) {
-  const requirements = roleDetails?.state_requirements || [];
-
-  return (
-    <div className="india-crafted-map-shell">
-      <svg className="india-crafted-map" viewBox="0 0 820 920" aria-label="India skill map">
-        <defs>
-          <linearGradient id="indiaSea" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#9be4ff" />
-            <stop offset="100%" stopColor="#dff7ff" />
-          </linearGradient>
-          <linearGradient id="indiaLand" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#f8fff1" />
-            <stop offset="100%" stopColor="#e4f7d7" />
-          </linearGradient>
-        </defs>
-        <rect width="820" height="920" rx="28" fill="url(#indiaSea)" />
-        <circle cx="110" cy="110" r="42" fill="rgba(255,255,255,0.48)" />
-        <circle cx="724" cy="150" r="34" fill="rgba(255,255,255,0.28)" />
-        {INDIA_BASE_REGIONS.map((path, index) => (
-          <path key={`base-${index}`} d={path} className="india-landmass" fill="url(#indiaLand)" />
-        ))}
-        {requirements.map((req, index) => {
-          const layout = INDIA_SKILL_LAYOUT[req.state_id];
-          const state = stateById.get(req.state_id);
-          if (!layout || !state) return null;
-          const active = selectedStateId === req.state_id;
-
-          return (
-            <g
-              key={req.state_id}
-              className={active ? 'india-region-group active' : 'india-region-group'}
-              style={{ '--delay': `${index * 120}ms` }}
-              onClick={() => onStateSelect(req.state_id)}
-            >
-              <path d={layout.path} className="india-skill-region" />
-              <circle cx={layout.x} cy={layout.y} r="12" className="india-skill-dot" />
-              <g transform={`translate(${layout.x}, ${layout.y + 24})`} className="india-skill-label-group">
-                <rect x="-88" y="-10" width="176" height="56" rx="18" className="india-skill-card-box" />
-                <text x="0" y="10" textAnchor="middle" className="india-skill-card-title">
-                  {state.title}
-                </text>
-                <text x="0" y="30" textAnchor="middle" className="india-skill-card-subtitle">
-                  {layout.stateName}
-                </text>
-              </g>
-            </g>
-          );
-        })}
-      </svg>
-    </div>
-  );
-}
-
 export default function CountryWindow({ countryId }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -277,7 +185,7 @@ export default function CountryWindow({ countryId }) {
   const profile = getRoleWorldProfile(countryId);
   const theme = getClusterTheme(roleDetails?.continent_id || selectedCountry?.continentId || 'ai_data');
   const selectedState = stateById.get(selectedStateId) || null;
-  const useIndiaCraftedMap = countryId === 'data_scientist';
+  const useIndiaCraftedMap = profile.iso3 === 'IND';
 
   const projection = useMemo(() => {
     if (!mapData) return null;
@@ -335,7 +243,7 @@ export default function CountryWindow({ countryId }) {
           </div>
           <div className="window-body">
             {useIndiaCraftedMap ? (
-              <IndiaStylizedMap
+              <India3DMap
                 roleDetails={roleDetails}
                 stateById={stateById}
                 selectedStateId={selectedStateId}

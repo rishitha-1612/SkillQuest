@@ -4,7 +4,7 @@ import GlobeView from './components/WorldMap';
 import CountrySkillsPanel from './components/CountrySkillsPanel';
 import StatePathwayPanel from './components/StatePathwayPanel';
 import CountryWindow from './components/CountryWindow';
-import { getClusterTheme } from './data/worldConfig';
+import { getClusterTheme, isPlayableRealm, LOCKED_WORLD_REGIONS } from './data/worldConfig';
 
 const LEVEL_WEIGHT = {
   beginner: 1,
@@ -96,11 +96,15 @@ function WorldLobby() {
     () => buildCountryMetrics(continents, roleById, stateById),
     [continents, roleById, stateById]
   );
-  const questStats = useMemo(
-    () => buildQuestStats(countryMetrics, selectedCountry, roleDetails, stateDetails),
-    [countryMetrics, selectedCountry, roleDetails, stateDetails]
+  const playableCountryMetrics = useMemo(
+    () => countryMetrics.filter((country) => isPlayableRealm(country.id)),
+    [countryMetrics]
   );
-  const selectedTheme = getClusterTheme(selectedContinentId || continents[0]?.id || 'ai_data');
+  const questStats = useMemo(
+    () => buildQuestStats(playableCountryMetrics, selectedCountry, roleDetails, stateDetails),
+    [playableCountryMetrics, selectedCountry, roleDetails, stateDetails]
+  );
+  const selectedTheme = getClusterTheme(selectedContinentId || playableCountryMetrics[0]?.continentId || 'ai_data');
 
   async function onCountrySelect(continentId, country) {
     setSelectedContinentId(continentId);
@@ -167,15 +171,15 @@ function WorldLobby() {
       <section className="mission-strip">
         <article className="mission-card">
           <span>Theme</span>
-          <strong>{selectedTheme.lore}</strong>
+          <strong>Asia campaign unlocked. Bigger nations hold the harder classes.</strong>
         </article>
         <article className="mission-card">
           <span>Provinces</span>
           <strong>{questStats.activeStates}</strong>
         </article>
         <article className="mission-card mission-card-accent">
-          <span>Flow</span>
-          <strong>World -&gt; Country -&gt; Province -&gt; City</strong>
+          <span>Locked</span>
+          <strong>{LOCKED_WORLD_REGIONS.join(' - ')}</strong>
         </article>
       </section>
 
@@ -186,10 +190,10 @@ function WorldLobby() {
         <section className="map-panel">
           <div className="panel-heading">
             <h2>World Map</h2>
-            <p className="muted">Click any country token to launch its own game window.</p>
+            <p className="muted">Asia is live. Other regions stay locked until later worlds unlock.</p>
           </div>
           <GlobeView
-            countryMetrics={countryMetrics}
+            countryMetrics={playableCountryMetrics}
             selectedCountryId={selectedCountry?.id || ''}
             onCountrySelect={onCountrySelect}
           />

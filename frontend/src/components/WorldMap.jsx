@@ -154,8 +154,9 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
       const width = mount.clientWidth;
       const height = 680;
       const nextLabels = labelsRef.current.map((item) => {
-        const pos = projectLabel(latLonToVector3(item.lat, item.lon, 1.08), camera, width, height);
-        const frontFacing = latLonToVector3(item.lat, item.lon, 1.02).applyQuaternion(earth.quaternion).z > -0.15;
+        const anchor = latLonToVector3(item.lat, item.lon, 1.08).applyQuaternion(earth.quaternion);
+        const pos = projectLabel(anchor, camera, width, height);
+        const frontFacing = anchor.z > -0.15;
         return { ...item, ...pos, visible: pos.visible && frontFacing };
       });
       setProjected(nextLabels);
