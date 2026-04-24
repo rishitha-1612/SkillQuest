@@ -110,6 +110,9 @@ Country learning windows now include a tutor chat panel:
 - user can ask for help about the project
 - user can ask about the active job path or current skill
 - user can type questions and use voice input where browser speech recognition is available
+- tutor responses are more learner-friendly and explain things in simpler language
+- tutor gives analogies to help users understand difficult topics more easily
+- quick prompt chips help users ask common learning questions faster
 - chat is disabled whenever an assessment window is active
 
 Main file:
@@ -324,6 +327,7 @@ npm install
 - moved assessments to a dedicated end-of-course window launched from the skill route
 - added a rider progress road that shows current skill position and destination
 - added a tutor chat panel for project help and skill tutoring
+- made the tutor more learner-friendly with simpler answers, analogies, and guided prompt chips
 - blocked tutor chat while any assessment window is active
 - added tab-switch detection to fail assessment attempts that leave the exam window
 - upgraded generic country maps to 3D-style local map rendering
