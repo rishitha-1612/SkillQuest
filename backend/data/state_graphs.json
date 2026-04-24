@@ -1,217 +1,1992 @@
 {
-  "state_graphs": [
-    {
-      "state_id": "python_programming",
-      "title": "Python Programming",
-      "entry_nodes": ["python_basics"],
-      "final_assessment_node": "python_capstone",
-      "nodes": [
-        {"id": "python_basics", "title": "Python Basics", "type": "lesson", "description": "Variables, control flow, and syntax.", "estimated_time_minutes": 45, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "data_structures", "title": "Data Structures", "type": "interactive_game", "description": "Lists, tuples, sets, and dictionaries.", "estimated_time_minutes": 40, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "functions_modules", "title": "Functions and Modules", "type": "lesson", "description": "Reusable code and modularity.", "estimated_time_minutes": 45, "xp_reward": 20, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "oop_files", "title": "OOP and File Handling", "type": "challenge", "description": "Classes, objects, and persistent data.", "estimated_time_minutes": 55, "xp_reward": 30, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "testing_debugging", "title": "Testing and Debugging", "type": "quiz", "description": "Verify and troubleshoot Python code.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
-        {"id": "python_capstone", "title": "Python Project", "type": "challenge", "description": "Build a small end-to-end Python solution.", "estimated_time_minutes": 75, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
-      ],
-      "edges": [
-        ["python_basics", "data_structures"],
-        ["data_structures", "functions_modules"],
-        ["functions_modules", "oop_files"],
-        ["functions_modules", "testing_debugging"],
-        ["oop_files", "python_capstone"],
-        ["testing_debugging", "python_capstone"]
-      ]
-    },
-    {
-      "state_id": "mathematics_statistics",
-      "title": "Mathematics & Statistics",
-      "entry_nodes": ["algebra_foundations"],
-      "final_assessment_node": "math_case_study",
-      "nodes": [
-        {"id": "algebra_foundations", "title": "Algebra Foundations", "type": "lesson", "description": "Equations and symbolic reasoning.", "estimated_time_minutes": 40, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "linear_algebra_probability", "title": "Linear Algebra and Probability", "type": "lesson", "description": "Vectors, matrices, and uncertainty.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "descriptive_statistics", "title": "Descriptive Statistics", "type": "interactive_game", "description": "Summaries, spread, and distributions.", "estimated_time_minutes": 35, "xp_reward": 20, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "inferential_methods", "title": "Inferential Methods", "type": "lesson", "description": "Sampling, confidence, and testing.", "estimated_time_minutes": 55, "xp_reward": 30, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "optimization_bayesian", "title": "Optimization and Bayesian Thinking", "type": "quiz", "description": "Decision making under uncertainty.", "estimated_time_minutes": 40, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
-        {"id": "math_case_study", "title": "Statistics Case Study", "type": "challenge", "description": "Analyze a realistic data scenario.", "estimated_time_minutes": 70, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
-      ],
-      "edges": [
-        ["algebra_foundations", "linear_algebra_probability"],
-        ["linear_algebra_probability", "descriptive_statistics"],
-        ["linear_algebra_probability", "inferential_methods"],
-        ["descriptive_statistics", "optimization_bayesian"],
-        ["inferential_methods", "optimization_bayesian"],
-        ["optimization_bayesian", "math_case_study"]
-      ]
-    },
-    {
-      "state_id": "machine_learning",
-      "title": "Machine Learning",
-      "entry_nodes": ["data_preprocessing"],
-      "final_assessment_node": "ml_projects",
-      "nodes": [
-        {"id": "data_preprocessing", "title": "Data Preprocessing", "type": "lesson", "description": "Clean and prepare model-ready data.", "estimated_time_minutes": 40, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "feature_engineering", "title": "Feature Engineering", "type": "interactive_game", "description": "Create stronger model signals.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "supervised_learning", "title": "Supervised Learning", "type": "lesson", "description": "Learn from labeled data.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "unsupervised_learning", "title": "Unsupervised Learning", "type": "lesson", "description": "Find structure without labels.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "model_evaluation", "title": "Model Evaluation", "type": "quiz", "description": "Measure model quality and risk.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
-        {"id": "ml_projects", "title": "ML Projects", "type": "challenge", "description": "Apply ML end-to-end in a portfolio scenario.", "estimated_time_minutes": 80, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
-      ],
-      "edges": [
-        ["data_preprocessing", "feature_engineering"],
-        ["feature_engineering", "supervised_learning"],
-        ["feature_engineering", "unsupervised_learning"],
-        ["supervised_learning", "model_evaluation"],
-        ["unsupervised_learning", "model_evaluation"],
-        ["model_evaluation", "ml_projects"]
-      ]
-    },
-    {
-      "state_id": "deep_learning",
-      "title": "Deep Learning",
-      "entry_nodes": ["tensor_foundations"],
-      "final_assessment_node": "deployment_project",
-      "nodes": [
-        {"id": "tensor_foundations", "title": "Tensor Foundations", "type": "lesson", "description": "Shapes, dimensions, and tensor operations.", "estimated_time_minutes": 40, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "neural_networks", "title": "Neural Networks", "type": "lesson", "description": "Layered models and activations.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "backprop_optimization", "title": "Backpropagation and Optimization", "type": "interactive_game", "description": "Gradient flow and optimizers.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "regularization_architectures", "title": "Regularization and Architectures", "type": "lesson", "description": "CNNs, sequence models, and stability.", "estimated_time_minutes": 55, "xp_reward": 30, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "transfer_learning", "title": "Transfer Learning", "type": "quiz", "description": "Fine-tune pretrained models effectively.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
-        {"id": "deployment_project", "title": "Inference and Deployment Project", "type": "challenge", "description": "Serve a deep learning model inside an app flow.", "estimated_time_minutes": 80, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
-      ],
-      "edges": [
-        ["tensor_foundations", "neural_networks"],
-        ["neural_networks", "backprop_optimization"],
-        ["backprop_optimization", "regularization_architectures"],
-        ["regularization_architectures", "transfer_learning"],
-        ["transfer_learning", "deployment_project"]
-      ]
-    },
-    {
-      "state_id": "data_visualization",
-      "title": "Data Visualization",
-      "entry_nodes": ["chart_selection"],
-      "final_assessment_node": "dashboard_storytelling_project",
-      "nodes": [
-        {"id": "chart_selection", "title": "Chart Selection", "type": "lesson", "description": "Choose the right chart for the question.", "estimated_time_minutes": 35, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "exploratory_plots", "title": "Exploratory Plots", "type": "interactive_game", "description": "Inspect patterns and outliers visually.", "estimated_time_minutes": 40, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "python_plotting", "title": "Python Plotting", "type": "lesson", "description": "Matplotlib and seaborn workflows.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "dashboard_design", "title": "Dashboard Design", "type": "lesson", "description": "KPIs, interaction, and accessibility.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "data_storytelling", "title": "Data Storytelling", "type": "quiz", "description": "Turn charts into decisions and narratives.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
-        {"id": "dashboard_storytelling_project", "title": "Dashboard Storytelling Project", "type": "challenge", "description": "Present insights with an actionable dashboard.", "estimated_time_minutes": 75, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
-      ],
-      "edges": [
-        ["chart_selection", "exploratory_plots"],
-        ["exploratory_plots", "python_plotting"],
-        ["python_plotting", "dashboard_design"],
-        ["dashboard_design", "data_storytelling"],
-        ["data_storytelling", "dashboard_storytelling_project"]
-      ]
-    },
-    {
-      "state_id": "cloud_platforms",
-      "title": "Cloud Platforms",
-      "entry_nodes": ["iam_basics"],
-      "final_assessment_node": "cloud_platform_project",
-      "nodes": [
-        {"id": "iam_basics", "title": "Identity and Access", "type": "lesson", "description": "Least privilege and secure access.", "estimated_time_minutes": 40, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "compute_storage", "title": "Compute and Storage", "type": "lesson", "description": "Core cloud workloads and persistence.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "databases_networking", "title": "Managed Databases and Networking", "type": "interactive_game", "description": "Service connectivity and data systems.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "serverless_monitoring", "title": "Serverless and Monitoring", "type": "lesson", "description": "Event-driven compute and observability.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "cost_iac", "title": "Cost and Infrastructure as Code", "type": "quiz", "description": "Repeatability and cost-aware architecture.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
-        {"id": "cloud_platform_project", "title": "Cloud Architecture Project", "type": "challenge", "description": "Design and justify a cloud deployment plan.", "estimated_time_minutes": 75, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
-      ],
-      "edges": [
-        ["iam_basics", "compute_storage"],
-        ["compute_storage", "databases_networking"],
-        ["databases_networking", "serverless_monitoring"],
-        ["serverless_monitoring", "cost_iac"],
-        ["cost_iac", "cloud_platform_project"]
-      ]
-    },
-    {
-      "state_id": "networking_fundamentals",
-      "title": "Networking Fundamentals",
-      "entry_nodes": ["ip_addressing"],
-      "final_assessment_node": "network_design_case",
-      "nodes": [
-        {"id": "ip_addressing", "title": "IP Addressing", "type": "lesson", "description": "Addresses, subnets, and ranges.", "estimated_time_minutes": 35, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "dns_http", "title": "DNS and HTTP(S)", "type": "lesson", "description": "Naming, requests, and transport security.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "routing_firewalls", "title": "Routing and Firewalls", "type": "interactive_game", "description": "Traffic paths and access control.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "load_balancing_tls", "title": "Load Balancing and TLS", "type": "lesson", "description": "Availability and secure traffic handling.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "network_observability", "title": "Network Observability", "type": "quiz", "description": "Latency, health, and delivery tuning.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
-        {"id": "network_design_case", "title": "Network Design Case Study", "type": "challenge", "description": "Design a secure and performant network path.", "estimated_time_minutes": 70, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
-      ],
-      "edges": [
-        ["ip_addressing", "dns_http"],
-        ["dns_http", "routing_firewalls"],
-        ["routing_firewalls", "load_balancing_tls"],
-        ["load_balancing_tls", "network_observability"],
-        ["network_observability", "network_design_case"]
-      ]
-    },
-    {
-      "state_id": "containers_orchestration",
-      "title": "Containers & Orchestration",
-      "entry_nodes": ["linux_basics"],
-      "final_assessment_node": "orchestration_project",
-      "nodes": [
-        {"id": "linux_basics", "title": "Linux Basics", "type": "lesson", "description": "Processes, files, and permissions.", "estimated_time_minutes": 35, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "images_dockerfiles", "title": "Images and Dockerfiles", "type": "lesson", "description": "Build portable container images.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "runtime_networking", "title": "Runtime, Volumes, and Networking", "type": "interactive_game", "description": "Run, inspect, and connect containers.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "kubernetes_basics", "title": "Kubernetes Basics", "type": "lesson", "description": "Pods, services, and deployments.", "estimated_time_minutes": 55, "xp_reward": 30, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "scaling_logging", "title": "Scaling and Logging", "type": "quiz", "description": "Operate clustered workloads safely.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
-        {"id": "orchestration_project", "title": "Orchestration Project", "type": "challenge", "description": "Deploy and scale a containerized service.", "estimated_time_minutes": 80, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
-      ],
-      "edges": [
-        ["linux_basics", "images_dockerfiles"],
-        ["images_dockerfiles", "runtime_networking"],
-        ["runtime_networking", "kubernetes_basics"],
-        ["kubernetes_basics", "scaling_logging"],
-        ["scaling_logging", "orchestration_project"]
-      ]
-    },
-    {
-      "state_id": "ci_cd_pipelines",
-      "title": "CI/CD Pipelines",
-      "entry_nodes": ["version_control"],
-      "final_assessment_node": "pipeline_project",
-      "nodes": [
-        {"id": "version_control", "title": "Version Control", "type": "lesson", "description": "Commits, branches, and collaboration.", "estimated_time_minutes": 35, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "build_test_automation", "title": "Build and Test Automation", "type": "lesson", "description": "Reliable build and test stages.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "artifacts_orchestration", "title": "Artifacts and Pipeline Orchestration", "type": "interactive_game", "description": "Manage outputs and workflow stages.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "promotion_secrets", "title": "Promotion and Secrets", "type": "lesson", "description": "Environment flow and secure delivery.", "estimated_time_minutes": 45, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "rollback_observability", "title": "Rollback and Pipeline Observability", "type": "quiz", "description": "Recover quickly and measure delivery quality.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
-        {"id": "pipeline_project", "title": "Pipeline Project", "type": "challenge", "description": "Design a safe delivery workflow for production.", "estimated_time_minutes": 75, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
-      ],
-      "edges": [
-        ["version_control", "build_test_automation"],
-        ["build_test_automation", "artifacts_orchestration"],
-        ["artifacts_orchestration", "promotion_secrets"],
-        ["promotion_secrets", "rollback_observability"],
-        ["rollback_observability", "pipeline_project"]
-      ]
-    },
-    {
-      "state_id": "system_design",
-      "title": "System Design",
-      "entry_nodes": ["requirements_analysis"],
-      "final_assessment_node": "system_design_capstone",
-      "nodes": [
-        {"id": "requirements_analysis", "title": "Requirements Analysis", "type": "lesson", "description": "Define goals, users, and constraints.", "estimated_time_minutes": 40, "xp_reward": 20, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "api_data_modeling", "title": "API and Data Modeling", "type": "lesson", "description": "Interfaces and schema design.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "easy", "count": 8}},
-        {"id": "caching_async", "title": "Caching and Asynchronous Processing", "type": "interactive_game", "description": "Performance and background workflows.", "estimated_time_minutes": 50, "xp_reward": 25, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "scalability_reliability", "title": "Scalability and Reliability", "type": "lesson", "description": "Grow safely and handle failures.", "estimated_time_minutes": 55, "xp_reward": 30, "question_refs": {"difficulty": "medium", "count": 8}},
-        {"id": "observability_security", "title": "Observability and Security", "type": "quiz", "description": "Production visibility and defensive design.", "estimated_time_minutes": 35, "xp_reward": 25, "question_refs": {"difficulty": "hard", "count": 10}},
-        {"id": "system_design_capstone", "title": "System Design Capstone", "type": "challenge", "description": "Design a production-ready learning platform architecture.", "estimated_time_minutes": 85, "xp_reward": 50, "question_refs": {"difficulty": "hard", "count": 12}}
-      ],
-      "edges": [
-        ["requirements_analysis", "api_data_modeling"],
-        ["api_data_modeling", "caching_async"],
-        ["caching_async", "scalability_reliability"],
-        ["scalability_reliability", "observability_security"],
-        ["observability_security", "system_design_capstone"]
-      ]
-    }
-  ]
+    "state_graphs":  [
+                         {
+                             "state_id":  "ci_cd_pipelines",
+                             "title":  "CI/CD Pipelines",
+                             "entry_nodes":  [
+                                                 "version_control"
+                                             ],
+                             "final_assessment_node":  "pipeline_project",
+                             "nodes":  [
+                                           {
+                                               "id":  "version_control",
+                                               "title":  "Version Control",
+                                               "type":  "lesson",
+                                               "description":  "Commits, branches, and collaboration.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "build_test_automation",
+                                               "title":  "Build and Test Automation",
+                                               "type":  "lesson",
+                                               "description":  "Reliable build and test stages.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "artifacts_orchestration",
+                                               "title":  "Artifacts and Pipeline Orchestration",
+                                               "type":  "interactive_game",
+                                               "description":  "Manage outputs and workflow stages.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "promotion_secrets",
+                                               "title":  "Promotion and Secrets",
+                                               "type":  "lesson",
+                                               "description":  "Environment flow and secure delivery.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "rollback_observability",
+                                               "title":  "Rollback and Pipeline Observability",
+                                               "type":  "quiz",
+                                               "description":  "Recover quickly and measure delivery quality.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "pipeline_project",
+                                               "title":  "Pipeline Project",
+                                               "type":  "challenge",
+                                               "description":  "Design a safe delivery workflow for production.",
+                                               "estimated_time_minutes":  75,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "version_control",
+                                               "build_test_automation"
+                                           ],
+                                           [
+                                               "build_test_automation",
+                                               "artifacts_orchestration"
+                                           ],
+                                           [
+                                               "artifacts_orchestration",
+                                               "promotion_secrets"
+                                           ],
+                                           [
+                                               "promotion_secrets",
+                                               "rollback_observability"
+                                           ],
+                                           [
+                                               "rollback_observability",
+                                               "pipeline_project"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "cloud_platforms",
+                             "title":  "Cloud Platforms",
+                             "entry_nodes":  [
+                                                 "iam_basics"
+                                             ],
+                             "final_assessment_node":  "cloud_platform_project",
+                             "nodes":  [
+                                           {
+                                               "id":  "iam_basics",
+                                               "title":  "Identity and Access",
+                                               "type":  "lesson",
+                                               "description":  "Least privilege and secure access.",
+                                               "estimated_time_minutes":  40,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "compute_storage",
+                                               "title":  "Compute and Storage",
+                                               "type":  "lesson",
+                                               "description":  "Core cloud workloads and persistence.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "databases_networking",
+                                               "title":  "Managed Databases and Networking",
+                                               "type":  "interactive_game",
+                                               "description":  "Service connectivity and data systems.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "serverless_monitoring",
+                                               "title":  "Serverless and Monitoring",
+                                               "type":  "lesson",
+                                               "description":  "Event-driven compute and observability.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "cost_iac",
+                                               "title":  "Cost and Infrastructure as Code",
+                                               "type":  "quiz",
+                                               "description":  "Repeatability and cost-aware architecture.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "cloud_platform_project",
+                                               "title":  "Cloud Architecture Project",
+                                               "type":  "challenge",
+                                               "description":  "Design and justify a cloud deployment plan.",
+                                               "estimated_time_minutes":  75,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "iam_basics",
+                                               "compute_storage"
+                                           ],
+                                           [
+                                               "compute_storage",
+                                               "databases_networking"
+                                           ],
+                                           [
+                                               "databases_networking",
+                                               "serverless_monitoring"
+                                           ],
+                                           [
+                                               "serverless_monitoring",
+                                               "cost_iac"
+                                           ],
+                                           [
+                                               "cost_iac",
+                                               "cloud_platform_project"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "containers_orchestration",
+                             "title":  "Containers \u0026 Orchestration",
+                             "entry_nodes":  [
+                                                 "linux_basics"
+                                             ],
+                             "final_assessment_node":  "orchestration_project",
+                             "nodes":  [
+                                           {
+                                               "id":  "linux_basics",
+                                               "title":  "Linux Basics",
+                                               "type":  "lesson",
+                                               "description":  "Processes, files, and permissions.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "images_dockerfiles",
+                                               "title":  "Images and Dockerfiles",
+                                               "type":  "lesson",
+                                               "description":  "Build portable container images.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "runtime_networking",
+                                               "title":  "Runtime, Volumes, and Networking",
+                                               "type":  "interactive_game",
+                                               "description":  "Run, inspect, and connect containers.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "kubernetes_basics",
+                                               "title":  "Kubernetes Basics",
+                                               "type":  "lesson",
+                                               "description":  "Pods, services, and deployments.",
+                                               "estimated_time_minutes":  55,
+                                               "xp_reward":  30,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "scaling_logging",
+                                               "title":  "Scaling and Logging",
+                                               "type":  "quiz",
+                                               "description":  "Operate clustered workloads safely.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "orchestration_project",
+                                               "title":  "Orchestration Project",
+                                               "type":  "challenge",
+                                               "description":  "Deploy and scale a containerized service.",
+                                               "estimated_time_minutes":  80,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "linux_basics",
+                                               "images_dockerfiles"
+                                           ],
+                                           [
+                                               "images_dockerfiles",
+                                               "runtime_networking"
+                                           ],
+                                           [
+                                               "runtime_networking",
+                                               "kubernetes_basics"
+                                           ],
+                                           [
+                                               "kubernetes_basics",
+                                               "scaling_logging"
+                                           ],
+                                           [
+                                               "scaling_logging",
+                                               "orchestration_project"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "data_visualization",
+                             "title":  "Data Visualization",
+                             "entry_nodes":  [
+                                                 "chart_selection"
+                                             ],
+                             "final_assessment_node":  "dashboard_storytelling_project",
+                             "nodes":  [
+                                           {
+                                               "id":  "chart_selection",
+                                               "title":  "Chart Selection",
+                                               "type":  "lesson",
+                                               "description":  "Choose the right chart for the question.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "exploratory_plots",
+                                               "title":  "Exploratory Plots",
+                                               "type":  "interactive_game",
+                                               "description":  "Inspect patterns and outliers visually.",
+                                               "estimated_time_minutes":  40,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "python_plotting",
+                                               "title":  "Python Plotting",
+                                               "type":  "lesson",
+                                               "description":  "Matplotlib and seaborn workflows.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "dashboard_design",
+                                               "title":  "Dashboard Design",
+                                               "type":  "lesson",
+                                               "description":  "KPIs, interaction, and accessibility.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "data_storytelling",
+                                               "title":  "Data Storytelling",
+                                               "type":  "quiz",
+                                               "description":  "Turn charts into decisions and narratives.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "dashboard_storytelling_project",
+                                               "title":  "Dashboard Storytelling Project",
+                                               "type":  "challenge",
+                                               "description":  "Present insights with an actionable dashboard.",
+                                               "estimated_time_minutes":  75,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "chart_selection",
+                                               "exploratory_plots"
+                                           ],
+                                           [
+                                               "exploratory_plots",
+                                               "python_plotting"
+                                           ],
+                                           [
+                                               "python_plotting",
+                                               "dashboard_design"
+                                           ],
+                                           [
+                                               "dashboard_design",
+                                               "data_storytelling"
+                                           ],
+                                           [
+                                               "data_storytelling",
+                                               "dashboard_storytelling_project"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "deep_learning",
+                             "title":  "Deep Learning",
+                             "entry_nodes":  [
+                                                 "tensor_foundations"
+                                             ],
+                             "final_assessment_node":  "deployment_project",
+                             "nodes":  [
+                                           {
+                                               "id":  "tensor_foundations",
+                                               "title":  "Tensor Foundations",
+                                               "type":  "lesson",
+                                               "description":  "Shapes, dimensions, and tensor operations.",
+                                               "estimated_time_minutes":  40,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "neural_networks",
+                                               "title":  "Neural Networks",
+                                               "type":  "lesson",
+                                               "description":  "Layered models and activations.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "backprop_optimization",
+                                               "title":  "Backpropagation and Optimization",
+                                               "type":  "interactive_game",
+                                               "description":  "Gradient flow and optimizers.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "regularization_architectures",
+                                               "title":  "Regularization and Architectures",
+                                               "type":  "lesson",
+                                               "description":  "CNNs, sequence models, and stability.",
+                                               "estimated_time_minutes":  55,
+                                               "xp_reward":  30,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "transfer_learning",
+                                               "title":  "Transfer Learning",
+                                               "type":  "quiz",
+                                               "description":  "Fine-tune pretrained models effectively.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "deployment_project",
+                                               "title":  "Inference and Deployment Project",
+                                               "type":  "challenge",
+                                               "description":  "Serve a deep learning model inside an app flow.",
+                                               "estimated_time_minutes":  80,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "tensor_foundations",
+                                               "neural_networks"
+                                           ],
+                                           [
+                                               "neural_networks",
+                                               "backprop_optimization"
+                                           ],
+                                           [
+                                               "backprop_optimization",
+                                               "regularization_architectures"
+                                           ],
+                                           [
+                                               "regularization_architectures",
+                                               "transfer_learning"
+                                           ],
+                                           [
+                                               "transfer_learning",
+                                               "deployment_project"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "machine_learning",
+                             "title":  "Machine Learning",
+                             "entry_nodes":  [
+                                                 "data_preprocessing"
+                                             ],
+                             "final_assessment_node":  "ml_projects",
+                             "nodes":  [
+                                           {
+                                               "id":  "data_preprocessing",
+                                               "title":  "Data Preprocessing",
+                                               "type":  "lesson",
+                                               "description":  "Clean and prepare model-ready data.",
+                                               "estimated_time_minutes":  40,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "feature_engineering",
+                                               "title":  "Feature Engineering",
+                                               "type":  "interactive_game",
+                                               "description":  "Create stronger model signals.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "supervised_learning",
+                                               "title":  "Supervised Learning",
+                                               "type":  "lesson",
+                                               "description":  "Learn from labeled data.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "unsupervised_learning",
+                                               "title":  "Unsupervised Learning",
+                                               "type":  "lesson",
+                                               "description":  "Find structure without labels.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "model_evaluation",
+                                               "title":  "Model Evaluation",
+                                               "type":  "quiz",
+                                               "description":  "Measure model quality and risk.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "ml_projects",
+                                               "title":  "ML Projects",
+                                               "type":  "challenge",
+                                               "description":  "Apply ML end-to-end in a portfolio scenario.",
+                                               "estimated_time_minutes":  80,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "data_preprocessing",
+                                               "feature_engineering"
+                                           ],
+                                           [
+                                               "feature_engineering",
+                                               "supervised_learning"
+                                           ],
+                                           [
+                                               "feature_engineering",
+                                               "unsupervised_learning"
+                                           ],
+                                           [
+                                               "supervised_learning",
+                                               "model_evaluation"
+                                           ],
+                                           [
+                                               "unsupervised_learning",
+                                               "model_evaluation"
+                                           ],
+                                           [
+                                               "model_evaluation",
+                                               "ml_projects"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "mathematics_statistics",
+                             "title":  "Mathematics \u0026 Statistics",
+                             "entry_nodes":  [
+                                                 "algebra_foundations"
+                                             ],
+                             "final_assessment_node":  "math_case_study",
+                             "nodes":  [
+                                           {
+                                               "id":  "algebra_foundations",
+                                               "title":  "Algebra Foundations",
+                                               "type":  "lesson",
+                                               "description":  "Equations and symbolic reasoning.",
+                                               "estimated_time_minutes":  40,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "linear_algebra_probability",
+                                               "title":  "Linear Algebra and Probability",
+                                               "type":  "lesson",
+                                               "description":  "Vectors, matrices, and uncertainty.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "descriptive_statistics",
+                                               "title":  "Descriptive Statistics",
+                                               "type":  "interactive_game",
+                                               "description":  "Summaries, spread, and distributions.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "inferential_methods",
+                                               "title":  "Inferential Methods",
+                                               "type":  "lesson",
+                                               "description":  "Sampling, confidence, and testing.",
+                                               "estimated_time_minutes":  55,
+                                               "xp_reward":  30,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "optimization_bayesian",
+                                               "title":  "Optimization and Bayesian Thinking",
+                                               "type":  "quiz",
+                                               "description":  "Decision making under uncertainty.",
+                                               "estimated_time_minutes":  40,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "math_case_study",
+                                               "title":  "Statistics Case Study",
+                                               "type":  "challenge",
+                                               "description":  "Analyze a realistic data scenario.",
+                                               "estimated_time_minutes":  70,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "algebra_foundations",
+                                               "linear_algebra_probability"
+                                           ],
+                                           [
+                                               "linear_algebra_probability",
+                                               "descriptive_statistics"
+                                           ],
+                                           [
+                                               "linear_algebra_probability",
+                                               "inferential_methods"
+                                           ],
+                                           [
+                                               "descriptive_statistics",
+                                               "optimization_bayesian"
+                                           ],
+                                           [
+                                               "inferential_methods",
+                                               "optimization_bayesian"
+                                           ],
+                                           [
+                                               "optimization_bayesian",
+                                               "math_case_study"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "networking_fundamentals",
+                             "title":  "Networking Fundamentals",
+                             "entry_nodes":  [
+                                                 "ip_addressing"
+                                             ],
+                             "final_assessment_node":  "network_design_case",
+                             "nodes":  [
+                                           {
+                                               "id":  "ip_addressing",
+                                               "title":  "IP Addressing",
+                                               "type":  "lesson",
+                                               "description":  "Addresses, subnets, and ranges.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "dns_http",
+                                               "title":  "DNS and HTTP(S)",
+                                               "type":  "lesson",
+                                               "description":  "Naming, requests, and transport security.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "routing_firewalls",
+                                               "title":  "Routing and Firewalls",
+                                               "type":  "interactive_game",
+                                               "description":  "Traffic paths and access control.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "load_balancing_tls",
+                                               "title":  "Load Balancing and TLS",
+                                               "type":  "lesson",
+                                               "description":  "Availability and secure traffic handling.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "network_observability",
+                                               "title":  "Network Observability",
+                                               "type":  "quiz",
+                                               "description":  "Latency, health, and delivery tuning.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "network_design_case",
+                                               "title":  "Network Design Case Study",
+                                               "type":  "challenge",
+                                               "description":  "Design a secure and performant network path.",
+                                               "estimated_time_minutes":  70,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "ip_addressing",
+                                               "dns_http"
+                                           ],
+                                           [
+                                               "dns_http",
+                                               "routing_firewalls"
+                                           ],
+                                           [
+                                               "routing_firewalls",
+                                               "load_balancing_tls"
+                                           ],
+                                           [
+                                               "load_balancing_tls",
+                                               "network_observability"
+                                           ],
+                                           [
+                                               "network_observability",
+                                               "network_design_case"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "python_programming",
+                             "title":  "Python Programming",
+                             "entry_nodes":  [
+                                                 "python_basics"
+                                             ],
+                             "final_assessment_node":  "python_capstone",
+                             "nodes":  [
+                                           {
+                                               "id":  "python_basics",
+                                               "title":  "Python Basics",
+                                               "type":  "lesson",
+                                               "description":  "Variables, control flow, and syntax.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "data_structures",
+                                               "title":  "Data Structures",
+                                               "type":  "interactive_game",
+                                               "description":  "Lists, tuples, sets, and dictionaries.",
+                                               "estimated_time_minutes":  40,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "functions_modules",
+                                               "title":  "Functions and Modules",
+                                               "type":  "lesson",
+                                               "description":  "Reusable code and modularity.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "oop_files",
+                                               "title":  "OOP and File Handling",
+                                               "type":  "challenge",
+                                               "description":  "Classes, objects, and persistent data.",
+                                               "estimated_time_minutes":  55,
+                                               "xp_reward":  30,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "testing_debugging",
+                                               "title":  "Testing and Debugging",
+                                               "type":  "quiz",
+                                               "description":  "Verify and troubleshoot Python code.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "python_capstone",
+                                               "title":  "Python Project",
+                                               "type":  "challenge",
+                                               "description":  "Build a small end-to-end Python solution.",
+                                               "estimated_time_minutes":  75,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "python_basics",
+                                               "data_structures"
+                                           ],
+                                           [
+                                               "data_structures",
+                                               "functions_modules"
+                                           ],
+                                           [
+                                               "functions_modules",
+                                               "oop_files"
+                                           ],
+                                           [
+                                               "functions_modules",
+                                               "testing_debugging"
+                                           ],
+                                           [
+                                               "oop_files",
+                                               "python_capstone"
+                                           ],
+                                           [
+                                               "testing_debugging",
+                                               "python_capstone"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "system_design",
+                             "title":  "System Design",
+                             "entry_nodes":  [
+                                                 "requirements_analysis"
+                                             ],
+                             "final_assessment_node":  "system_design_capstone",
+                             "nodes":  [
+                                           {
+                                               "id":  "requirements_analysis",
+                                               "title":  "Requirements Analysis",
+                                               "type":  "lesson",
+                                               "description":  "Define goals, users, and constraints.",
+                                               "estimated_time_minutes":  40,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "api_data_modeling",
+                                               "title":  "API and Data Modeling",
+                                               "type":  "lesson",
+                                               "description":  "Interfaces and schema design.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "caching_async",
+                                               "title":  "Caching and Asynchronous Processing",
+                                               "type":  "interactive_game",
+                                               "description":  "Performance and background workflows.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "scalability_reliability",
+                                               "title":  "Scalability and Reliability",
+                                               "type":  "lesson",
+                                               "description":  "Grow safely and handle failures.",
+                                               "estimated_time_minutes":  55,
+                                               "xp_reward":  30,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "observability_security",
+                                               "title":  "Observability and Security",
+                                               "type":  "quiz",
+                                               "description":  "Production visibility and defensive design.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "system_design_capstone",
+                                               "title":  "System Design Capstone",
+                                               "type":  "challenge",
+                                               "description":  "Design a production-ready learning platform architecture.",
+                                               "estimated_time_minutes":  85,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "requirements_analysis",
+                                               "api_data_modeling"
+                                           ],
+                                           [
+                                               "api_data_modeling",
+                                               "caching_async"
+                                           ],
+                                           [
+                                               "caching_async",
+                                               "scalability_reliability"
+                                           ],
+                                           [
+                                               "scalability_reliability",
+                                               "observability_security"
+                                           ],
+                                           [
+                                               "observability_security",
+                                               "system_design_capstone"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "blockchain_fundamentals",
+                             "title":  "Blockchain Fundamentals",
+                             "entry_nodes":  [
+                                                 "distributed_ledger_basics"
+                                             ],
+                             "final_assessment_node":  "blockchain_capstone",
+                             "nodes":  [
+                                           {
+                                               "id":  "distributed_ledger_basics",
+                                               "title":  "Distributed Ledger Basics",
+                                               "type":  "lesson",
+                                               "description":  "Understand blocks, consensus, and chain history.",
+                                               "estimated_time_minutes":  40,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "wallets_tokens",
+                                               "title":  "Wallets and Tokens",
+                                               "type":  "lesson",
+                                               "description":  "Manage assets, keys, and token mechanics.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "smart_contract_logic",
+                                               "title":  "Smart Contract Logic",
+                                               "type":  "interactive_game",
+                                               "description":  "Build trusted on-chain behavior.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "dapp_architecture",
+                                               "title":  "dApp Architecture",
+                                               "type":  "lesson",
+                                               "description":  "Connect contracts, clients, and off-chain services.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "chain_security",
+                                               "title":  "Chain Security",
+                                               "type":  "quiz",
+                                               "description":  "Protect users and contracts from common exploits.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "blockchain_capstone",
+                                               "title":  "Blockchain Capstone",
+                                               "type":  "challenge",
+                                               "description":  "Ship a simple blockchain product flow.",
+                                               "estimated_time_minutes":  80,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "distributed_ledger_basics",
+                                               "wallets_tokens"
+                                           ],
+                                           [
+                                               "wallets_tokens",
+                                               "smart_contract_logic"
+                                           ],
+                                           [
+                                               "smart_contract_logic",
+                                               "dapp_architecture"
+                                           ],
+                                           [
+                                               "dapp_architecture",
+                                               "chain_security"
+                                           ],
+                                           [
+                                               "chain_security",
+                                               "blockchain_capstone"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "api_integration",
+                             "title":  "API Integration",
+                             "entry_nodes":  [
+                                                 "http_api_basics"
+                                             ],
+                             "final_assessment_node":  "integration_capstone",
+                             "nodes":  [
+                                           {
+                                               "id":  "http_api_basics",
+                                               "title":  "HTTP API Basics",
+                                               "type":  "lesson",
+                                               "description":  "Understand requests, responses, and contracts.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "auth_rate_limits",
+                                               "title":  "Auth and Rate Limits",
+                                               "type":  "lesson",
+                                               "description":  "Work safely with protected APIs.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "sdk_workflows",
+                                               "title":  "SDK Workflows",
+                                               "type":  "interactive_game",
+                                               "description":  "Integrate external services into applications.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "webhooks_events",
+                                               "title":  "Webhooks and Events",
+                                               "type":  "lesson",
+                                               "description":  "React to real-time external signals.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "resilience_retry_logic",
+                                               "title":  "Resilience and Retry Logic",
+                                               "type":  "quiz",
+                                               "description":  "Handle failure and partial success cleanly.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "integration_capstone",
+                                               "title":  "Integration Capstone",
+                                               "type":  "challenge",
+                                               "description":  "Connect multiple services into one experience.",
+                                               "estimated_time_minutes":  75,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "http_api_basics",
+                                               "auth_rate_limits"
+                                           ],
+                                           [
+                                               "auth_rate_limits",
+                                               "sdk_workflows"
+                                           ],
+                                           [
+                                               "sdk_workflows",
+                                               "webhooks_events"
+                                           ],
+                                           [
+                                               "webhooks_events",
+                                               "resilience_retry_logic"
+                                           ],
+                                           [
+                                               "resilience_retry_logic",
+                                               "integration_capstone"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "cybersecurity_fundamentals",
+                             "title":  "Cybersecurity Fundamentals",
+                             "entry_nodes":  [
+                                                 "security_mindset"
+                                             ],
+                             "final_assessment_node":  "security_capstone",
+                             "nodes":  [
+                                           {
+                                               "id":  "security_mindset",
+                                               "title":  "Security Mindset",
+                                               "type":  "lesson",
+                                               "description":  "Think in threats, attack surfaces, and abuse cases.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "identity_secrets",
+                                               "title":  "Identity and Secrets",
+                                               "type":  "lesson",
+                                               "description":  "Protect credentials, tokens, and access.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "app_vulns",
+                                               "title":  "Application Vulnerabilities",
+                                               "type":  "interactive_game",
+                                               "description":  "Spot and prevent common security flaws.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "cloud_host_hardening",
+                                               "title":  "Cloud and Host Hardening",
+                                               "type":  "lesson",
+                                               "description":  "Reduce exposure in runtime environments.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "incident_response",
+                                               "title":  "Incident Response",
+                                               "type":  "quiz",
+                                               "description":  "Investigate and respond under pressure.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "security_capstone",
+                                               "title":  "Security Capstone",
+                                               "type":  "challenge",
+                                               "description":  "Secure a real-world engineering stack.",
+                                               "estimated_time_minutes":  80,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "security_mindset",
+                                               "identity_secrets"
+                                           ],
+                                           [
+                                               "identity_secrets",
+                                               "app_vulns"
+                                           ],
+                                           [
+                                               "app_vulns",
+                                               "cloud_host_hardening"
+                                           ],
+                                           [
+                                               "cloud_host_hardening",
+                                               "incident_response"
+                                           ],
+                                           [
+                                               "incident_response",
+                                               "security_capstone"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "devsecops_security",
+                             "title":  "DevSecOps Security",
+                             "entry_nodes":  [
+                                                 "secure_sdls"
+                                             ],
+                             "final_assessment_node":  "devsecops_capstone",
+                             "nodes":  [
+                                           {
+                                               "id":  "secure_sdls",
+                                               "title":  "Secure SDLC",
+                                               "type":  "lesson",
+                                               "description":  "Bring security into planning and coding workflows.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "dependency_scanning",
+                                               "title":  "Dependency Scanning",
+                                               "type":  "lesson",
+                                               "description":  "Catch vulnerable packages and images early.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "pipeline_policy_checks",
+                                               "title":  "Pipeline Policy Checks",
+                                               "type":  "interactive_game",
+                                               "description":  "Automate security gates in delivery paths.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "runtime_detection",
+                                               "title":  "Runtime Detection",
+                                               "type":  "lesson",
+                                               "description":  "Watch for anomalies in live systems.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "governance_reporting",
+                                               "title":  "Governance and Reporting",
+                                               "type":  "quiz",
+                                               "description":  "Track security posture and exceptions.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "devsecops_capstone",
+                                               "title":  "DevSecOps Capstone",
+                                               "type":  "challenge",
+                                               "description":  "Secure a full release pipeline and runtime path.",
+                                               "estimated_time_minutes":  80,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "secure_sdls",
+                                               "dependency_scanning"
+                                           ],
+                                           [
+                                               "dependency_scanning",
+                                               "pipeline_policy_checks"
+                                           ],
+                                           [
+                                               "pipeline_policy_checks",
+                                               "runtime_detection"
+                                           ],
+                                           [
+                                               "runtime_detection",
+                                               "governance_reporting"
+                                           ],
+                                           [
+                                               "governance_reporting",
+                                               "devsecops_capstone"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "data_engineering",
+                             "title":  "Data Engineering",
+                             "entry_nodes":  [
+                                                 "batch_stream_intro"
+                                             ],
+                             "final_assessment_node":  "data_engineering_capstone",
+                             "nodes":  [
+                                           {
+                                               "id":  "batch_stream_intro",
+                                               "title":  "Batch and Stream Basics",
+                                               "type":  "lesson",
+                                               "description":  "Move data through reliable pipelines.",
+                                               "estimated_time_minutes":  40,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "etl_modeling",
+                                               "title":  "ETL and Modeling",
+                                               "type":  "lesson",
+                                               "description":  "Transform raw data into useful analytical layers.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "pipeline_orchestration",
+                                               "title":  "Pipeline Orchestration",
+                                               "type":  "interactive_game",
+                                               "description":  "Schedule and coordinate data jobs.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "data_quality_lineage",
+                                               "title":  "Data Quality and Lineage",
+                                               "type":  "lesson",
+                                               "description":  "Track trust and ownership in datasets.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "warehouse_optimization",
+                                               "title":  "Warehouse Optimization",
+                                               "type":  "quiz",
+                                               "description":  "Scale performance and cost for large data systems.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "data_engineering_capstone",
+                                               "title":  "Data Engineering Capstone",
+                                               "type":  "challenge",
+                                               "description":  "Build a resilient analytics pipeline.",
+                                               "estimated_time_minutes":  80,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "batch_stream_intro",
+                                               "etl_modeling"
+                                           ],
+                                           [
+                                               "etl_modeling",
+                                               "pipeline_orchestration"
+                                           ],
+                                           [
+                                               "pipeline_orchestration",
+                                               "data_quality_lineage"
+                                           ],
+                                           [
+                                               "data_quality_lineage",
+                                               "warehouse_optimization"
+                                           ],
+                                           [
+                                               "warehouse_optimization",
+                                               "data_engineering_capstone"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "backend_development",
+                             "title":  "Backend Development",
+                             "entry_nodes":  [
+                                                 "backend_foundations"
+                                             ],
+                             "final_assessment_node":  "backend_capstone",
+                             "nodes":  [
+                                           {
+                                               "id":  "backend_foundations",
+                                               "title":  "Backend Foundations",
+                                               "type":  "lesson",
+                                               "description":  "Understand servers, routing, and request lifecycles.",
+                                               "estimated_time_minutes":  40,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "rest_api_design",
+                                               "title":  "REST API Design",
+                                               "type":  "lesson",
+                                               "description":  "Design clean endpoints and contracts.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "auth_business_logic",
+                                               "title":  "Auth and Business Logic",
+                                               "type":  "interactive_game",
+                                               "description":  "Secure flows and domain rules.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "async_jobs_caching",
+                                               "title":  "Async Jobs and Caching",
+                                               "type":  "lesson",
+                                               "description":  "Scale backend work and speed up reads.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "backend_testing",
+                                               "title":  "Backend Testing",
+                                               "type":  "quiz",
+                                               "description":  "Verify services and reliability.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "backend_capstone",
+                                               "title":  "Backend Capstone",
+                                               "type":  "challenge",
+                                               "description":  "Build a production-style service for a game feature.",
+                                               "estimated_time_minutes":  80,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "backend_foundations",
+                                               "rest_api_design"
+                                           ],
+                                           [
+                                               "rest_api_design",
+                                               "auth_business_logic"
+                                           ],
+                                           [
+                                               "auth_business_logic",
+                                               "async_jobs_caching"
+                                           ],
+                                           [
+                                               "async_jobs_caching",
+                                               "backend_testing"
+                                           ],
+                                           [
+                                               "backend_testing",
+                                               "backend_capstone"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "prompt_engineering",
+                             "title":  "Prompt Engineering",
+                             "entry_nodes":  [
+                                                 "prompt_patterns"
+                                             ],
+                             "final_assessment_node":  "prompt_capstone",
+                             "nodes":  [
+                                           {
+                                               "id":  "prompt_patterns",
+                                               "title":  "Prompt Patterns",
+                                               "type":  "lesson",
+                                               "description":  "Use role, context, and instruction patterns clearly.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "few_shot_design",
+                                               "title":  "Few-Shot Design",
+                                               "type":  "interactive_game",
+                                               "description":  "Guide model behavior with examples.",
+                                               "estimated_time_minutes":  40,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "retrieval_context",
+                                               "title":  "Retrieval and Context",
+                                               "type":  "lesson",
+                                               "description":  "Feed the model the right knowledge at the right time.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "evaluation_iteration",
+                                               "title":  "Evaluation and Iteration",
+                                               "type":  "lesson",
+                                               "description":  "Measure prompt quality and improve outputs.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "guardrails_safety",
+                                               "title":  "Guardrails and Safety",
+                                               "type":  "quiz",
+                                               "description":  "Constrain prompts and reduce risky outputs.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "prompt_capstone",
+                                               "title":  "Prompt Engineering Capstone",
+                                               "type":  "challenge",
+                                               "description":  "Design a reliable AI assistant flow.",
+                                               "estimated_time_minutes":  75,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "prompt_patterns",
+                                               "few_shot_design"
+                                           ],
+                                           [
+                                               "few_shot_design",
+                                               "retrieval_context"
+                                           ],
+                                           [
+                                               "retrieval_context",
+                                               "evaluation_iteration"
+                                           ],
+                                           [
+                                               "evaluation_iteration",
+                                               "guardrails_safety"
+                                           ],
+                                           [
+                                               "guardrails_safety",
+                                               "prompt_capstone"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "frontend_development",
+                             "title":  "Frontend Development",
+                             "entry_nodes":  [
+                                                 "html_css_core"
+                                             ],
+                             "final_assessment_node":  "frontend_capstone",
+                             "nodes":  [
+                                           {
+                                               "id":  "html_css_core",
+                                               "title":  "HTML and CSS Core",
+                                               "type":  "lesson",
+                                               "description":  "Structure polished pages and responsive layouts.",
+                                               "estimated_time_minutes":  40,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "javascript_ui_logic",
+                                               "title":  "JavaScript UI Logic",
+                                               "type":  "interactive_game",
+                                               "description":  "Handle interactivity, events, and browser behavior.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "component_architecture",
+                                               "title":  "Component Architecture",
+                                               "type":  "lesson",
+                                               "description":  "Build reusable UI components and screens.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "state_management",
+                                               "title":  "State Management",
+                                               "type":  "lesson",
+                                               "description":  "Coordinate data flow across larger interfaces.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "performance_accessibility",
+                                               "title":  "Performance and Accessibility",
+                                               "type":  "quiz",
+                                               "description":  "Ship fast, inclusive interfaces.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "frontend_capstone",
+                                               "title":  "Frontend Capstone",
+                                               "type":  "challenge",
+                                               "description":  "Build a polished game-style interface end to end.",
+                                               "estimated_time_minutes":  80,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "html_css_core",
+                                               "javascript_ui_logic"
+                                           ],
+                                           [
+                                               "javascript_ui_logic",
+                                               "component_architecture"
+                                           ],
+                                           [
+                                               "component_architecture",
+                                               "state_management"
+                                           ],
+                                           [
+                                               "state_management",
+                                               "performance_accessibility"
+                                           ],
+                                           [
+                                               "performance_accessibility",
+                                               "frontend_capstone"
+                                           ]
+                                       ]
+                         },
+                         {
+                             "state_id":  "sql_databases",
+                             "title":  "SQL and Databases",
+                             "entry_nodes":  [
+                                                 "relational_modeling"
+                                             ],
+                             "final_assessment_node":  "database_capstone",
+                             "nodes":  [
+                                           {
+                                               "id":  "relational_modeling",
+                                               "title":  "Relational Modeling",
+                                               "type":  "lesson",
+                                               "description":  "Design tables, keys, and normalized data.",
+                                               "estimated_time_minutes":  40,
+                                               "xp_reward":  20,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "query_basics",
+                                               "title":  "Query Basics",
+                                               "type":  "interactive_game",
+                                               "description":  "Write select, filter, and join queries.",
+                                               "estimated_time_minutes":  45,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "easy",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "aggregations_indexes",
+                                               "title":  "Aggregations and Indexes",
+                                               "type":  "lesson",
+                                               "description":  "Make queries both useful and fast.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "transactions_integrity",
+                                               "title":  "Transactions and Integrity",
+                                               "type":  "lesson",
+                                               "description":  "Protect correctness under concurrency.",
+                                               "estimated_time_minutes":  50,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "medium",
+                                                                     "count":  8
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "warehouse_patterns",
+                                               "title":  "Warehouse Patterns",
+                                               "type":  "quiz",
+                                               "description":  "Model analytics-friendly datasets.",
+                                               "estimated_time_minutes":  35,
+                                               "xp_reward":  25,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  10
+                                                                 }
+                                           },
+                                           {
+                                               "id":  "database_capstone",
+                                               "title":  "Database Capstone",
+                                               "type":  "challenge",
+                                               "description":  "Design the data layer for a rich application.",
+                                               "estimated_time_minutes":  80,
+                                               "xp_reward":  50,
+                                               "question_refs":  {
+                                                                     "difficulty":  "hard",
+                                                                     "count":  12
+                                                                 }
+                                           }
+                                       ],
+                             "edges":  [
+                                           [
+                                               "relational_modeling",
+                                               "query_basics"
+                                           ],
+                                           [
+                                               "query_basics",
+                                               "aggregations_indexes"
+                                           ],
+                                           [
+                                               "aggregations_indexes",
+                                               "transactions_integrity"
+                                           ],
+                                           [
+                                               "transactions_integrity",
+                                               "warehouse_patterns"
+                                           ],
+                                           [
+                                               "warehouse_patterns",
+                                               "database_capstone"
+                                           ]
+                                       ]
+                         }
+                     ]
 }

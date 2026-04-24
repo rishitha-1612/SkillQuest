@@ -145,7 +145,7 @@ function WorldLobby() {
         <div className="hero-copy">
           <p className="eyebrow">SkillQuest</p>
           <h1>Open a realm. Learn by playing.</h1>
-          <p className="hero-text">World window for cluster selection. Country maps open in their own game windows.</p>
+          <p className="hero-text">Each country is a career. Each state inside it is a skill path you unlock level by level.</p>
         </div>
 
         <div className="hero-stats">
@@ -171,15 +171,15 @@ function WorldLobby() {
       <section className="mission-strip">
         <article className="mission-card">
           <span>Theme</span>
-          <strong>Asia campaign unlocked. Bigger nations hold the harder classes.</strong>
+          <strong>Large nations now host the most complex career worlds.</strong>
         </article>
         <article className="mission-card">
           <span>Provinces</span>
           <strong>{questStats.activeStates}</strong>
         </article>
         <article className="mission-card mission-card-accent">
-          <span>Locked</span>
-          <strong>{LOCKED_WORLD_REGIONS.join(' - ')}</strong>
+          <span>World Status</span>
+          <strong>{LOCKED_WORLD_REGIONS.join(' - ')} are still locked.</strong>
         </article>
       </section>
 
@@ -190,7 +190,7 @@ function WorldLobby() {
         <section className="map-panel">
           <div className="panel-heading">
             <h2>World Map</h2>
-            <p className="muted">Asia is live. Other regions stay locked until later worlds unlock.</p>
+            <p className="muted">Click a job-country marker to open its skill-state map in a new window.</p>
           </div>
           <GlobeView
             countryMetrics={playableCountryMetrics}
