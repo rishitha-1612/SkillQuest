@@ -1,7 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
-import { geoArea, geoMercator, geoPath } from 'd3-geo';
+import { geoMercator, geoPath } from 'd3-geo';
 import { api } from '../api/client';
 import { getClusterTheme, getRoleWorldProfile } from '../data/worldConfig';
+
+const INDIA_SKILL_LAYOUT = {
+  python_programming: { top: '64%', left: '36%', stateName: 'Karnataka' },
+  mathematics_statistics: { top: '31%', left: '32%', stateName: 'Rajasthan' },
+  machine_learning: { top: '56%', left: '29%', stateName: 'Maharashtra' },
+  deep_learning: { top: '52%', left: '52%', stateName: 'Telangana' },
+  data_visualization: { top: '36%', left: '72%', stateName: 'West Bengal' },
+};
 
 function buildLevels(nodes, edges) {
   const indeg = new Map(nodes.map((n) => [n.id, 0]));
@@ -133,6 +141,43 @@ function ProgressWindow({ stateDetails }) {
   );
 }
 
+function IndiaImageMap({ profile, roleDetails, stateById, selectedStateId, onStateSelect }) {
+  const requirements = roleDetails?.state_requirements || [];
+
+  return (
+    <div className="country-image-map-shell india-map-shell">
+      <img src={profile.imageMapFile} alt={`${profile.countryName} map`} className="country-image-map" />
+      <div className="india-skill-overlay">
+        {requirements.map((req, index) => {
+          const layout = INDIA_SKILL_LAYOUT[req.state_id];
+          const state = stateById.get(req.state_id);
+          if (!layout || !state) return null;
+          const active = selectedStateId === req.state_id;
+
+          return (
+            <button
+              key={req.state_id}
+              className={active ? 'india-skill-marker active' : 'india-skill-marker'}
+              style={{
+                top: layout.top,
+                left: layout.left,
+                '--delay': `${index * 120}ms`,
+              }}
+              onClick={() => onStateSelect(req.state_id)}
+            >
+              <span className="india-skill-dot" />
+              <span className="india-skill-card">
+                <strong>{state.title}</strong>
+                <small>{layout.stateName}</small>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function CountryWindow({ countryId }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -163,9 +208,9 @@ export default function CountryWindow({ countryId }) {
         setStateById(map);
 
         const profile = getRoleWorldProfile(countryId);
-        const res = await fetch(profile.mapFile);
-        if (!res.ok) throw new Error('Could not load local map file.');
-        setMapData(await res.json());
+        const stateRes = await fetch(profile.stateMapFile);
+        if (!stateRes.ok) throw new Error('Could not load local map file.');
+        setMapData(await stateRes.json());
         setSelectedStateId(stateIds[0] || '');
       } catch (e) {
         setError(e.message);
@@ -184,19 +229,7 @@ export default function CountryWindow({ countryId }) {
   const profile = getRoleWorldProfile(countryId);
   const theme = getClusterTheme(roleDetails?.continent_id || selectedCountry?.continentId || 'ai_data');
   const selectedState = stateById.get(selectedStateId) || null;
-
-  const stateRegions = useMemo(() => {
-    if (!mapData?.features?.length || !roleDetails?.state_requirements?.length) return [];
-    const ranked = [...mapData.features].sort((a, b) => geoArea(b) - geoArea(a)).slice(0, roleDetails.state_requirements.length);
-    return ranked.map((featureItem, index) => {
-      const req = roleDetails.state_requirements[index];
-      return {
-        feature: featureItem,
-        req,
-        state: stateById.get(req.state_id),
-      };
-    });
-  }, [mapData, roleDetails, stateById]);
+  const useImageMap = !!profile.imageMapFile && countryId === 'data_scientist';
 
   const projection = useMemo(() => {
     if (!mapData) return null;
@@ -250,38 +283,26 @@ export default function CountryWindow({ countryId }) {
             <span className="dot green" />
             <span className="dot yellow" />
             <span className="dot blue" />
-            <strong>Animated Country Map</strong>
+            <strong>Country Map</strong>
           </div>
           <div className="window-body">
-            {pathBuilder && stateRegions.length ? (
+            {useImageMap ? (
+              <IndiaImageMap
+                profile={profile}
+                roleDetails={roleDetails}
+                stateById={stateById}
+                selectedStateId={selectedStateId}
+                onStateSelect={setSelectedStateId}
+              />
+            ) : pathBuilder && mapData?.features?.length ? (
               <svg className="country-live-map" viewBox="0 0 920 640">
-                {stateRegions.map(({ feature, req, state }, index) => {
-                  const active = selectedStateId === req.state_id;
-                  const [cx, cy] = pathBuilder.centroid(feature);
-                  return (
-                    <g
-                      key={req.state_id}
-                      className="state-region-group region-animate"
-                      style={{ '--delay': `${index * 110}ms` }}
-                      onClick={() => setSelectedStateId(req.state_id)}
-                    >
-                      <path
-                        d={pathBuilder(feature)}
-                        className={active ? 'state-region active' : 'state-region'}
-                        style={{
-                          fill: active ? theme.accent : 'rgba(255,255,255,0.85)',
-                          opacity: 1,
-                        }}
-                      />
-                      <text x={cx} y={cy - 4} textAnchor="middle" className="state-region-title">
-                        {state?.title || req.state_id}
-                      </text>
-                      <text x={cx} y={cy + 16} textAnchor="middle" className="state-region-sub">
-                        {state?.nodes?.length || 0} levels
-                      </text>
-                    </g>
-                  );
-                })}
+                {mapData.features.map((feature, index) => (
+                  <path
+                    key={feature.properties?.shapeID || feature.properties?.shapeName || index}
+                    d={pathBuilder(feature)}
+                    className="country-state-border"
+                  />
+                ))}
               </svg>
             ) : (
               <div className="country-map-fallback">Map loading...</div>

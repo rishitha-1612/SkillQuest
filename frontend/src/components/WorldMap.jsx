@@ -252,19 +252,24 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
       <div className="globe-stage" ref={mountRef} />
       <div className="label-layer">
         {projected.map((item) => (
-          <button
+          <div
             key={item.id}
-            className={item.id === selectedCountryId ? 'globe-label active' : 'globe-label'}
+            className={item.id === selectedCountryId ? 'globe-marker active' : 'globe-marker'}
             style={{
               left: item.x,
               top: item.y,
               opacity: item.visible ? 1 : 0,
               transform: `translate(-50%, -50%) scale(${item.id === selectedCountryId ? 1.08 : 1})`,
             }}
-            onClick={() => onCountrySelect(item.continentId, item.country)}
           >
-            {item.label}
-          </button>
+            <button
+              className={item.id === selectedCountryId ? 'globe-label active' : 'globe-label'}
+              onClick={() => onCountrySelect(item.continentId, item.country)}
+            >
+              {item.label}
+            </button>
+            <span className="globe-pin" />
+          </div>
         ))}
       </div>
       <div className="globe-caption">
