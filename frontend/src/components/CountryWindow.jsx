@@ -5,6 +5,7 @@ import CountryMap3D from './CountryMap3D';
 import China3DMap from './China3DMap';
 import India3DMap from './India3DMap';
 import Korea3DMap from './Korea3DMap';
+import SaudiArabia3DMap from './SaudiArabia3DMap';
 import SkillJourneyPanel from './SkillJourneyPanel';
 import TutorChatPanel from './TutorChatPanel';
 
@@ -264,6 +265,7 @@ export default function CountryWindow({ countryId }) {
   const useChinaCraftedMap = profile.iso3 === 'CHN';
   const useIndiaCraftedMap = profile.iso3 === 'IND';
   const useKoreaCraftedMap = profile.iso3 === 'KOR';
+  const useSaudiCraftedMap = profile.iso3 === 'SAU';
 
   function handleSelectState(stateId) {
     const index = stateOrder.indexOf(stateId);
@@ -340,6 +342,13 @@ export default function CountryWindow({ countryId }) {
               />
             ) : useKoreaCraftedMap ? (
               <Korea3DMap
+                roleDetails={roleDetails}
+                stateById={stateById}
+                selectedStateId={selectedStateId}
+                onStateSelect={handleSelectState}
+              />
+            ) : useSaudiCraftedMap ? (
+              <SaudiArabia3DMap
                 roleDetails={roleDetails}
                 stateById={stateById}
                 selectedStateId={selectedStateId}
