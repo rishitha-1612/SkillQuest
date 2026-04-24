@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { buildAssessmentQuestions } from '../data/assessmentGenerator';
+import { buildAssessmentQuestions, getAssessmentQuestionBankSize } from '../data/assessmentGenerator';
 
 function getStatus(index, visited, answers) {
   if (answers[index] !== undefined) return 'answered';
@@ -18,6 +18,10 @@ export default function AssessmentWindow({
   const questions = useMemo(
     () => buildAssessmentQuestions(stateDetails, attemptSeed),
     [stateDetails, attemptSeed]
+  );
+  const questionBankSize = useMemo(
+    () => getAssessmentQuestionBankSize(stateDetails),
+    [stateDetails]
   );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visited, setVisited] = useState(new Set([0]));
@@ -112,7 +116,7 @@ export default function AssessmentWindow({
         <div className="assessment-topline">
           <div>
             <strong>25 questions</strong>
-            <p className="muted">Score 75% or higher to unlock the next skill.</p>
+            <p className="muted">{`Drawn from a ${questionBankSize || 100}-question interview-style bank. Score 75% or higher to unlock the next skill.`}</p>
           </div>
           <div className="assessment-progress-pill">
             <span>{answeredCount}/25 answered</span>
@@ -158,7 +162,7 @@ export default function AssessmentWindow({
           <div className="assessment-card">
             <div className="assessment-card-head">
               <span>Question {currentQuestion.index}</span>
-              <strong>{stateDetails.title}</strong>
+              <strong>{`${stateDetails.title} • ${currentQuestion.difficulty}`}</strong>
             </div>
             <h3>{currentQuestion.prompt}</h3>
             <div className="assessment-options">

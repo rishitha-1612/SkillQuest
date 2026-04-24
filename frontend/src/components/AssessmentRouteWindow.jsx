@@ -149,7 +149,7 @@ export default function AssessmentRouteWindow({ countryId, stateId }) {
           </div>
           <div className="window-body">
             <p className="panel-summary">
-              Finish the skill route, then take this assessment. A new question set is generated on each attempt.
+              Finish the skill route, then take this assessment. Each attempt pulls a fresh 25-question mix from a 100-question easy, medium, and hard bank.
             </p>
             <div className="mini-stats">
               <article>
