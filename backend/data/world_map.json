@@ -2,30 +2,66 @@
   "continents": [
     {
       "id": "ai_data",
-      "title": "AI & Data",
-      "focus": "Intelligence, prediction, automation, and data-driven decision-making",
+      "title": "AI and Data",
+      "focus": "AI systems, analytics, data platforms, and human-AI workflows",
       "countries": [
-        {"id": "ai_engineer", "title": "AI Engineer", "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "data_visualization"]},
-        {"id": "machine_learning_engineer", "title": "Machine Learning Engineer", "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "data_visualization"]},
-        {"id": "data_scientist", "title": "Data Scientist", "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "data_visualization"]},
-        {"id": "data_analyst", "title": "Data Analyst", "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "data_visualization"]},
-        {"id": "ai_researcher", "title": "AI Researcher", "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "data_visualization"]},
-        {"id": "nlp_engineer", "title": "NLP Engineer", "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "data_visualization"]},
-        {"id": "mlops_engineer", "title": "MLOps Engineer", "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "data_visualization"]}
+        {
+          "id": "ai_engineer",
+          "title": "AI Engineer",
+          "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "data_visualization"]
+        },
+        {
+          "id": "ml_engineer",
+          "title": "ML Engineer",
+          "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "system_design"]
+        },
+        {
+          "id": "data_scientist",
+          "title": "Data Scientist",
+          "states": ["python_programming", "mathematics_statistics", "machine_learning", "data_visualization", "sql_databases"]
+        },
+        {
+          "id": "data_engineer",
+          "title": "Data Engineer",
+          "states": ["python_programming", "sql_databases", "data_engineering", "cloud_platforms", "ci_cd_pipelines"]
+        },
+        {
+          "id": "prompt_engineer",
+          "title": "Prompt Engineer",
+          "states": ["prompt_engineering", "machine_learning", "api_integration", "data_visualization", "python_programming"]
+        }
       ]
     },
     {
       "id": "cloud_infrastructure",
-      "title": "Cloud & Infrastructure",
-      "focus": "Scalability, system design, deployment, and reliability",
+      "title": "Engineering Worlds",
+      "focus": "Software engineering, cloud systems, security, and blockchain product building",
       "countries": [
-        {"id": "cloud_architect", "title": "Cloud Architect", "states": ["cloud_platforms", "networking_fundamentals", "containers_orchestration", "ci_cd_pipelines", "system_design"]},
-        {"id": "devops_engineer", "title": "DevOps Engineer", "states": ["cloud_platforms", "networking_fundamentals", "containers_orchestration", "ci_cd_pipelines", "system_design"]},
-        {"id": "site_reliability_engineer", "title": "Site Reliability Engineer (SRE)", "states": ["cloud_platforms", "networking_fundamentals", "containers_orchestration", "ci_cd_pipelines", "system_design"]},
-        {"id": "cloud_engineer", "title": "Cloud Engineer", "states": ["cloud_platforms", "networking_fundamentals", "containers_orchestration", "ci_cd_pipelines", "system_design"]},
-        {"id": "platform_engineer", "title": "Platform Engineer", "states": ["cloud_platforms", "networking_fundamentals", "containers_orchestration", "ci_cd_pipelines", "system_design"]},
-        {"id": "cloud_security_engineer", "title": "Cloud Security Engineer", "states": ["cloud_platforms", "networking_fundamentals", "containers_orchestration", "ci_cd_pipelines", "system_design"]},
-        {"id": "infrastructure_automation_engineer", "title": "Infrastructure Automation Engineer", "states": ["cloud_platforms", "networking_fundamentals", "containers_orchestration", "ci_cd_pipelines", "system_design"]}
+        {
+          "id": "cloud_architect",
+          "title": "Cloud Architect",
+          "states": ["cloud_platforms", "networking_fundamentals", "containers_orchestration", "ci_cd_pipelines", "system_design"]
+        },
+        {
+          "id": "cybersecurity_specialist",
+          "title": "Cybersecurity Specialist",
+          "states": ["networking_fundamentals", "cybersecurity_fundamentals", "cloud_platforms", "devsecops_security", "system_design"]
+        },
+        {
+          "id": "software_developer",
+          "title": "Software Developer",
+          "states": ["python_programming", "backend_development", "sql_databases", "ci_cd_pipelines", "system_design"]
+        },
+        {
+          "id": "full_stack_engineer",
+          "title": "Full Stack Engineer",
+          "states": ["frontend_development", "backend_development", "sql_databases", "api_integration", "system_design"]
+        },
+        {
+          "id": "blockchain_developer",
+          "title": "Blockchain Developer",
+          "states": ["python_programming", "backend_development", "blockchain_fundamentals", "cybersecurity_fundamentals", "system_design"]
+        }
       ]
     }
   ]

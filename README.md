@@ -1,102 +1,181 @@
 # SkillQuest AI
 
-SkillQuest AI is a gamified learning platform prototype where:
+SkillQuest AI is a gamified career-learning prototype where the whole product behaves like a world map game:
 
-- continents represent job clusters
-- countries represent job roles
-- states represent major skills
-- cities represent playable learning levels inside each skill path
+- continents are job clusters
+- countries are career paths
+- states are the skills required for that job
+- city nodes are the playable learning levels inside each skill
 
-The current build is a multi-window frontend plus FastAPI backend prototype with a globe lobby, local map assets, and a custom India skill-map experience.
+The current build is a React + Vite frontend with a FastAPI backend, a rotating Earth lobby, multi-window country screens, local downloaded map assets, and a custom India career world.
 
-## What We Have Built
+## Current Career Countries
 
-### 1. Backend API
+The active world now uses these 10 jobs as countries:
 
-The backend serves the world structure and learning-path data:
+- AI Engineer
+- ML Engineer
+- Data Scientist
+- Cybersecurity Specialist
+- Cloud Architect
+- Software Developer
+- Full Stack Engineer
+- Data Engineer
+- Blockchain Developer
+- Prompt Engineer
 
-- world map
-- role details
-- state details
-- node graphs
-- readiness and unlock logic
+These jobs are mapped onto large nations so the bigger countries carry the heavier and more complex roles. India is intentionally assigned to `AI Engineer`.
 
-Main backend files:
+Current country assignment:
 
-- [backend/main.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/main.py)
-- [backend/api/routes.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/api/routes.py)
-- [backend/services](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services)
+- Russia -> Cloud Architect
+- Canada -> Full Stack Engineer
+- China -> Cybersecurity Specialist
+- United States -> Data Engineer
+- Brazil -> ML Engineer
+- India -> AI Engineer
+- Australia -> Data Scientist
+- Kazakhstan -> Blockchain Developer
+- Saudi Arabia -> Prompt Engineer
+- South Africa -> Software Developer
 
-### 2. World Lobby Frontend
+## Game Structure
 
-The main app window acts as the world lobby:
+### World Lobby
 
-- animated 3D Earth globe
-- job-country labels pinned to countries
-- labels move with globe rotation
-- country click opens a separate country game window
+The main window is the world lobby:
+
+- rotating 3D Earth built with Three.js
+- job labels pinned to country positions
+- labels move with the countries as the Earth rotates
+- clicking a country opens a separate country game window
 
 Main files:
 
 - [frontend/src/App.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/App.jsx)
 - [frontend/src/components/WorldMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/WorldMap.jsx)
 
-### 3. Multi-Window Country Experience
+### Country Windows
 
-When a country is clicked:
+Each country opens in its own window:
 
-- a new browser window opens
-- that country gets its own game screen
-- the right-side panel shows the mission board and level route
-- the left-side panel shows the country map
+- left side shows the country map
+- right side shows the mission board and level route
+- clicking a skill switches the active progression path
 
 Main file:
 
 - [frontend/src/components/CountryWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx)
 
-### 4. Local Downloaded Maps
+### India Special World
 
-We downloaded and cached country/state maps locally to avoid runtime fetch failures:
+India has a custom country experience:
 
-- country border maps: `*-adm0.json`
-- state border maps: `*-adm1.json`
+- India is the `AI Engineer` country
+- it uses a custom themed India 3D-style map rather than the generic geojson map
+- the mapped Indian states show the AI Engineer skill set:
+  - Python Programming
+  - Mathematics & Statistics
+  - Machine Learning
+  - Deep Learning
+  - Data Visualization
+
+Main file:
+
+- [frontend/src/components/India3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/India3DMap.jsx)
+
+## Backend Data Model
+
+The backend now serves the updated 10-job world.
+
+### World Map Data
+
+The job-country roster is stored in:
+
+- [backend/data/world_map.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/world_map.json)
+
+### Role Blueprints
+
+Each job has:
+
+- title
+- summary
+- responsibilities
+- tools
+- required skill states
+- dependency graph between those skill states
+
+Stored in:
+
+- [backend/data/role_blueprints.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/role_blueprints.json)
+
+### Skill State Graphs
+
+Each state has:
+
+- title
+- entry node
+- final assessment node
+- learning levels
+- graph edges between levels
+
+Stored in:
+
+- [backend/data/state_graphs.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/state_graphs.json)
+
+## Skill States Added
+
+To support the new jobs, the project now includes extra skill-state tracks beyond the original AI and cloud set.
+
+Added skill states:
+
+- Frontend Development
+- Backend Development
+- SQL and Databases
+- Cybersecurity Fundamentals
+- DevSecOps Security
+- Blockchain Fundamentals
+- Prompt Engineering
+- Data Engineering
+- API Integration
+
+Existing skill states still used:
+
+- Python Programming
+- Mathematics & Statistics
+- Machine Learning
+- Deep Learning
+- Data Visualization
+- Cloud Platforms
+- Networking Fundamentals
+- Containers & Orchestration
+- CI/CD Pipelines
+- System Design
+
+## Local Maps
+
+Country and state-border maps are cached locally to avoid runtime fetch failures.
 
 Map folder:
 
 - [frontend/public/maps](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/public/maps)
 
-### 5. India Custom Skill Map
+Current local maps include:
 
-India now has a custom-built themed map scene instead of relying on the raw downloaded image:
+- India
+- Russia
+- China
+- United States
+- Canada
+- Brazil
+- Australia
+- Kazakhstan
+- Saudi Arabia
+- South Africa
 
-- built as a stylized SVG matching the app theme
-- major Indian state-like regions represent required skills
-- skill labels are rendered directly on the India map
-- the highlighted skill regions map to:
-  - Karnataka -> Python Programming
-  - Rajasthan -> Mathematics & Statistics
-  - Maharashtra -> Machine Learning
-  - Telangana -> Deep Learning
-  - West Bengal -> Data Visualization
+Each country window uses these local files instead of relying on live downloads.
 
-### 6. UI Direction
-
-The UI has been shaped toward a friendly gaming dashboard:
-
-- lighter palette
-- rounded window panels
-- clearer labels
-- simpler flow
-- soft motion
-- easier-to-understand world/country/level separation
-
-Primary styling file:
-
-- [frontend/src/styles.css](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/styles.css)
-
-## Tech Stack
-
-### Frontend
+## Frontend Tech Stack
 
 - React
 - Vite
@@ -105,28 +184,12 @@ Primary styling file:
 - topojson-client
 - world-atlas
 
-### Backend
+## Backend Tech Stack
 
 - FastAPI
 - Uvicorn
 
-## Current Flow
-
-### Main Window
-
-1. Open the globe
-2. Rotate Earth
-3. Click a job-country label
-4. Launch a separate country window
-
-### Country Window
-
-1. View the country map
-2. Choose a required skill/state
-3. View the level route on the right
-4. Follow the city progression path
-
-## Run
+## How To Run
 
 Backend:
 
@@ -162,26 +225,48 @@ npm install
 
 - [README.md](C:/Users/admin/Desktop/SkillQuest-Ai/README.md)
 - [start_backend.py](C:/Users/admin/Desktop/SkillQuest-Ai/start_backend.py)
-- [backend/requirements.txt](C:/Users/admin/Desktop/SkillQuest-Ai/backend/requirements.txt)
-- [frontend/package.json](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/package.json)
+- [backend/main.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/main.py)
+- [backend/data/world_map.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/world_map.json)
+- [backend/data/role_blueprints.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/role_blueprints.json)
+- [backend/data/state_graphs.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/state_graphs.json)
 - [frontend/src/App.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/App.jsx)
 - [frontend/src/components/WorldMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/WorldMap.jsx)
 - [frontend/src/components/CountryWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx)
+- [frontend/src/components/India3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/India3DMap.jsx)
 - [frontend/src/data/worldConfig.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/worldConfig.js)
 - [frontend/src/styles.css](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/styles.css)
-- [frontend/public/maps](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/public/maps)
 
-## Current Notes
+## What Has Been Done So Far
 
-- India uses a crafted themed map screen
-- other countries still use the downloaded local border maps
-- the frontend bundle is still large and should be split later
+- built the FastAPI backend for world map, role details, and state details
+- built the React frontend and Vite app shell
+- created the rotating 3D Earth lobby
+- pinned job labels to country positions on the globe
+- fixed the globe labels so they move with the rotating countries
+- created multi-window country screens
+- cached local country and state-border maps in the project
+- integrated a custom India career map experience
+- rebuilt the world roster around 10 requested job countries
+- assigned larger countries to more complex roles
+- made India the AI Engineer world
+- added new skill-state graphs for software, security, data engineering, blockchain, and prompt work
+- updated the README to reflect the current product state
 
-## Next Good Steps
+## What Still Needs To Be Done
 
-- build custom themed maps for more countries, not just India
-- add actual minigames for each city node
-- persist progress, XP, and unlock state
-- add hover tooltips and richer transitions
+- add real minigames inside each city node instead of only static progression cards
+- persist player progress, XP, unlocks, and completed levels
 - add authentication and player profiles
-- code-split the country-window bundle
+- add hover tooltips and richer interactions on generic country maps
+- make non-India country maps feel more stylized and game-like instead of only geojson outlines
+- add locked continent visuals directly on the globe itself
+- improve country-window transitions and in-window navigation
+- split the frontend bundle because the current build is still large
+- add tests for the world data and frontend map rendering
+- optionally build custom themed maps for more countries the way India has one
+
+## Notes
+
+- India is still the most polished country-specific experience
+- generic countries currently use local border maps with the shared country window
+- the frontend build currently succeeds, but Vite still warns that the main JS chunk is large

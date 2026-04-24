@@ -4,7 +4,7 @@ import GlobeView from './components/WorldMap';
 import CountrySkillsPanel from './components/CountrySkillsPanel';
 import StatePathwayPanel from './components/StatePathwayPanel';
 import CountryWindow from './components/CountryWindow';
-import { getClusterTheme } from './data/worldConfig';
+import { getClusterTheme, isPlayableRealm, LOCKED_WORLD_REGIONS } from './data/worldConfig';
 
 const LEVEL_WEIGHT = {
   beginner: 1,
@@ -96,11 +96,15 @@ function WorldLobby() {
     () => buildCountryMetrics(continents, roleById, stateById),
     [continents, roleById, stateById]
   );
-  const questStats = useMemo(
-    () => buildQuestStats(countryMetrics, selectedCountry, roleDetails, stateDetails),
-    [countryMetrics, selectedCountry, roleDetails, stateDetails]
+  const playableCountryMetrics = useMemo(
+    () => countryMetrics.filter((country) => isPlayableRealm(country.id)),
+    [countryMetrics]
   );
-  const selectedTheme = getClusterTheme(selectedContinentId || continents[0]?.id || 'ai_data');
+  const questStats = useMemo(
+    () => buildQuestStats(playableCountryMetrics, selectedCountry, roleDetails, stateDetails),
+    [playableCountryMetrics, selectedCountry, roleDetails, stateDetails]
+  );
+  const selectedTheme = getClusterTheme(selectedContinentId || playableCountryMetrics[0]?.continentId || 'ai_data');
 
   async function onCountrySelect(continentId, country) {
     setSelectedContinentId(continentId);
@@ -141,7 +145,7 @@ function WorldLobby() {
         <div className="hero-copy">
           <p className="eyebrow">SkillQuest</p>
           <h1>Open a realm. Learn by playing.</h1>
-          <p className="hero-text">World window for cluster selection. Country maps open in their own game windows.</p>
+          <p className="hero-text">Each country is a career. Each state inside it is a skill path you unlock level by level.</p>
         </div>
 
         <div className="hero-stats">
@@ -167,15 +171,15 @@ function WorldLobby() {
       <section className="mission-strip">
         <article className="mission-card">
           <span>Theme</span>
-          <strong>{selectedTheme.lore}</strong>
+          <strong>Large nations now host the most complex career worlds.</strong>
         </article>
         <article className="mission-card">
           <span>Provinces</span>
           <strong>{questStats.activeStates}</strong>
         </article>
         <article className="mission-card mission-card-accent">
-          <span>Flow</span>
-          <strong>World -&gt; Country -&gt; Province -&gt; City</strong>
+          <span>World Status</span>
+          <strong>{LOCKED_WORLD_REGIONS.join(' - ')} are still locked.</strong>
         </article>
       </section>
 
@@ -186,10 +190,10 @@ function WorldLobby() {
         <section className="map-panel">
           <div className="panel-heading">
             <h2>World Map</h2>
-            <p className="muted">Click any country token to launch its own game window.</p>
+            <p className="muted">Click a job-country marker to open its skill-state map in a new window.</p>
           </div>
           <GlobeView
-            countryMetrics={countryMetrics}
+            countryMetrics={playableCountryMetrics}
             selectedCountryId={selectedCountry?.id || ''}
             onCountrySelect={onCountrySelect}
           />
