@@ -4,6 +4,7 @@ import GlobeView from './components/WorldMap';
 import CountrySkillsPanel from './components/CountrySkillsPanel';
 import StatePathwayPanel from './components/StatePathwayPanel';
 import CountryWindow from './components/CountryWindow';
+import AssessmentRouteWindow from './components/AssessmentRouteWindow';
 import { getClusterTheme, isPlayableRealm, LOCKED_WORLD_REGIONS } from './data/worldConfig';
 
 const LEVEL_WEIGHT = {
@@ -218,9 +219,14 @@ export default function App() {
   const params = new URLSearchParams(window.location.search);
   const windowMode = params.get('window');
   const countryId = params.get('country');
+  const stateId = params.get('state');
 
   if (windowMode === 'country' && countryId) {
     return <CountryWindow countryId={countryId} />;
+  }
+
+  if (windowMode === 'assessment' && countryId && stateId) {
+    return <AssessmentRouteWindow countryId={countryId} stateId={stateId} />;
   }
 
   return <WorldLobby />;

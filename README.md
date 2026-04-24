@@ -60,12 +60,46 @@ Main files:
 Each country opens in its own window:
 
 - left side shows the country map
-- right side shows the mission board and level route
+- right side shows the mission board, rider progress road, assessment gate, and level route
 - clicking a skill switches the active progression path
+- each skill must be cleared with an assessment before the next skill unlocks
 
 Main file:
 
 - [frontend/src/components/CountryWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx)
+
+### Assessment Flow
+
+Every skill now has a built-in assessment gate:
+
+- 25 multiple-choice questions per skill
+- user must score 75% or higher to pass
+- next skill only unlocks after the current skill assessment is passed
+- assessment is launched from the end of the skill route using a `Take Assessment` button
+- assessment opens in a separate window instead of inside the country screen
+- question navigator shows:
+  - green for answered questions
+  - yellow for opened but unanswered questions
+  - blue-white for questions not opened yet
+
+Main files:
+
+- [frontend/src/components/AssessmentWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentWindow.jsx)
+- [frontend/src/components/AssessmentRouteWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentRouteWindow.jsx)
+- [frontend/src/data/assessmentGenerator.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentGenerator.js)
+
+### Rider Journey
+
+Country windows now include a rider progress panel:
+
+- required skills are connected by a road journey
+- the rider marker shows current progress through the country
+- completed skills move the rider farther down the road
+- locked skills stay ahead of the rider until the previous assessment is cleared
+
+Main file:
+
+- [frontend/src/components/SkillJourneyPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/SkillJourneyPanel.jsx)
 
 ### India Special World
 
@@ -232,8 +266,12 @@ npm install
 - [frontend/src/App.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/App.jsx)
 - [frontend/src/components/WorldMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/WorldMap.jsx)
 - [frontend/src/components/CountryWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx)
+- [frontend/src/components/AssessmentWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentWindow.jsx)
+- [frontend/src/components/AssessmentRouteWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentRouteWindow.jsx)
+- [frontend/src/components/SkillJourneyPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/SkillJourneyPanel.jsx)
 - [frontend/src/components/India3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/India3DMap.jsx)
 - [frontend/src/data/worldConfig.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/worldConfig.js)
+- [frontend/src/data/assessmentGenerator.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentGenerator.js)
 - [frontend/src/styles.css](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/styles.css)
 
 ## What Has Been Done So Far
@@ -250,17 +288,24 @@ npm install
 - assigned larger countries to more complex roles
 - made India the AI Engineer world
 - added new skill-state graphs for software, security, data engineering, blockchain, and prompt work
+- pulled the latest upstream changes before extending the next feature set
+- added 25-question assessment gates for every skill
+- added pass/fail unlocking logic with a 75% threshold
+- moved assessments to a dedicated end-of-course window launched from the skill route
+- added a rider progress road that shows current skill position and destination
 - updated the README to reflect the current product state
 
 ## What Still Needs To Be Done
 
 - add real minigames inside each city node instead of only static progression cards
-- persist player progress, XP, unlocks, and completed levels
+- move progress storage from local browser storage to a proper backend player profile
 - add authentication and player profiles
 - add hover tooltips and richer interactions on generic country maps
 - make non-India country maps feel more stylized and game-like instead of only geojson outlines
 - add locked continent visuals directly on the globe itself
 - improve country-window transitions and in-window navigation
+- add richer question banks instead of the current generated assessment questions
+- connect the rider road more directly to the rendered geographic state map for every country
 - split the frontend bundle because the current build is still large
 - add tests for the world data and frontend map rendering
 - optionally build custom themed maps for more countries the way India has one
@@ -269,4 +314,5 @@ npm install
 
 - India is still the most polished country-specific experience
 - generic countries currently use local border maps with the shared country window
+- assessment progress is currently stored in browser local storage per country window
 - the frontend build currently succeeds, but Vite still warns that the main JS chunk is large

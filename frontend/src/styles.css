@@ -239,6 +239,33 @@ body::before {
   padding: 16px;
 }
 
+.country-map-window-body {
+  display: grid;
+  gap: 14px;
+}
+
+.country-map-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(237,248,255,0.96));
+  border: 1px solid rgba(131, 194, 240, 0.2);
+  color: #4b7293;
+}
+
+.country-map-topline span {
+  font-size: 0.84rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.country-map-topline strong {
+  font-size: 1rem;
+}
+
 .country-live-map {
   width: 100%;
   display: block;
@@ -321,6 +348,10 @@ body::before {
   fill: #dff3e5;
   stroke: #4b83b3;
   stroke-width: 1.2;
+}
+
+.country-state-anchor {
+  fill: rgba(74, 130, 181, 0.72);
 }
 
 .path-shell {
@@ -742,6 +773,16 @@ body::before {
   box-shadow: inset 0 -4px 0 rgba(88, 204, 2, 0.22);
 }
 
+.skill-pill.locked {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: inset 0 -4px 0 rgba(163, 188, 208, 0.18);
+}
+
+.skill-pill.passed {
+  border: 1px solid rgba(88, 204, 2, 0.28);
+}
+
 .reason-list {
   margin: 10px 0 0;
   padding-left: 18px;
@@ -774,6 +815,360 @@ body::before {
 
 .city-card small {
   color: #7093b2;
+}
+
+.assessment-window {
+  min-height: 520px;
+}
+
+.assessment-route-root {
+  padding-bottom: 32px;
+}
+
+.assessment-route-layout {
+  display: grid;
+  gap: 18px;
+}
+
+.assessment-body {
+  display: grid;
+  gap: 16px;
+}
+
+.assessment-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.assessment-progress-pill {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #eefbff, #e1f5ff);
+  color: #44759c;
+  font-weight: 900;
+}
+
+.assessment-result {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 14px 16px;
+  border-radius: 20px;
+  font-weight: 900;
+}
+
+.assessment-result.pass {
+  background: linear-gradient(180deg, #edffd5, #def8c0);
+  color: #4b8500;
+}
+
+.assessment-result.fail {
+  background: linear-gradient(180deg, #fff1ea, #ffe2d5);
+  color: #a7532c;
+}
+
+.assessment-layout {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.assessment-nav {
+  display: grid;
+  gap: 14px;
+}
+
+.assessment-nav-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.assessment-index {
+  border: 0;
+  border-radius: 14px;
+  padding: 10px 0;
+  cursor: pointer;
+  font-weight: 900;
+  color: #4f7aa1;
+  background: linear-gradient(180deg, #ffffff, #edf8ff);
+  box-shadow: inset 0 -3px 0 rgba(145, 206, 247, 0.25);
+}
+
+.assessment-index.idle {
+  background: linear-gradient(180deg, #ffffff, #eef9ff);
+}
+
+.assessment-index.opened {
+  background: linear-gradient(180deg, #fff4dd, #ffe9be);
+  color: #976617;
+  box-shadow: inset 0 -3px 0 rgba(255, 190, 88, 0.28);
+}
+
+.assessment-index.answered {
+  background: linear-gradient(180deg, #ecffd7, #dff7bf);
+  color: #4f8700;
+  box-shadow: inset 0 -3px 0 rgba(88, 204, 2, 0.24);
+}
+
+.assessment-index.active {
+  outline: 3px solid rgba(86, 184, 255, 0.26);
+}
+
+.assessment-legend {
+  display: grid;
+  gap: 8px;
+  color: #5a84a5;
+  font-size: 0.88rem;
+}
+
+.assessment-legend span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.assessment-legend i {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.assessment-legend i.answered {
+  background: #90db3c;
+}
+
+.assessment-legend i.opened {
+  background: #ffc95d;
+}
+
+.assessment-legend i.idle {
+  background: #d9ecfb;
+}
+
+.assessment-card {
+  border-radius: 24px;
+  border: 1px solid rgba(133, 194, 240, 0.2);
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(241,251,255,0.98));
+  padding: 18px;
+  display: grid;
+  gap: 16px;
+}
+
+.assessment-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #5981a3;
+  font-weight: 900;
+}
+
+.assessment-card h3 {
+  margin: 0;
+  line-height: 1.45;
+  font-size: 1.18rem;
+}
+
+.assessment-options {
+  display: grid;
+  gap: 10px;
+}
+
+.assessment-option {
+  text-align: left;
+  border: 1px solid rgba(147, 201, 245, 0.22);
+  border-radius: 18px;
+  padding: 14px 16px;
+  cursor: pointer;
+  background: linear-gradient(180deg, #ffffff, #eef8ff);
+  color: #2f628b;
+  font-weight: 800;
+}
+
+.assessment-option.active {
+  background: linear-gradient(180deg, #fff9d4, #ffefae);
+  border-color: rgba(247, 206, 69, 0.38);
+  color: #7b5a00;
+}
+
+.assessment-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.assessment-ghost-btn,
+.assessment-submit-btn {
+  border: 0;
+  border-radius: 16px;
+  padding: 12px 16px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.assessment-ghost-btn {
+  background: linear-gradient(180deg, #ffffff, #eef8ff);
+  color: #2b618d;
+  box-shadow: inset 0 -4px 0 rgba(145, 206, 247, 0.22);
+}
+
+.assessment-submit-btn {
+  background: linear-gradient(180deg, #58cc02, #4db400);
+  color: #ffffff;
+  box-shadow: inset 0 -4px 0 rgba(47, 122, 0, 0.24);
+}
+
+.assessment-launch-btn {
+  margin-top: 14px;
+  border: 0;
+  border-radius: 18px;
+  padding: 14px 18px;
+  font-weight: 900;
+  cursor: pointer;
+  color: #ffffff;
+  background: linear-gradient(180deg, #56b8ff, #3a90df);
+  box-shadow: inset 0 -4px 0 rgba(35, 94, 150, 0.24);
+}
+
+.assessment-ghost-btn:disabled,
+.assessment-submit-btn:disabled,
+.skill-pill:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.rider-hud {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.rider-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  color: #ffffff;
+  background: linear-gradient(180deg, #56b8ff, #3b92de);
+  box-shadow: 0 10px 18px rgba(59, 146, 222, 0.24);
+}
+
+.rider-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.rider-copy span {
+  color: #678fb0;
+}
+
+.rider-badge {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #efffd8, #def7bc);
+  color: #508500;
+  font-weight: 900;
+}
+
+.journey-road-shell {
+  overflow: auto;
+  border-radius: 22px;
+  border: 1px solid rgba(135, 194, 239, 0.2);
+  background: linear-gradient(180deg, #f2fbff, #e7f7ff);
+}
+
+.journey-road-svg {
+  width: 100%;
+  min-width: 760px;
+  display: block;
+}
+
+.journey-road-path {
+  fill: none;
+  stroke: rgba(123, 162, 199, 0.46);
+  stroke-width: 18;
+  stroke-linecap: round;
+}
+
+.journey-road-path-glow {
+  fill: none;
+  stroke: rgba(88, 204, 2, 0.78);
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+
+.journey-stop {
+  cursor: pointer;
+}
+
+.journey-stop.locked {
+  cursor: not-allowed;
+}
+
+.journey-stop-core {
+  fill: #ffffff;
+  stroke: rgba(94, 152, 200, 0.88);
+  stroke-width: 4;
+}
+
+.journey-stop.passed .journey-stop-core {
+  fill: #e6ffc6;
+  stroke: rgba(88, 204, 2, 0.94);
+}
+
+.journey-stop.active .journey-stop-core {
+  fill: #fff2ba;
+  stroke: rgba(255, 197, 69, 0.98);
+}
+
+.journey-stop.locked .journey-stop-core {
+  fill: #f2f7fb;
+  stroke: rgba(178, 201, 222, 0.82);
+}
+
+.journey-stop-index {
+  fill: #35658f;
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.journey-stop-title {
+  fill: #5c86a8;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.journey-bike-chip {
+  fill: #2d6a97;
+  stroke: rgba(255,255,255,0.92);
+  stroke-width: 3;
+  box-shadow: 0 8px 16px rgba(45, 106, 151, 0.2);
+}
+
+.journey-bike-text {
+  fill: #ffffff;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.assessment-lock-note {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(241, 251, 255, 0.95);
+  border: 1px solid rgba(136, 196, 241, 0.2);
+  color: #53799a;
+  font-weight: 800;
 }
 
 @keyframes popupRise {
@@ -851,6 +1246,14 @@ body::before {
 
   .map-toolbar {
     flex-direction: column;
+  }
+
+  .assessment-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .rider-hud {
+    grid-template-columns: 1fr;
   }
 
   .map-popup,
