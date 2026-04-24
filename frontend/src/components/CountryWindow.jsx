@@ -1,9 +1,27 @@
 import { useEffect, useMemo, useState } from 'react';
-import { geoMercator, geoPath } from 'd3-geo';
 import { api } from '../api/client';
 import { getClusterTheme, getRoleWorldProfile } from '../data/worldConfig';
+import CountryMap3D from './CountryMap3D';
 import India3DMap from './India3DMap';
 import Korea3DMap from './Korea3DMap';
+import SkillJourneyPanel from './SkillJourneyPanel';
+import TutorChatPanel from './TutorChatPanel';
+
+const PASS_PERCENT = 75;
+
+function loadCountryProgress(countryId) {
+  try {
+    const raw = window.localStorage.getItem(`skillquest-progress:${countryId}`);
+    if (!raw) return { highestUnlockedIndex: 0, assessments: {} };
+    return JSON.parse(raw);
+  } catch {
+    return { highestUnlockedIndex: 0, assessments: {} };
+  }
+}
+
+function saveCountryProgress(countryId, progress) {
+  window.localStorage.setItem(`skillquest-progress:${countryId}`, JSON.stringify(progress));
+}
 
 function buildLevels(nodes, edges) {
   const indeg = new Map(nodes.map((n) => [n.id, 0]));
@@ -17,24 +35,32 @@ function buildLevels(nodes, edges) {
   });
 
   const queue = [];
-  indeg.forEach((v, k) => {
-    if (v === 0) queue.push(k);
+  indeg.forEach((value, key) => {
+    if (value === 0) queue.push(key);
   });
 
   const level = new Map(nodes.map((n) => [n.id, 0]));
   for (let i = 0; i < queue.length; i += 1) {
     const cur = queue[i];
-    outgoing.get(cur).forEach((nxt) => {
-      level.set(nxt, Math.max(level.get(nxt), level.get(cur) + 1));
-      indeg.set(nxt, indeg.get(nxt) - 1);
-      if (indeg.get(nxt) === 0) queue.push(nxt);
+    outgoing.get(cur).forEach((next) => {
+      level.set(next, Math.max(level.get(next), level.get(cur) + 1));
+      indeg.set(next, indeg.get(next) - 1);
+      if (indeg.get(next) === 0) queue.push(next);
     });
   }
 
   return level;
 }
 
-function ProgressWindow({ stateDetails }) {
+function launchAssessmentWindow(countryId, stateId) {
+  const url = new URL(window.location.href);
+  url.searchParams.set('window', 'assessment');
+  url.searchParams.set('country', countryId);
+  url.searchParams.set('state', stateId);
+  window.open(url.toString(), '_blank', 'noopener,width=1320,height=920');
+}
+
+function ProgressWindow({ countryId, stateDetails, assessmentResult }) {
   if (!stateDetails) {
     return (
       <section className="game-window">
@@ -45,7 +71,7 @@ function ProgressWindow({ stateDetails }) {
           <strong>Level Route</strong>
         </div>
         <div className="window-body">
-          <p className="muted">Choose a province on the map.</p>
+          <p className="muted">Choose a skill province to see its route.</p>
         </div>
       </section>
     );
@@ -56,9 +82,9 @@ function ProgressWindow({ stateDetails }) {
   const levels = buildLevels(nodes, edges);
   const grouped = new Map();
   nodes.forEach((node) => {
-    const l = levels.get(node.id) || 0;
-    if (!grouped.has(l)) grouped.set(l, []);
-    grouped.get(l).push(node);
+    const level = levels.get(node.id) || 0;
+    if (!grouped.has(level)) grouped.set(level, []);
+    grouped.get(level).push(node);
   });
 
   const cols = [...grouped.keys()].sort((a, b) => a - b);
@@ -105,14 +131,14 @@ function ProgressWindow({ stateDetails }) {
               );
             })}
             {nodes.map((node, index) => {
-              const p = positions.get(node.id);
+              const point = positions.get(node.id);
               return (
                 <g key={node.id} className="animated-node" style={{ '--delay': `${index * 80}ms` }}>
-                  <circle cx={p.x} cy={p.y} r="30" className="city-node" />
-                  <text x={p.x} y={p.y - 2} textAnchor="middle" className="city-label">
+                  <circle cx={point.x} cy={point.y} r="30" className="city-node" />
+                  <text x={point.x} y={point.y - 2} textAnchor="middle" className="city-label">
                     {index + 1}
                   </text>
-                  <text x={p.x} y={p.y + 52} textAnchor="middle" className="city-meta">
+                  <text x={point.x} y={point.y + 52} textAnchor="middle" className="city-meta">
                     {node.title}
                   </text>
                 </g>
@@ -120,16 +146,33 @@ function ProgressWindow({ stateDetails }) {
             })}
           </svg>
         </div>
+
         <div className="level-list">
           {nodes.map((node, index) => (
             <article key={node.id} className="level-card">
               <span className="level-badge">Lv {index + 1}</span>
               <h4>{node.title}</h4>
               <p>{node.description}</p>
-              <small>{node.type} • {node.estimated_time_minutes} min • {node.xp_reward} XP</small>
+              <small>{`${node.type} • ${node.estimated_time_minutes} min • ${node.xp_reward} XP`}</small>
             </article>
           ))}
         </div>
+
+        <div className="assessment-lock-note">
+          <strong>{assessmentResult?.passed ? 'Assessment cleared.' : `Pass ${PASS_PERCENT}% or higher to unlock the next skill.`}</strong>
+          <div>
+            {assessmentResult
+              ? `Latest score: ${assessmentResult.score}% (${assessmentResult.correctCount}/${assessmentResult.totalQuestions})`
+              : 'The assessment opens in a separate window so the learning screen stays clean.'}
+          </div>
+        </div>
+
+        <button
+          className="assessment-launch-btn"
+          onClick={() => launchAssessmentWindow(countryId, stateDetails.state_id)}
+        >
+          Take Assessment
+        </button>
       </div>
     </section>
   );
@@ -140,37 +183,54 @@ export default function CountryWindow({ countryId }) {
   const [error, setError] = useState('');
   const [worldMap, setWorldMap] = useState([]);
   const [roleDetails, setRoleDetails] = useState(null);
-  const [states, setStates] = useState([]);
   const [stateById, setStateById] = useState(new Map());
   const [mapData, setMapData] = useState(null);
   const [selectedStateId, setSelectedStateId] = useState('');
+  const [progress, setProgress] = useState(() => loadCountryProgress(countryId));
+
+  useEffect(() => {
+    setProgress(loadCountryProgress(countryId));
+  }, [countryId]);
+
+  useEffect(() => {
+    saveCountryProgress(countryId, progress);
+  }, [countryId, progress]);
 
   useEffect(() => {
     async function load() {
       setLoading(true);
       setError('');
       try {
-        const [wm, st, role] = await Promise.all([
+        const [wm, role] = await Promise.all([
           api.worldMap(),
-          api.states(),
           api.roleDetails(countryId),
         ]);
 
-        const stateIds = role.state_requirements.map((req) => req.state_id);
-        const entries = await Promise.all(stateIds.map(async (stateId) => [stateId, await api.stateDetails(stateId)]));
-        const map = new Map(entries);
-        setWorldMap(wm.continents || []);
-        setStates(st.states || []);
-        setRoleDetails(role);
-        setStateById(map);
+        const stateIds = (role.state_requirements || []).map((req) => req.state_id);
+        const entries = await Promise.all(
+          stateIds.map(async (stateId) => [stateId, await api.stateDetails(stateId)])
+        );
 
+        const nextStateById = new Map(entries);
         const profile = getRoleWorldProfile(countryId);
         const stateRes = await fetch(profile.stateMapFile);
         if (!stateRes.ok) throw new Error('Could not load local map file.');
-        setMapData(await stateRes.json());
-        setSelectedStateId(stateIds[0] || '');
+        const nextMapData = await stateRes.json();
+
+        const storedProgress = loadCountryProgress(countryId);
+        const safeIndex = Math.min(storedProgress.highestUnlockedIndex || 0, Math.max(0, stateIds.length - 1));
+
+        setWorldMap(wm.continents || []);
+        setRoleDetails(role);
+        setStateById(nextStateById);
+        setMapData(nextMapData);
+        setProgress(storedProgress);
+        setSelectedStateId((current) => {
+          if (current && nextStateById.has(current)) return current;
+          return stateIds[safeIndex] || stateIds[0] || '';
+        });
       } catch (e) {
-        setError(e.message);
+        setError(e.message || 'Failed to load country window.');
       } finally {
         setLoading(false);
       }
@@ -185,17 +245,30 @@ export default function CountryWindow({ countryId }) {
   );
   const profile = getRoleWorldProfile(countryId);
   const theme = getClusterTheme(roleDetails?.continent_id || selectedCountry?.continentId || 'ai_data');
+  const stateOrder = roleDetails?.state_requirements?.map((req) => req.state_id) || [];
+  const highestUnlockedIndex = Math.min(progress.highestUnlockedIndex || 0, Math.max(0, stateOrder.length - 1));
+
+  useEffect(() => {
+    if (!stateOrder.length) return;
+    const selectedIndex = stateOrder.indexOf(selectedStateId);
+    if (selectedIndex === -1 || selectedIndex > highestUnlockedIndex) {
+      setSelectedStateId(stateOrder[highestUnlockedIndex] || stateOrder[0] || '');
+    }
+  }, [highestUnlockedIndex, selectedStateId, stateOrder]);
+
   const selectedState = stateById.get(selectedStateId) || null;
+  const selectedAssessment = selectedStateId ? progress.assessments?.[selectedStateId] || null : null;
+  const totalLevels = stateOrder.reduce((sum, stateId) => sum + (stateById.get(stateId)?.nodes?.length || 0), 0);
+  const passedCount = stateOrder.filter((stateId) => progress.assessments?.[stateId]?.passed).length;
   const useIndiaCraftedMap = profile.iso3 === 'IND';
   const useKoreaCraftedMap = profile.iso3 === 'KOR';
 
-  const projection = useMemo(() => {
-    if (!mapData) return null;
-    return geoMercator().fitSize([920, 640], mapData);
-  }, [mapData]);
-
-  const pathBuilder = useMemo(() => (projection ? geoPath(projection) : null), [projection]);
-  const totalLevels = roleDetails?.state_requirements?.reduce((sum, req) => sum + (stateById.get(req.state_id)?.nodes?.length || 0), 0) || 0;
+  function handleSelectState(stateId) {
+    const index = stateOrder.indexOf(stateId);
+    if (index <= highestUnlockedIndex) {
+      setSelectedStateId(stateId);
+    }
+  }
 
   return (
     <div
@@ -210,20 +283,20 @@ export default function CountryWindow({ countryId }) {
         <div>
           <p className="eyebrow">Country Window</p>
           <h1>{profile.realm}</h1>
-          <p className="hero-text">{profile.countryName} • {roleDetails?.title || countryId}</p>
+          <p className="hero-text">{`${profile.countryName} • ${roleDetails?.title || countryId}`}</p>
         </div>
         <div className="hero-stats country-hero-stats">
           <article className="stat-card">
             <span>Provinces</span>
-            <strong>{roleDetails?.state_requirements?.length || 0}</strong>
+            <strong>{stateOrder.length}</strong>
           </article>
           <article className="stat-card">
             <span>Levels</span>
             <strong>{totalLevels}</strong>
           </article>
           <article className="stat-card">
-            <span>Window</span>
-            <strong>Live Map</strong>
+            <span>Cleared</span>
+            <strong>{`${passedCount}/${stateOrder.length}`}</strong>
           </article>
           <article className="stat-card">
             <span>Mode</span>
@@ -243,33 +316,28 @@ export default function CountryWindow({ countryId }) {
             <span className="dot blue" />
             <strong>Country Map</strong>
           </div>
-          <div className="window-body">
+          <div className="window-body country-map-window-body">
+            <div className="country-map-topline">
+              <span>Active Skill</span>
+              <strong>{selectedState?.title || 'Choose a province'}</strong>
+            </div>
+
             {useIndiaCraftedMap ? (
               <India3DMap
                 roleDetails={roleDetails}
                 stateById={stateById}
                 selectedStateId={selectedStateId}
-                onStateSelect={setSelectedStateId}
+                onStateSelect={handleSelectState}
               />
             ) : useKoreaCraftedMap ? (
               <Korea3DMap
                 roleDetails={roleDetails}
                 stateById={stateById}
                 selectedStateId={selectedStateId}
-                onStateSelect={setSelectedStateId}
+                onStateSelect={handleSelectState}
               />
-            ) : pathBuilder && mapData?.features?.length ? (
-              <svg className="country-live-map" viewBox="0 0 920 640">
-                {mapData.features.map((feature, index) => (
-                  <path
-                    key={feature.properties?.shapeID || feature.properties?.shapeName || index}
-                    d={pathBuilder(feature)}
-                    className="country-state-border"
-                  />
-                ))}
-              </svg>
             ) : (
-              <div className="country-map-fallback">Map loading...</div>
+              <CountryMap3D mapData={mapData} selectedStateId={selectedStateId} />
             )}
           </div>
         </section>
@@ -285,17 +353,26 @@ export default function CountryWindow({ countryId }) {
             <div className="window-body">
               <p className="panel-summary">{roleDetails?.summary}</p>
               <div className="skills-list">
-                {(roleDetails?.state_requirements || []).map((req) => {
-                  const state = stateById.get(req.state_id);
-                  const active = selectedStateId === req.state_id;
+                {stateOrder.map((stateId, index) => {
+                  const state = stateById.get(stateId);
+                  const active = selectedStateId === stateId;
+                  const locked = index > highestUnlockedIndex;
+                  const passed = !!progress.assessments?.[stateId]?.passed;
                   return (
                     <button
-                      key={req.state_id}
-                      className={active ? 'skill-pill active' : 'skill-pill'}
-                      onClick={() => setSelectedStateId(req.state_id)}
+                      key={stateId}
+                      className={`skill-pill${active ? ' active' : ''}${locked ? ' locked' : ''}${passed ? ' passed' : ''}`}
+                      onClick={() => handleSelectState(stateId)}
+                      disabled={locked}
                     >
-                      <span>{state?.title || req.state_id}</span>
-                      <small>{state?.nodes?.length || 0} levels</small>
+                      <span>{state?.title || stateId}</span>
+                      <small>
+                        {locked
+                          ? 'locked'
+                          : passed
+                            ? `passed ${progress.assessments?.[stateId]?.score || PASS_PERCENT}%`
+                            : `${state?.nodes?.length || 0} levels`}
+                      </small>
                     </button>
                   );
                 })}
@@ -303,7 +380,22 @@ export default function CountryWindow({ countryId }) {
             </div>
           </section>
 
-          <ProgressWindow stateDetails={selectedState} />
+          <SkillJourneyPanel
+            stateOrder={stateOrder}
+            stateById={stateById}
+            selectedStateId={selectedStateId}
+            unlockedIndex={highestUnlockedIndex}
+            assessments={progress.assessments || {}}
+            onSelect={handleSelectState}
+          />
+
+          <ProgressWindow
+            countryId={countryId}
+            stateDetails={selectedState}
+            assessmentResult={selectedAssessment}
+          />
+
+          <TutorChatPanel roleDetails={roleDetails} stateDetails={selectedState} />
         </aside>
       </main>
     </div>

@@ -331,6 +331,8 @@ npm install
 - blocked tutor chat while any assessment window is active
 - added tab-switch detection to fail assessment attempts that leave the exam window
 - upgraded generic country maps to 3D-style local map rendering
+- rebuilt the shared country window after an upstream pull so the rider journey, tutor chat, and end-of-skill assessment flow are active again
+- preserved the Korea-specific country experience while restoring the shared systems around it
 - updated the README to reflect the current product state
 
 ## What Still Needs To Be Done
