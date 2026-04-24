@@ -369,6 +369,94 @@ body::before {
     0 0 0 1px rgba(245, 185, 74, 0.35);
 }
 
+.china-3d-map-shell {
+  border-radius: 24px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f7fcff 0%, #eaf7ff 100%);
+}
+
+.china-3d-map-stage {
+  position: relative;
+  min-height: 680px;
+  border-radius: 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.68), transparent 22%),
+    linear-gradient(180deg, #f8fdff 0%, #e9f7ff 100%);
+}
+
+.china-3d-map-canvas,
+.china-3d-map-labels {
+  position: absolute;
+  inset: 0;
+}
+
+.china-3d-map-labels {
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.china-3d-map-badge {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+  z-index: 2;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(117, 189, 243, 0.18);
+  box-shadow: 0 14px 28px rgba(99, 153, 201, 0.14);
+}
+
+.china-3d-map-badge span {
+  color: #2a618d;
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.china-3d-map-badge small {
+  color: #6a8eac;
+  font-weight: 700;
+}
+
+.china-subject-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.96);
+  color: #2f7a64;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  padding: 7px 11px;
+  border-radius: 999px;
+  box-shadow:
+    0 8px 18px -8px rgba(47, 122, 100, 0.35),
+    0 1px 0 rgba(47, 122, 100, 0.08) inset,
+    0 0 0 1px rgba(47, 122, 100, 0.08);
+  white-space: nowrap;
+  opacity: 0;
+  will-change: transform, opacity;
+  transition:
+    opacity 200ms ease,
+    box-shadow 220ms ease,
+    background 220ms ease,
+    color 220ms ease;
+}
+
+.china-subject-label.is-hovered {
+  background: #fff7dc;
+  color: #8a6a1f;
+  box-shadow:
+    0 12px 24px -8px rgba(245, 185, 74, 0.5),
+    0 0 0 1px rgba(245, 185, 74, 0.35);
+}
+
 .india-crafted-map {
   width: 100%;
   display: block;

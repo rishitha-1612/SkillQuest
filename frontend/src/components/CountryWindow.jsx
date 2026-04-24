@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { api } from '../api/client';
 import { getClusterTheme, getRoleWorldProfile } from '../data/worldConfig';
 import CountryMap3D from './CountryMap3D';
+import China3DMap from './China3DMap';
 import India3DMap from './India3DMap';
 import Korea3DMap from './Korea3DMap';
 import SkillJourneyPanel from './SkillJourneyPanel';
@@ -260,6 +261,7 @@ export default function CountryWindow({ countryId }) {
   const selectedAssessment = selectedStateId ? progress.assessments?.[selectedStateId] || null : null;
   const totalLevels = stateOrder.reduce((sum, stateId) => sum + (stateById.get(stateId)?.nodes?.length || 0), 0);
   const passedCount = stateOrder.filter((stateId) => progress.assessments?.[stateId]?.passed).length;
+  const useChinaCraftedMap = profile.iso3 === 'CHN';
   const useIndiaCraftedMap = profile.iso3 === 'IND';
   const useKoreaCraftedMap = profile.iso3 === 'KOR';
 
@@ -322,7 +324,14 @@ export default function CountryWindow({ countryId }) {
               <strong>{selectedState?.title || 'Choose a province'}</strong>
             </div>
 
-            {useIndiaCraftedMap ? (
+            {useChinaCraftedMap ? (
+              <China3DMap
+                roleDetails={roleDetails}
+                stateById={stateById}
+                selectedStateId={selectedStateId}
+                onStateSelect={handleSelectState}
+              />
+            ) : useIndiaCraftedMap ? (
               <India3DMap
                 roleDetails={roleDetails}
                 stateById={stateById}
