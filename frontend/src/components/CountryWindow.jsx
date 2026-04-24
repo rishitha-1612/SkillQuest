@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { geoMercator, geoPath } from 'd3-geo';
 import { api } from '../api/client';
 import { getClusterTheme, getRoleWorldProfile } from '../data/worldConfig';
 import India3DMap from './India3DMap';
 import SkillJourneyPanel from './SkillJourneyPanel';
+import TutorChatPanel from './TutorChatPanel';
+import CountryMap3D from './CountryMap3D';
 
 const PASS_PERCENT = 75;
 
@@ -172,27 +173,6 @@ function ProgressWindow({ countryId, stateDetails, assessmentResult }) {
   );
 }
 
-function GenericCountryMap({ mapData, pathBuilder }) {
-  const features = mapData?.features || [];
-  if (!features.length || !pathBuilder) return <div className="country-map-fallback">Map loading...</div>;
-
-  return (
-    <svg className="country-live-map" viewBox="0 0 920 640">
-      {features.map((feature, index) => {
-        const [cx, cy] = pathBuilder.centroid(feature);
-        return (
-          <g key={feature.properties?.shapeID || feature.properties?.shapeName || index}>
-            <path d={pathBuilder(feature)} className="country-state-border" />
-            {Number.isFinite(cx) && Number.isFinite(cy) && (
-              <circle cx={cx} cy={cy} r="2.5" className="country-state-anchor" />
-            )}
-          </g>
-        );
-      })}
-    </svg>
-  );
-}
-
 export default function CountryWindow({ countryId }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -265,12 +245,6 @@ export default function CountryWindow({ countryId }) {
     }
   }, [progress.highestUnlockedIndex, selectedStateId, stateOrder]);
 
-  const projection = useMemo(() => {
-    if (!mapData) return null;
-    return geoMercator().fitSize([920, 640], mapData);
-  }, [mapData]);
-
-  const pathBuilder = useMemo(() => (projection ? geoPath(projection) : null), [projection]);
   const assessments = progress.assessments || {};
   const selectedAssessment = assessments[selectedStateId] || null;
 
@@ -278,23 +252,6 @@ export default function CountryWindow({ countryId }) {
     const index = stateOrder.indexOf(stateId);
     if (index > progress.highestUnlockedIndex) return;
     setSelectedStateId(stateId);
-  }
-
-  function handleAssessmentComplete(result) {
-    const currentIndex = stateOrder.indexOf(selectedStateId);
-    setProgress((prev) => {
-      const nextAssessments = {
-        ...(prev.assessments || {}),
-        [selectedStateId]: result,
-      };
-      const nextHighest = result.passed
-        ? Math.min(Math.max(prev.highestUnlockedIndex || 0, currentIndex + 1), Math.max(0, stateOrder.length - 1))
-        : prev.highestUnlockedIndex || 0;
-      return {
-        highestUnlockedIndex: nextHighest,
-        assessments: nextAssessments,
-      };
-    });
   }
 
   return (
@@ -356,7 +313,7 @@ export default function CountryWindow({ countryId }) {
                 onStateSelect={handleStateSelect}
               />
             ) : (
-              <GenericCountryMap mapData={mapData} pathBuilder={pathBuilder} />
+              <CountryMap3D mapData={mapData} selectedStateId={selectedStateId} />
             )}
           </div>
         </section>
@@ -413,6 +370,8 @@ export default function CountryWindow({ countryId }) {
             stateDetails={selectedState}
             assessmentResult={selectedAssessment}
           />
+
+          <TutorChatPanel roleDetails={roleDetails} stateDetails={selectedState} />
         </aside>
       </main>
     </div>

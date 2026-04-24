@@ -7,7 +7,13 @@ function getStatus(index, visited, answers) {
   return 'idle';
 }
 
-export default function AssessmentWindow({ stateDetails, existingResult, onAssessmentComplete }) {
+export default function AssessmentWindow({
+  stateDetails,
+  existingResult,
+  onAssessmentComplete,
+  integrityFailed = false,
+  onResetIntegrity,
+}) {
   const [attemptSeed, setAttemptSeed] = useState(() => Date.now());
   const questions = useMemo(
     () => buildAssessmentQuestions(stateDetails, attemptSeed),
@@ -25,6 +31,21 @@ export default function AssessmentWindow({ stateDetails, existingResult, onAsses
     setAnswers({});
     setResult(existingResult || null);
   }, [stateDetails?.state_id, existingResult]);
+
+  useEffect(() => {
+    if (integrityFailed && !result?.reason) {
+      const nextResult = {
+        score: 0,
+        correctCount: 0,
+        totalQuestions: questions.length || 25,
+        passed: false,
+        reason: 'Attempt failed: tab switching detected.',
+      };
+      setResult(nextResult);
+      onAssessmentComplete(nextResult);
+      onResetIntegrity?.();
+    }
+  }, [integrityFailed, onAssessmentComplete, onResetIntegrity, questions.length, result]);
 
   if (!stateDetails) {
     return (
@@ -71,6 +92,7 @@ export default function AssessmentWindow({ stateDetails, existingResult, onAsses
   }
 
   function resetAttempt() {
+    onResetIntegrity?.();
     setAttemptSeed(Date.now() + Math.floor(Math.random() * 10000));
     setCurrentIndex(0);
     setVisited(new Set([0]));
@@ -102,6 +124,7 @@ export default function AssessmentWindow({ stateDetails, existingResult, onAsses
             <strong>{result.passed ? 'Gate Cleared' : 'Try Again'}</strong>
             <span>{result.correctCount}/{result.totalQuestions} correct</span>
             <span>{result.score}%</span>
+            {result.reason && <span>{result.reason}</span>}
             <button className="assessment-ghost-btn" onClick={resetAttempt}>
               Retake
             </button>

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { api } from '../api/client';
 import { getClusterTheme, getRoleWorldProfile } from '../data/worldConfig';
 import AssessmentWindow from './AssessmentWindow';
+import { clearAssessmentLock, setAssessmentLock } from '../data/assessmentLock';
 
 function loadCountryProgress(countryId) {
   try {
@@ -23,6 +24,8 @@ export default function AssessmentRouteWindow({ countryId, stateId }) {
   const [roleDetails, setRoleDetails] = useState(null);
   const [stateDetails, setStateDetails] = useState(null);
   const [progress, setProgress] = useState(() => loadCountryProgress(countryId));
+  const [windowId] = useState(() => `assessment-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  const [integrityFailed, setIntegrityFailed] = useState(false);
 
   useEffect(() => {
     setProgress(loadCountryProgress(countryId));
@@ -52,6 +55,29 @@ export default function AssessmentRouteWindow({ countryId, stateId }) {
   useEffect(() => {
     saveCountryProgress(countryId, progress);
   }, [countryId, progress]);
+
+  useEffect(() => {
+    setAssessmentLock(true, { windowId, countryId, stateId });
+
+    function onVisibility() {
+      if (document.hidden) {
+        setIntegrityFailed(true);
+      }
+    }
+
+    function onBeforeUnload() {
+      clearAssessmentLock(windowId);
+    }
+
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('beforeunload', onBeforeUnload);
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('beforeunload', onBeforeUnload);
+      clearAssessmentLock(windowId);
+    };
+  }, [countryId, stateId, windowId]);
 
   const profile = getRoleWorldProfile(countryId);
   const theme = getClusterTheme(roleDetails?.continent_id || 'ai_data');
@@ -142,6 +168,8 @@ export default function AssessmentRouteWindow({ countryId, stateId }) {
           stateDetails={stateDetails}
           existingResult={existingResult}
           onAssessmentComplete={handleAssessmentComplete}
+          integrityFailed={integrityFailed}
+          onResetIntegrity={() => setIntegrityFailed(false)}
         />
       </main>
     </div>

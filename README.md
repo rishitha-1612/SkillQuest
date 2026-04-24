@@ -60,7 +60,7 @@ Main files:
 Each country opens in its own window:
 
 - left side shows the country map
-- right side shows the mission board, rider progress road, assessment gate, and level route
+- right side shows the mission board, rider progress road, tutor chat, and level route
 - clicking a skill switches the active progression path
 - each skill must be cleared with an assessment before the next skill unlocks
 
@@ -77,6 +77,8 @@ Every skill now has a built-in assessment gate:
 - next skill only unlocks after the current skill assessment is passed
 - assessment is launched from the end of the skill route using a `Take Assessment` button
 - assessment opens in a separate window instead of inside the country screen
+- assessment locks the tutor chat across the app while the assessment window is open
+- changing away from the assessment tab marks the attempt as failed
 - question navigator shows:
   - green for answered questions
   - yellow for opened but unanswered questions
@@ -100,6 +102,19 @@ Country windows now include a rider progress panel:
 Main file:
 
 - [frontend/src/components/SkillJourneyPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/SkillJourneyPanel.jsx)
+
+### Tutor Chat
+
+Country learning windows now include a tutor chat panel:
+
+- user can ask for help about the project
+- user can ask about the active job path or current skill
+- user can type questions and use voice input where browser speech recognition is available
+- chat is disabled whenever an assessment window is active
+
+Main file:
+
+- [frontend/src/components/TutorChatPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx)
 
 ### India Special World
 
@@ -209,6 +224,18 @@ Current local maps include:
 
 Each country window uses these local files instead of relying on live downloads.
 
+### 3D-Style Country Maps
+
+The active country worlds now use a richer raised-map style:
+
+- India keeps its custom 3D-themed map
+- the other active countries use the downloaded local border data rendered in a 3D-style stacked map view
+- this uses the local country/state boundaries already stored in the project
+
+Main file:
+
+- [frontend/src/components/CountryMap3D.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryMap3D.jsx)
+
 ## Frontend Tech Stack
 
 - React
@@ -269,9 +296,12 @@ npm install
 - [frontend/src/components/AssessmentWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentWindow.jsx)
 - [frontend/src/components/AssessmentRouteWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentRouteWindow.jsx)
 - [frontend/src/components/SkillJourneyPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/SkillJourneyPanel.jsx)
+- [frontend/src/components/TutorChatPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx)
+- [frontend/src/components/CountryMap3D.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryMap3D.jsx)
 - [frontend/src/components/India3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/India3DMap.jsx)
 - [frontend/src/data/worldConfig.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/worldConfig.js)
 - [frontend/src/data/assessmentGenerator.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentGenerator.js)
+- [frontend/src/data/assessmentLock.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentLock.js)
 - [frontend/src/styles.css](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/styles.css)
 
 ## What Has Been Done So Far
@@ -293,6 +323,10 @@ npm install
 - added pass/fail unlocking logic with a 75% threshold
 - moved assessments to a dedicated end-of-course window launched from the skill route
 - added a rider progress road that shows current skill position and destination
+- added a tutor chat panel for project help and skill tutoring
+- blocked tutor chat while any assessment window is active
+- added tab-switch detection to fail assessment attempts that leave the exam window
+- upgraded generic country maps to 3D-style local map rendering
 - updated the README to reflect the current product state
 
 ## What Still Needs To Be Done
@@ -301,7 +335,6 @@ npm install
 - move progress storage from local browser storage to a proper backend player profile
 - add authentication and player profiles
 - add hover tooltips and richer interactions on generic country maps
-- make non-India country maps feel more stylized and game-like instead of only geojson outlines
 - add locked continent visuals directly on the globe itself
 - improve country-window transitions and in-window navigation
 - add richer question banks instead of the current generated assessment questions
