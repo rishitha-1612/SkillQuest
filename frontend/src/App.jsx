@@ -3,6 +3,8 @@ import { api } from './api/client';
 import GlobeView from './components/WorldMap';
 import CountrySkillsPanel from './components/CountrySkillsPanel';
 import StatePathwayPanel from './components/StatePathwayPanel';
+import CountryWindow from './components/CountryWindow';
+import { getClusterTheme } from './data/worldConfig';
 
 const LEVEL_WEIGHT = {
   beginner: 1,
@@ -21,16 +23,27 @@ function buildCountryMetrics(continents, roleById, stateById) {
         const nodeCount = stateById.get(req.state_id)?.nodes?.length || 1;
         return sum + weight * nodeCount;
       }, 0);
+
       return {
         ...country,
         continentId: continent.id,
         complexity,
+        questCount: requirements.length,
       };
     })
   );
 }
 
-export default function App() {
+function buildQuestStats(countryMetrics, selectedCountry, roleDetails, stateDetails) {
+  return {
+    totalJobs: countryMetrics.length,
+    activeStates: roleDetails?.state_requirements?.length || 0,
+    activeCities: stateDetails?.nodes?.length || 0,
+    selectedCountryName: selectedCountry?.title || 'Pick a realm',
+  };
+}
+
+function useBootstrapData() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [health, setHealth] = useState('unknown');
@@ -38,18 +51,6 @@ export default function App() {
   const [states, setStates] = useState([]);
   const [roleById, setRoleById] = useState(new Map());
   const [stateById, setStateById] = useState(new Map());
-
-  const [selectedContinentId, setSelectedContinentId] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState(null);
-  const [roleDetails, setRoleDetails] = useState(null);
-  const [selectedStateId, setSelectedStateId] = useState('');
-  const [stateDetails, setStateDetails] = useState(null);
-
-  const statesMeta = useMemo(() => new Map(states.map((s) => [s.state_id, s])), [states]);
-  const countryMetrics = useMemo(
-    () => buildCountryMetrics(continents, roleById, stateById),
-    [continents, roleById, stateById]
-  );
 
   useEffect(() => {
     async function bootstrap() {
@@ -79,6 +80,28 @@ export default function App() {
     bootstrap();
   }, []);
 
+  return { loading, error, health, continents, states, roleById, stateById };
+}
+
+function WorldLobby() {
+  const { loading, error, health, continents, states, roleById, stateById } = useBootstrapData();
+  const [selectedContinentId, setSelectedContinentId] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [roleDetails, setRoleDetails] = useState(null);
+  const [selectedStateId, setSelectedStateId] = useState('');
+  const [stateDetails, setStateDetails] = useState(null);
+
+  const statesMeta = useMemo(() => new Map(states.map((s) => [s.state_id, s])), [states]);
+  const countryMetrics = useMemo(
+    () => buildCountryMetrics(continents, roleById, stateById),
+    [continents, roleById, stateById]
+  );
+  const questStats = useMemo(
+    () => buildQuestStats(countryMetrics, selectedCountry, roleDetails, stateDetails),
+    [countryMetrics, selectedCountry, roleDetails, stateDetails]
+  );
+  const selectedTheme = getClusterTheme(selectedContinentId || continents[0]?.id || 'ai_data');
+
   async function onCountrySelect(continentId, country) {
     setSelectedContinentId(continentId);
     setSelectedCountry(country);
@@ -87,22 +110,13 @@ export default function App() {
     try {
       const role = roleById.get(country.id) || (await api.roleDetails(country.id));
       setRoleDetails(role);
+      const url = new URL(window.location.href);
+      url.searchParams.set('window', 'country');
+      url.searchParams.set('country', country.id);
+      window.open(url.toString(), '_blank', 'noopener,width=1480,height=940');
     } catch (e) {
-      setError(e.message);
+      console.error(e);
     }
-  }
-
-  function onBackToGlobe() {
-    setSelectedContinentId('');
-    setSelectedCountry(null);
-    setRoleDetails(null);
-    setSelectedStateId('');
-    setStateDetails(null);
-  }
-
-  function onBackToCountry() {
-    setSelectedStateId('');
-    setStateDetails(null);
   }
 
   async function onStateSelect(stateId) {
@@ -110,44 +124,74 @@ export default function App() {
     try {
       setStateDetails(stateById.get(stateId) || (await api.stateDetails(stateId)));
     } catch (e) {
-      setError(e.message);
+      console.error(e);
     }
   }
 
   return (
-    <div className="app-root">
-      <header className="topbar">
-        <div>
-          <h1>SkillQuest Career Globe</h1>
-          <p>Real Earth globe with job clusters, job-country regions, skill-state overlays, and DAG pathways.</p>
+    <div
+      className="app-root"
+      style={{
+        '--theme-accent': selectedTheme.accent,
+        '--theme-glow': selectedTheme.glow,
+        '--theme-atmosphere': selectedTheme.atmosphere,
+      }}
+    >
+      <header className="hero-shell">
+        <div className="hero-copy">
+          <p className="eyebrow">SkillQuest</p>
+          <h1>Open a realm. Learn by playing.</h1>
+          <p className="hero-text">World window for cluster selection. Country maps open in their own game windows.</p>
         </div>
-        <div className={health === 'ok' ? 'status ok' : 'status'}>Backend: {health}</div>
+
+        <div className="hero-stats">
+          <article className="stat-card">
+            <span>Status</span>
+            <strong>{health === 'ok' ? 'Online' : health}</strong>
+          </article>
+          <article className="stat-card">
+            <span>Realms</span>
+            <strong>{questStats.totalJobs}</strong>
+          </article>
+          <article className="stat-card">
+            <span>Now Playing</span>
+            <strong>{questStats.selectedCountryName}</strong>
+          </article>
+          <article className="stat-card">
+            <span>Levels</span>
+            <strong>{questStats.activeCities}</strong>
+          </article>
+        </div>
       </header>
 
-      {loading && <div className="banner">Loading backend data and computing skill complexity...</div>}
+      <section className="mission-strip">
+        <article className="mission-card">
+          <span>Theme</span>
+          <strong>{selectedTheme.lore}</strong>
+        </article>
+        <article className="mission-card">
+          <span>Provinces</span>
+          <strong>{questStats.activeStates}</strong>
+        </article>
+        <article className="mission-card mission-card-accent">
+          <span>Flow</span>
+          <strong>World -> Country -> Province -> City</strong>
+        </article>
+      </section>
+
+      {loading && <div className="banner">Loading map...</div>}
       {!!error && <div className="banner error">{error}</div>}
 
       <main className="layout">
         <section className="map-panel">
-          <h2>3D Career Globe</h2>
-          <p className="muted">
-            Job names pop on the globe like country labels. Larger job regions mean deeper skill complexity and more sub-skills.
-          </p>
+          <div className="panel-heading">
+            <h2>World Map</h2>
+            <p className="muted">Click any country token to launch its own game window.</p>
+          </div>
           <GlobeView
-            continents={continents}
-            roleById={roleById}
-            stateById={stateById}
             countryMetrics={countryMetrics}
-            roleDetails={roleDetails}
-            stateDetails={stateDetails}
-            selectedCountry={selectedCountry}
-            selectedContinentId={selectedContinentId}
             selectedCountryId={selectedCountry?.id || ''}
-            selectedStateId={selectedStateId}
             onCountrySelect={onCountrySelect}
-            onStateSelect={onStateSelect}
-            onBackToGlobe={onBackToGlobe}
-            onBackToCountry={onBackToCountry}
           />
         </section>
 
@@ -164,4 +208,16 @@ export default function App() {
       </main>
     </div>
   );
+}
+
+export default function App() {
+  const params = new URLSearchParams(window.location.search);
+  const windowMode = params.get('window');
+  const countryId = params.get('country');
+
+  if (windowMode === 'country' && countryId) {
+    return <CountryWindow countryId={countryId} />;
+  }
+
+  return <WorldLobby />;
 }

@@ -1,31 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
+import { geoCentroid, geoMercator, geoPath, geoArea } from 'd3-geo';
+import { feature } from 'topojson-client';
+import countries110m from 'world-atlas/countries-110m.json';
+import { getClusterTheme, getRoleWorldProfile } from '../data/worldConfig';
 
-const CLUSTER_ANCHORS = {
-  ai_data: { lat: 40, lon: -105 },
-  cloud_infrastructure: { lat: 28, lon: 92 },
-};
-
-const CLUSTER_OFFSETS = {
-  ai_data: [
-    { lat: 8, lon: -18 },
-    { lat: 14, lon: -4 },
-    { lat: 10, lon: 10 },
-    { lat: 2, lon: -16 },
-    { lat: 2, lon: 0 },
-    { lat: -4, lon: 14 },
-    { lat: -8, lon: -2 },
-  ],
-  cloud_infrastructure: [
-    { lat: 10, lon: -20 },
-    { lat: 14, lon: -5 },
-    { lat: 10, lon: 10 },
-    { lat: 4, lon: -16 },
-    { lat: 2, lon: 0 },
-    { lat: -4, lon: 14 },
-    { lat: -10, lon: -2 },
-  ],
-};
+const FALLBACK_REGION_LAYOUTS = [
+  { path: 'M108,134 C84,86 118,48 178,54 C230,60 252,122 220,166 C194,204 130,204 108,134 Z', labelX: 170, labelY: 122 },
+  { path: 'M336,98 C374,54 442,66 466,116 C492,170 460,228 402,236 C352,242 302,188 308,140 C310,124 320,112 336,98 Z', labelX: 392, labelY: 146 },
+  { path: 'M552,136 C582,88 648,86 688,122 C724,156 716,214 676,246 C630,282 560,262 534,212 C520,184 524,162 552,136 Z', labelX: 626, labelY: 176 },
+  { path: 'M190,324 C226,274 294,276 332,314 C362,346 360,404 318,434 C278,464 214,454 178,416 C146,382 152,352 190,324 Z', labelX: 252, labelY: 366 },
+  { path: 'M470,334 C510,286 580,290 616,334 C654,380 642,446 592,474 C536,506 458,482 430,430 C410,396 434,362 470,334 Z', labelX: 534, labelY: 390 },
+  { path: 'M326,470 C360,436 416,434 450,462 C484,492 478,548 432,572 C386,594 326,578 300,536 C280,504 294,488 326,470 Z', labelX: 390, labelY: 516 },
+];
 
 function latLonToVector3(lat, lon, radius = 1.02) {
   const phi = (90 - lat) * (Math.PI / 180);
@@ -59,7 +46,7 @@ function buildOverlayTexture(countryMetrics, selectedCountryId) {
 
   function radiusFor(complexity) {
     const normalized = max === min ? 0.5 : (complexity - min) / (max - min);
-    return 26 + normalized * 42;
+    return 22 + normalized * 36;
   }
 
   function lonLatToCanvas(lat, lon) {
@@ -69,22 +56,19 @@ function buildOverlayTexture(countryMetrics, selectedCountryId) {
     };
   }
 
-  countryMetrics.forEach((country, idx) => {
-    const cluster = CLUSTER_ANCHORS[country.continentId] || { lat: 0, lon: 0 };
-    const offsets = CLUSTER_OFFSETS[country.continentId] || [{ lat: 0, lon: 0 }];
-    const offset = offsets[idx % offsets.length];
-    const lat = cluster.lat + offset.lat;
-    const lon = cluster.lon + offset.lon;
+  countryMetrics.forEach((country) => {
+    const { lat = 0, lon = 0 } = country;
     const radius = radiusFor(country.complexity || 1);
     const { x, y } = lonLatToCanvas(lat, lon);
     const active = country.id === selectedCountryId;
+    const theme = getClusterTheme(country.continentId);
 
     ctx.beginPath();
-    ctx.ellipse(x, y, radius * 1.4, radius, 0, 0, Math.PI * 2);
-    ctx.fillStyle = active ? 'rgba(255, 227, 122, 0.54)' : 'rgba(110, 221, 120, 0.24)';
+    ctx.ellipse(x, y, radius * 1.3, radius, 0, 0, Math.PI * 2);
+    ctx.fillStyle = active ? 'rgba(255, 241, 168, 0.62)' : theme.glow;
     ctx.fill();
     ctx.lineWidth = active ? 4 : 2;
-    ctx.strokeStyle = active ? 'rgba(255, 244, 188, 0.96)' : 'rgba(190, 255, 210, 0.52)';
+    ctx.strokeStyle = active ? 'rgba(255, 247, 204, 0.98)' : theme.accent;
     ctx.stroke();
 
     hitAreas.push({ country, lat, lon });
@@ -99,16 +83,19 @@ function buildOverlayTexture(countryMetrics, selectedCountryId) {
 function buildLevels(nodes, edges) {
   const indeg = new Map(nodes.map((n) => [n.id, 0]));
   const outgoing = new Map(nodes.map((n) => [n.id, []]));
+
   edges.forEach(([from, to]) => {
     if (outgoing.has(from) && indeg.has(to)) {
       outgoing.get(from).push(to);
       indeg.set(to, indeg.get(to) + 1);
     }
   });
+
   const queue = [];
   indeg.forEach((v, k) => {
     if (v === 0) queue.push(k);
   });
+
   const level = new Map(nodes.map((n) => [n.id, 0]));
   for (let i = 0; i < queue.length; i += 1) {
     const cur = queue[i];
@@ -118,87 +105,181 @@ function buildLevels(nodes, edges) {
       if (indeg.get(nxt) === 0) queue.push(nxt);
     });
   }
+
   return level;
 }
 
-const COUNTRY_SHAPES = {
-  ai_data: {
-    name: 'India',
-    silhouette: 'M335,52 L420,66 L490,118 L546,154 L579,240 L558,336 L492,418 L440,508 L362,522 L316,468 L260,448 L208,384 L194,300 L220,214 L268,162 L300,102 Z',
-    states: [
-      { id: 'python_programming', title: 'Python', path: 'M282,162 L344,156 L362,214 L318,252 L266,226 Z' },
-      { id: 'mathematics_statistics', title: 'Math', path: 'M360,154 L436,168 L444,244 L368,246 Z' },
-      { id: 'machine_learning', title: 'ML', path: 'M454,186 L520,204 L512,292 L444,276 Z' },
-      { id: 'deep_learning', title: 'Deep Learning', path: 'M298,272 L380,266 L402,352 L332,386 L274,340 Z' },
-      { id: 'data_visualization', title: 'Data Viz', path: 'M402,286 L496,302 L474,388 L396,394 Z' },
-    ],
-  },
-  cloud_infrastructure: {
-    name: 'Japan',
-    silhouette: 'M424,60 L458,96 L446,152 L476,188 L456,252 L492,316 L466,402 L420,488 L382,466 L394,392 L356,334 L372,266 L338,194 L366,122 L392,84 Z',
-    states: [
-      { id: 'cloud_platforms', title: 'Cloud', path: 'M392,108 L430,114 L424,176 L390,164 Z' },
-      { id: 'networking_fundamentals', title: 'Network', path: 'M406,186 L446,200 L434,264 L396,246 Z' },
-      { id: 'containers_orchestration', title: 'Containers', path: 'M420,274 L468,292 L450,344 L406,328 Z' },
-      { id: 'ci_cd_pipelines', title: 'CI/CD', path: 'M432,352 L474,370 L456,420 L416,408 Z' },
-      { id: 'system_design', title: 'System Design', path: 'M414,426 L452,442 L438,482 L404,470 Z' },
-    ],
-  },
-};
+function useCountryGeometry(country) {
+  const [data, setData] = useState({ loading: false, error: '', geojson: null });
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadGeometry() {
+      if (!country?.id) {
+        setData({ loading: false, error: '', geojson: null });
+        return;
+      }
+
+      const profile = getRoleWorldProfile(country.id);
+      setData({ loading: true, error: '', geojson: null });
+
+      try {
+        const metaRes = await fetch(`https://www.geoboundaries.org/api/current/gbOpen/${profile.iso3}/ADM1/`);
+        if (!metaRes.ok) {
+          throw new Error('metadata');
+        }
+        const meta = await metaRes.json();
+        const geoRes = await fetch(meta.simplifiedGeometryGeoJSON || meta.gjDownloadURL);
+        if (!geoRes.ok) {
+          throw new Error('geometry');
+        }
+        const geojson = await geoRes.json();
+        if (!cancelled) {
+          setData({ loading: false, error: '', geojson });
+        }
+      } catch {
+        if (!cancelled) {
+          setData({ loading: false, error: 'offline', geojson: null });
+        }
+      }
+    }
+
+    loadGeometry();
+    return () => {
+      cancelled = true;
+    };
+  }, [country]);
+
+  return data;
+}
+
+function buildFallbackRegions(requirements, stateById) {
+  return requirements.map((requirement, index) => ({
+    requirement,
+    state: stateById.get(requirement.state_id),
+    layout: FALLBACK_REGION_LAYOUTS[index % FALLBACK_REGION_LAYOUTS.length],
+  }));
+}
 
 function CountryPopup({ country, roleDetails, stateById, selectedStateId, onStateSelect, onBack }) {
-  const states = country?.states || [];
-  const shape = COUNTRY_SHAPES[country?.continentId] || COUNTRY_SHAPES.ai_data;
-  const stateShapes = shape.states.filter((item) => states.includes(item.id));
-  const nodeCounts = states.map((stateId) => stateById.get(stateId)?.nodes?.length || 1);
-  const maxNodes = Math.max(...nodeCounts, 1);
+  const { loading, error, geojson } = useCountryGeometry(country);
+  const profile = getRoleWorldProfile(country.id);
+  const requirements = roleDetails?.state_requirements || [];
+  const theme = getClusterTheme(country.continentId);
+
+  const regions = useMemo(() => {
+    if (!geojson?.features?.length) return [];
+
+    const ranked = [...geojson.features]
+      .sort((a, b) => geoArea(b) - geoArea(a))
+      .slice(0, requirements.length);
+
+    return ranked.map((featureItem, index) => ({
+      feature: featureItem,
+      requirement: requirements[index],
+      state: stateById.get(requirements[index].state_id),
+    }));
+  }, [geojson, requirements, stateById]);
+
+  const projection = useMemo(() => {
+    if (!geojson) return null;
+    return geoMercator().fitSize([780, 560], geojson);
+  }, [geojson]);
+
+  const pathBuilder = useMemo(() => (projection ? geoPath(projection) : null), [projection]);
+  const fallbackRegions = useMemo(() => buildFallbackRegions(requirements, stateById), [requirements, stateById]);
+  const showFallbackMap = !loading && (!pathBuilder || !regions.length);
 
   return (
     <div className="map-popup map-popup-country">
       <div className="map-toolbar">
-        <button className="back-btn" onClick={onBack}>Close Country</button>
+        <button className="back-btn" onClick={onBack}>Back</button>
         <div>
-          <h3>{shape.name} / {country.title}</h3>
-          <p>{roleDetails?.summary || 'Open a skill cluster to inspect its learning pathway.'}</p>
+          <h3>{profile.realm}</h3>
+          <p>{profile.countryName} • {country.title}</p>
         </div>
       </div>
 
-      <svg className="country-map-svg" viewBox="0 0 760 580">
-        <path d={shape.silhouette} className="country-silhouette" />
-        {stateShapes.map((stateShape) => {
-          const state = stateById.get(stateShape.id);
-          const active = selectedStateId === stateShape.id;
-          const complexityScale = ((state?.nodes?.length || 1) / maxNodes) * 0.12;
-          return (
-            <g key={stateShape.id} onClick={() => onStateSelect(stateShape.id)} className="state-region-group">
-              <path
-                d={stateShape.path}
-                className={active ? 'state-region active' : 'state-region'}
-                style={{ transformOrigin: '380px 290px', transform: `scale(${1 + complexityScale})` }}
-              />
-              <text x={380} y={290} textAnchor="middle" className="state-region-title state-region-title-hidden">
-                {stateShape.title}
-              </text>
-              <text
-                x={stateShape.id === 'python_programming' ? 310 : stateShape.id === 'mathematics_statistics' ? 402 : stateShape.id === 'machine_learning' ? 478 : stateShape.id === 'deep_learning' ? 338 : stateShape.id === 'data_visualization' ? 438 : stateShape.id === 'cloud_platforms' ? 408 : stateShape.id === 'networking_fundamentals' ? 420 : stateShape.id === 'containers_orchestration' ? 434 : stateShape.id === 'ci_cd_pipelines' ? 444 : 424}
-                y={stateShape.id === 'python_programming' ? 204 : stateShape.id === 'mathematics_statistics' ? 206 : stateShape.id === 'machine_learning' ? 246 : stateShape.id === 'deep_learning' ? 330 : stateShape.id === 'data_visualization' ? 344 : stateShape.id === 'cloud_platforms' ? 146 : stateShape.id === 'networking_fundamentals' ? 226 : stateShape.id === 'containers_orchestration' ? 310 : stateShape.id === 'ci_cd_pipelines' ? 390 : 458}
-                textAnchor="middle"
-                className="state-region-title"
-              >
-                {stateShape.title}
-              </text>
-              <text
-                x={stateShape.id === 'python_programming' ? 310 : stateShape.id === 'mathematics_statistics' ? 402 : stateShape.id === 'machine_learning' ? 478 : stateShape.id === 'deep_learning' ? 338 : stateShape.id === 'data_visualization' ? 438 : stateShape.id === 'cloud_platforms' ? 408 : stateShape.id === 'networking_fundamentals' ? 420 : stateShape.id === 'containers_orchestration' ? 434 : stateShape.id === 'ci_cd_pipelines' ? 444 : 424}
-                y={stateShape.id === 'python_programming' ? 224 : stateShape.id === 'mathematics_statistics' ? 226 : stateShape.id === 'machine_learning' ? 266 : stateShape.id === 'deep_learning' ? 350 : stateShape.id === 'data_visualization' ? 364 : stateShape.id === 'cloud_platforms' ? 164 : stateShape.id === 'networking_fundamentals' ? 244 : stateShape.id === 'containers_orchestration' ? 328 : stateShape.id === 'ci_cd_pipelines' ? 408 : 476}
-                textAnchor="middle"
-                className="state-region-sub"
-              >
-                {state?.nodes?.length || 0} cities
-              </text>
-            </g>
-          );
-        })}
-      </svg>
+      <div className="country-meta-banner">
+        <span>{roleDetails?.summary}</span>
+      </div>
+
+      {loading && <div className="inline-banner">Loading provinces...</div>}
+      {error && <div className="inline-banner subtle">Offline map mode</div>}
+
+      <div className="country-map-shell">
+        {pathBuilder && regions.length ? (
+          <svg className="country-map-svg" viewBox="0 0 780 560">
+            {regions.map(({ feature: region, requirement, state }) => {
+              const active = selectedStateId === requirement.state_id;
+              const [cx, cy] = pathBuilder.centroid(region);
+              return (
+                <g
+                  key={requirement.state_id}
+                  className="state-region-group"
+                  onClick={() => onStateSelect(requirement.state_id)}
+                >
+                  <path
+                    d={pathBuilder(region)}
+                    className={active ? 'state-region active' : 'state-region'}
+                    style={{
+                      fill: active ? theme.accent : undefined,
+                      opacity: active ? 0.95 : 0.82,
+                    }}
+                  />
+                  <text x={cx} y={cy - 4} textAnchor="middle" className="state-region-title">
+                    {state?.title || requirement.state_id}
+                  </text>
+                  <text x={cx} y={cy + 16} textAnchor="middle" className="state-region-sub">
+                    {state?.nodes?.length || 0} cities
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+        ) : null}
+
+        {showFallbackMap ? (
+          <svg className="country-map-svg country-map-svg-fallback" viewBox="0 0 780 560">
+            <defs>
+              <linearGradient id="seaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#97e3ff" />
+                <stop offset="100%" stopColor="#58bfff" />
+              </linearGradient>
+            </defs>
+            <rect width="780" height="560" rx="28" fill="url(#seaGradient)" />
+            <circle cx="88" cy="86" r="34" fill="rgba(255,255,255,0.32)" />
+            <circle cx="686" cy="92" r="26" fill="rgba(255,255,255,0.22)" />
+            <circle cx="714" cy="452" r="22" fill="rgba(255,255,255,0.18)" />
+            {fallbackRegions.map(({ requirement, state, layout }) => {
+              const active = selectedStateId === requirement.state_id;
+              return (
+                <g
+                  key={requirement.state_id}
+                  className="state-region-group"
+                  onClick={() => onStateSelect(requirement.state_id)}
+                >
+                  <path
+                    d={layout.path}
+                    className={active ? 'state-region active fallback-region' : 'state-region fallback-region'}
+                    style={{
+                      fill: active ? theme.accent : 'rgba(255,255,255,0.9)',
+                      opacity: 1,
+                    }}
+                  />
+                  <text x={layout.labelX} y={layout.labelY} textAnchor="middle" className="state-region-title fallback-text">
+                    {state?.title || requirement.state_id}
+                  </text>
+                  <text x={layout.labelX} y={layout.labelY + 18} textAnchor="middle" className="state-region-sub fallback-text-sub">
+                    {state?.nodes?.length || 0} cities
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -230,10 +311,10 @@ function StatePopup({ stateDetails, onBack }) {
   return (
     <div className="map-popup map-popup-state">
       <div className="map-toolbar">
-        <button className="back-btn" onClick={onBack}>Close State</button>
+        <button className="back-btn" onClick={onBack}>Back</button>
         <div>
           <h3>{stateDetails.title}</h3>
-          <p>District-style state map with cities renamed to subskills. Arrows show the learning order.</p>
+          <p>Clear the route.</p>
         </div>
       </div>
 
@@ -241,7 +322,7 @@ function StatePopup({ stateDetails, onBack }) {
         <svg className="state-map-svg" width="980" height={Math.max(420, 180 + nodes.length * 54)}>
           <defs>
             <marker id="path-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-              <path d="M0,0 L8,4 L0,8 Z" fill="#678cd8" />
+              <path d="M0,0 L8,4 L0,8 Z" fill="#68d8ff" />
             </marker>
           </defs>
           {edges.map(([from, to]) => {
@@ -277,16 +358,6 @@ function StatePopup({ stateDetails, onBack }) {
           })}
         </svg>
       </div>
-
-      <div className="city-list-inline">
-        {nodes.map((node) => (
-          <article key={node.id} className="city-card">
-            <h4>{node.title}</h4>
-            <p>{node.description}</p>
-            <small>{node.type} • {node.estimated_time_minutes} mins • {node.xp_reward} XP</small>
-          </article>
-        ))}
-      </div>
     </div>
   );
 }
@@ -308,12 +379,12 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
     if (!mount) return undefined;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(38, mount.clientWidth / 620, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(38, mount.clientWidth / 680, 0.1, 1000);
     camera.position.z = 3;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(mount.clientWidth, 620);
+    renderer.setSize(mount.clientWidth, 680);
     mount.appendChild(renderer.domElement);
 
     const textureLoader = new THREE.TextureLoader();
@@ -321,11 +392,11 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
     const bumpMap = textureLoader.load('https://threejs.org/examples/textures/planets/earth_bump_4096.jpg');
     const specMap = textureLoader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg');
 
-    scene.add(new THREE.AmbientLight(0xffffff, 1.1));
-    const keyLight = new THREE.DirectionalLight(0xffffff, 0.95);
+    scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.05);
     keyLight.position.set(3, 2, 4);
     scene.add(keyLight);
-    const rimLight = new THREE.DirectionalLight(0x9bd6ff, 0.45);
+    const rimLight = new THREE.DirectionalLight(0xb3f1ff, 0.68);
     rimLight.position.set(-4, -2, -3);
     scene.add(rimLight);
 
@@ -334,10 +405,10 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
       new THREE.MeshPhongMaterial({
         map: earthMap,
         bumpMap,
-        bumpScale: 0.05,
+        bumpScale: 0.04,
         specularMap: specMap,
-        specular: new THREE.Color(0x444444),
-        shininess: 10,
+        specular: new THREE.Color(0x888888),
+        shininess: 14,
       })
     );
 
@@ -351,11 +422,11 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
     );
 
     const atmosphere = new THREE.Mesh(
-      new THREE.SphereGeometry(1.05, 64, 64),
+      new THREE.SphereGeometry(1.06, 64, 64),
       new THREE.MeshPhongMaterial({
-        color: 0x7fc8ff,
+        color: 0x7ce7ff,
         transparent: true,
-        opacity: 0.09,
+        opacity: 0.16,
         side: THREE.BackSide,
       })
     );
@@ -372,7 +443,7 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
 
     function updateLabels() {
       const width = mount.clientWidth;
-      const height = 620;
+      const height = 680;
       const nextLabels = labelsRef.current.map((item) => {
         const pos = projectLabel(latLonToVector3(item.lat, item.lon, 1.08), camera, width, height);
         const frontFacing = latLonToVector3(item.lat, item.lon, 1.02).applyQuaternion(earth.quaternion).z > -0.15;
@@ -428,9 +499,9 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
     }
 
     function onResize() {
-      camera.aspect = mount.clientWidth / 620;
+      camera.aspect = mount.clientWidth / 680;
       camera.updateProjectionMatrix();
-      renderer.setSize(mount.clientWidth, 620);
+      renderer.setSize(mount.clientWidth, 680);
     }
 
     mount.addEventListener('pointerdown', onPointerDown);
@@ -439,7 +510,6 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
     window.addEventListener('resize', onResize);
 
     overlayRef.current = overlay;
-
     animate();
 
     return () => {
@@ -489,11 +559,27 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
         ))}
       </div>
       <div className="globe-caption">
-        <span>Large countries = more complex jobs with more sub-skills.</span>
-        <span>Click a job label to open that country map and display its skill-cluster states.</span>
+        <span>Tap a realm.</span>
+        <span>Clear its provinces.</span>
       </div>
     </div>
   );
+}
+
+function buildCountryPositions(countryMetrics) {
+  const world = feature(countries110m, countries110m.objects.countries);
+  const centroidByName = new Map(world.features.map((item) => [item.properties.name, geoCentroid(item)]));
+
+  return countryMetrics.map((country) => {
+    const profile = getRoleWorldProfile(country.id);
+    const centroid = centroidByName.get(profile.countryName) || [0, 0];
+    return {
+      ...country,
+      lon: centroid[0],
+      lat: centroid[1],
+      profile,
+    };
+  });
 }
 
 export default function WorldMap(props) {
@@ -507,12 +593,23 @@ export default function WorldMap(props) {
     onBackToCountry,
   } = props;
 
+  const positionedMetrics = useMemo(() => buildCountryPositions(props.countryMetrics), [props.countryMetrics]);
+
+  const selectedCountryWithPosition = useMemo(
+    () => positionedMetrics.find((country) => country.id === selectedCountry?.id) || selectedCountry,
+    [positionedMetrics, selectedCountry]
+  );
+
   return (
     <div className="map-mode-shell">
-      <GlobeMode {...props} />
-      {selectedCountry && (
+      <GlobeMode
+        countryMetrics={positionedMetrics}
+        selectedCountryId={props.selectedCountryId}
+        onCountrySelect={props.onCountrySelect}
+      />
+      {selectedCountryWithPosition && (
         <CountryPopup
-          country={selectedCountry}
+          country={selectedCountryWithPosition}
           roleDetails={roleDetails}
           stateById={props.stateById}
           selectedStateId={selectedStateId}
@@ -520,7 +617,7 @@ export default function WorldMap(props) {
           onBack={onBackToGlobe}
         />
       )}
-      {selectedCountry && selectedStateId && stateDetails && (
+      {selectedCountryWithPosition && selectedStateId && stateDetails && (
         <StatePopup stateDetails={stateDetails} onBack={onBackToCountry} />
       )}
     </div>
