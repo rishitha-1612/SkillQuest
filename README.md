@@ -73,6 +73,8 @@ Main file:
 Every skill now has a built-in assessment gate:
 
 - 25 multiple-choice questions per skill
+- 100-question bank per skill, built from course-relevant interview-style topics
+- each attempt draws a fresh 25-question mix across easy, medium, and hard
 - user must score 75% or higher to pass
 - next skill only unlocks after the current skill assessment is passed
 - assessment is launched from the end of the skill route using a `Take Assessment` button
@@ -110,6 +112,7 @@ Country learning windows now include a tutor chat panel:
 - user can ask for help about the project
 - user can ask about the active job path or current skill
 - user can type questions and use voice input where browser speech recognition is available
+- tutor answers from the active skill knowledge bank instead of only canned lines
 - tutor responses are more learner-friendly and explain things in simpler language
 - tutor gives analogies to help users understand difficult topics more easily
 - quick prompt chips help users ask common learning questions faster
