@@ -119,7 +119,7 @@ export default function AssessmentRouteWindow({ countryId, stateId }) {
         <div className="hero-stats country-hero-stats">
           <article className="stat-card">
             <span>Format</span>
-            <strong>25 MCQ</strong>
+            <strong>30 MCQ</strong>
           </article>
           <article className="stat-card">
             <span>Pass Mark</span>
@@ -149,7 +149,7 @@ export default function AssessmentRouteWindow({ countryId, stateId }) {
           </div>
           <div className="window-body">
             <p className="panel-summary">
-              Finish the skill route, then take this assessment. Each attempt pulls a fresh 25-question mix from a 100-question easy, medium, and hard bank.
+              Finish the skill route, then take this assessment. Each attempt pulls a fresh 30-question mix from a 100-question bank using 7 easy, 15 medium, and 8 hard questions.
             </p>
             <div className="mini-stats">
               <article>

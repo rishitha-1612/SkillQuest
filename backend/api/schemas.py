@@ -12,3 +12,15 @@ class UnlockRequest(BaseModel):
 class ReadinessRequest(BaseModel):
     progress_by_state: Dict[str, List[str]] = Field(default_factory=dict)
     assessment_scores: Dict[str, float] = Field(default_factory=dict)
+
+
+class TutorChatMessage(BaseModel):
+    role: str = Field(pattern="^(user|assistant)$")
+    text: str = Field(min_length=1, max_length=4000)
+
+
+class TutorChatRequest(BaseModel):
+    role_id: str | None = None
+    state_id: str | None = None
+    message: str = Field(min_length=1, max_length=4000)
+    history: List[TutorChatMessage] = Field(default_factory=list)

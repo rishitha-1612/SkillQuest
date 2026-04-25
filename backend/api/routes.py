@@ -6,13 +6,14 @@ from typing import Dict, List
 
 from fastapi import APIRouter, HTTPException, Query
 
-from backend.api.schemas import ReadinessRequest, UnlockRequest
+from backend.api.schemas import ReadinessRequest, TutorChatRequest, UnlockRequest
 from backend.models.career_models import RoleBlueprint, StateGraph
 from backend.services.data_loader import load_role_blueprints, load_state_graphs, load_world_map
 from backend.services.question_bank_service import get_question_slice
 from backend.services.readiness_engine import get_readiness_score
 from backend.services.recommendation_engine import get_next_recommended_nodes, get_recommended_path
 from backend.services.role_path_engine import get_role_state_path
+from backend.services.tutor_service import generate_tutor_reply
 from backend.services.unlock_engine import build_graph_snapshot, get_locked_nodes, get_unlocked_nodes
 
 
@@ -195,4 +196,30 @@ def readiness(country_id: str, payload: ReadinessRequest) -> Dict[str, object]:
         "total_state_count": result.total_state_count,
         "next_recommended_state": result.next_recommended_state,
         "state_readiness": [asdict(item) for item in result.state_readiness],
+    }
+
+
+@router.post("/tutor/chat")
+def tutor_chat(payload: TutorChatRequest) -> Dict[str, object]:
+    roles = get_role_blueprints()
+    graphs = get_state_graphs()
+
+    role = roles.get(payload.role_id) if payload.role_id else None
+    state = graphs.get(payload.state_id) if payload.state_id else None
+
+    reply, provider = generate_tutor_reply(
+        message=payload.message,
+        history=[{"role": item.role, "text": item.text} for item in payload.history],
+        role=role,
+        state=state,
+    )
+
+    return {
+        "reply": reply,
+        "provider": provider,
+        "model": {
+            "gemini": "gemini-free-tier",
+            "ollama": "local-open-source",
+            "fallback": "fallback",
+        }.get(provider, provider),
     }

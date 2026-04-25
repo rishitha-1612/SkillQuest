@@ -1,792 +1,1124 @@
 {
-    "role_blueprints":  [
-                            {
-                                "role_id":  "ai_engineer",
-                                "title":  "AI Engineer",
-                                "continent_id":  "ai_data",
-                                "summary":  "Builds AI product features and intelligent user experiences that ship to production.",
-                                "responsibilities":  [
-                                                         "Integrate models into applications",
-                                                         "Design inference flows",
-                                                         "Evaluate model quality",
-                                                         "Turn AI ideas into real features"
-                                                     ],
-                                "core_tools":  [
-                                                   "Python",
-                                                   "PyTorch or TensorFlow",
-                                                   "APIs",
-                                                   "Experiment tracking",
-                                                   "Deployment workflows"
-                                               ],
-                                "state_requirements":  [
-                                                           {
-                                                               "state_id":  "python_programming",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Production AI systems depend on strong coding and debugging skills."
-                                                           },
-                                                           {
-                                                               "state_id":  "mathematics_statistics",
-                                                               "priority":  "core",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Math helps reason about model behavior and trade-offs."
-                                                           },
-                                                           {
-                                                               "state_id":  "machine_learning",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Model training and evaluation are central to the role."
-                                                           },
-                                                           {
-                                                               "state_id":  "deep_learning",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Modern AI products rely on neural and transformer systems."
-                                                           },
-                                                           {
-                                                               "state_id":  "data_visualization",
-                                                               "priority":  "supporting",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Visual analysis helps explain model behavior and product impact."
-                                                           }
-                                                       ],
-                                "role_dag":  {
-                                                 "entry_states":  [
-                                                                      "python_programming"
-                                                                  ],
-                                                 "final_state":  "deep_learning",
-                                                 "edges":  [
-                                                               [
-                                                                   "python_programming",
-                                                                   "mathematics_statistics"
-                                                               ],
-                                                               [
-                                                                   "python_programming",
-                                                                   "machine_learning"
-                                                               ],
-                                                               [
-                                                                   "mathematics_statistics",
-                                                                   "machine_learning"
-                                                               ],
-                                                               [
-                                                                   "machine_learning",
-                                                                   "data_visualization"
-                                                               ],
-                                                               [
-                                                                   "machine_learning",
-                                                                   "deep_learning"
-                                                               ]
-                                                           ]
-                                             }
-                            },
-                            {
-                                "role_id":  "ml_engineer",
-                                "title":  "ML Engineer",
-                                "continent_id":  "ai_data",
-                                "summary":  "Designs, trains, validates, and operationalizes machine learning systems.",
-                                "responsibilities":  [
-                                                         "Train and tune models",
-                                                         "Build feature pipelines",
-                                                         "Deploy learning systems",
-                                                         "Monitor performance over time"
-                                                     ],
-                                "core_tools":  [
-                                                   "Python",
-                                                   "scikit-learn",
-                                                   "PyTorch",
-                                                   "Feature pipelines",
-                                                   "Evaluation dashboards"
-                                               ],
-                                "state_requirements":  [
-                                                           {
-                                                               "state_id":  "python_programming",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "ML workflows are code-heavy and experimental."
-                                                           },
-                                                           {
-                                                               "state_id":  "mathematics_statistics",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Strong statistics and optimization drive robust models."
-                                                           },
-                                                           {
-                                                               "state_id":  "machine_learning",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "This is the core skill domain for the role."
-                                                           },
-                                                           {
-                                                               "state_id":  "deep_learning",
-                                                               "priority":  "core",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Modern ML often extends into neural systems."
-                                                           },
-                                                           {
-                                                               "state_id":  "system_design",
-                                                               "priority":  "supporting",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Production ML must fit real application architectures."
-                                                           }
-                                                       ],
-                                "role_dag":  {
-                                                 "entry_states":  [
-                                                                      "python_programming",
-                                                                      "mathematics_statistics"
-                                                                  ],
-                                                 "final_state":  "machine_learning",
-                                                 "edges":  [
-                                                               [
-                                                                   "python_programming",
-                                                                   "machine_learning"
-                                                               ],
-                                                               [
-                                                                   "mathematics_statistics",
-                                                                   "machine_learning"
-                                                               ],
-                                                               [
-                                                                   "machine_learning",
-                                                                   "deep_learning"
-                                                               ],
-                                                               [
-                                                                   "machine_learning",
-                                                                   "system_design"
-                                                               ]
-                                                           ]
-                                             }
-                            },
-                            {
-                                "role_id":  "data_scientist",
-                                "title":  "Data Scientist",
-                                "continent_id":  "ai_data",
-                                "summary":  "Uses analysis, experimentation, and predictive modeling to drive better decisions.",
-                                "responsibilities":  [
-                                                         "Frame analytical questions",
-                                                         "Explore and model datasets",
-                                                         "Run experiments",
-                                                         "Communicate insights"
-                                                     ],
-                                "core_tools":  [
-                                                   "Python",
-                                                   "SQL",
-                                                   "Notebook workflows",
-                                                   "Visualization libraries",
-                                                   "Experiment design"
-                                               ],
-                                "state_requirements":  [
-                                                           {
-                                                               "state_id":  "python_programming",
-                                                               "priority":  "core",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Python supports analysis, modeling, and data preparation."
-                                                           },
-                                                           {
-                                                               "state_id":  "mathematics_statistics",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Inference and experimentation are central to the role."
-                                                           },
-                                                           {
-                                                               "state_id":  "machine_learning",
-                                                               "priority":  "core",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Predictive modeling supports many data science tasks."
-                                                           },
-                                                           {
-                                                               "state_id":  "data_visualization",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Insights must become clear stories and decisions."
-                                                           },
-                                                           {
-                                                               "state_id":  "sql_databases",
-                                                               "priority":  "core",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Most real analyses begin with database fluency."
-                                                           }
-                                                       ],
-                                "role_dag":  {
-                                                 "entry_states":  [
-                                                                      "python_programming",
-                                                                      "sql_databases"
-                                                                  ],
-                                                 "final_state":  "data_visualization",
-                                                 "edges":  [
-                                                               [
-                                                                   "sql_databases",
-                                                                   "python_programming"
-                                                               ],
-                                                               [
-                                                                   "python_programming",
-                                                                   "machine_learning"
-                                                               ],
-                                                               [
-                                                                   "mathematics_statistics",
-                                                                   "machine_learning"
-                                                               ],
-                                                               [
-                                                                   "machine_learning",
-                                                                   "data_visualization"
-                                                               ],
-                                                               [
-                                                                   "mathematics_statistics",
-                                                                   "data_visualization"
-                                                               ]
-                                                           ]
-                                             }
-                            },
-                            {
-                                "role_id":  "data_engineer",
-                                "title":  "Data Engineer",
-                                "continent_id":  "ai_data",
-                                "summary":  "Builds the pipelines, data platforms, and reliable movement of information across systems.",
-                                "responsibilities":  [
-                                                         "Build ETL workflows",
-                                                         "Model data platforms",
-                                                         "Maintain data quality",
-                                                         "Scale pipelines reliably"
-                                                     ],
-                                "core_tools":  [
-                                                   "Python",
-                                                   "SQL",
-                                                   "Orchestration tools",
-                                                   "Cloud services",
-                                                   "CI/CD"
-                                               ],
-                                "state_requirements":  [
-                                                           {
-                                                               "state_id":  "python_programming",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Automation and data transforms are implemented in code."
-                                                           },
-                                                           {
-                                                               "state_id":  "sql_databases",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Data engineers design and optimize database layers."
-                                                           },
-                                                           {
-                                                               "state_id":  "data_engineering",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Pipeline orchestration and quality are at the heart of the role."
-                                                           },
-                                                           {
-                                                               "state_id":  "cloud_platforms",
-                                                               "priority":  "supporting",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Modern pipelines often run on cloud infrastructure."
-                                                           },
-                                                           {
-                                                               "state_id":  "ci_cd_pipelines",
-                                                               "priority":  "supporting",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Reliable delivery keeps data systems safe and repeatable."
-                                                           }
-                                                       ],
-                                "role_dag":  {
-                                                 "entry_states":  [
-                                                                      "python_programming",
-                                                                      "sql_databases"
-                                                                  ],
-                                                 "final_state":  "data_engineering",
-                                                 "edges":  [
-                                                               [
-                                                                   "sql_databases",
-                                                                   "data_engineering"
-                                                               ],
-                                                               [
-                                                                   "python_programming",
-                                                                   "data_engineering"
-                                                               ],
-                                                               [
-                                                                   "data_engineering",
-                                                                   "cloud_platforms"
-                                                               ],
-                                                               [
-                                                                   "data_engineering",
-                                                                   "ci_cd_pipelines"
-                                                               ]
-                                                           ]
-                                             }
-                            },
-                            {
-                                "role_id":  "prompt_engineer",
-                                "title":  "Prompt Engineer",
-                                "continent_id":  "ai_data",
-                                "summary":  "Designs prompt systems, evaluation loops, and AI workflows that feel reliable and useful.",
-                                "responsibilities":  [
-                                                         "Design prompt strategies",
-                                                         "Evaluate outputs",
-                                                         "Build retrieval context",
-                                                         "Tune assistant behavior"
-                                                     ],
-                                "core_tools":  [
-                                                   "Prompt patterns",
-                                                   "Evaluation loops",
-                                                   "Knowledge retrieval",
-                                                   "Python",
-                                                   "LLM APIs"
-                                               ],
-                                "state_requirements":  [
-                                                           {
-                                                               "state_id":  "prompt_engineering",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Prompt design is the signature skill for the role."
-                                                           },
-                                                           {
-                                                               "state_id":  "machine_learning",
-                                                               "priority":  "supporting",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Model behavior is easier to shape when you understand the underlying systems."
-                                                           },
-                                                           {
-                                                               "state_id":  "api_integration",
-                                                               "priority":  "core",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Prompt flows often depend on external tools and APIs."
-                                                           },
-                                                           {
-                                                               "state_id":  "data_visualization",
-                                                               "priority":  "supporting",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Visualization helps compare prompt quality and evaluation results."
-                                                           },
-                                                           {
-                                                               "state_id":  "python_programming",
-                                                               "priority":  "supporting",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Prompt systems are usually embedded in application code."
-                                                           }
-                                                       ],
-                                "role_dag":  {
-                                                 "entry_states":  [
-                                                                      "prompt_engineering"
-                                                                  ],
-                                                 "final_state":  "api_integration",
-                                                 "edges":  [
-                                                               [
-                                                                   "prompt_engineering",
-                                                                   "machine_learning"
-                                                               ],
-                                                               [
-                                                                   "prompt_engineering",
-                                                                   "python_programming"
-                                                               ],
-                                                               [
-                                                                   "python_programming",
-                                                                   "api_integration"
-                                                               ],
-                                                               [
-                                                                   "machine_learning",
-                                                                   "data_visualization"
-                                                               ],
-                                                               [
-                                                                   "data_visualization",
-                                                                   "api_integration"
-                                                               ]
-                                                           ]
-                                             }
-                            },
-                            {
-                                "role_id":  "cloud_architect",
-                                "title":  "Cloud Architect",
-                                "continent_id":  "cloud_infrastructure",
-                                "summary":  "Designs scalable, secure, and cost-aware cloud systems for complex products.",
-                                "responsibilities":  [
-                                                         "Design cloud platforms",
-                                                         "Plan reliability",
-                                                         "Guide deployment standards",
-                                                         "Balance scale, cost, and security"
-                                                     ],
-                                "core_tools":  [
-                                                   "Cloud platforms",
-                                                   "Architecture diagrams",
-                                                   "IaC",
-                                                   "Monitoring",
-                                                   "Security reviews"
-                                               ],
-                                "state_requirements":  [
-                                                           {
-                                                               "state_id":  "cloud_platforms",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Platform capability knowledge is the base of architecture design."
-                                                           },
-                                                           {
-                                                               "state_id":  "networking_fundamentals",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Connectivity and exposure are architecture concerns."
-                                                           },
-                                                           {
-                                                               "state_id":  "containers_orchestration",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Architects often design for containerized, orchestrated systems."
-                                                           },
-                                                           {
-                                                               "state_id":  "ci_cd_pipelines",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Delivery flow affects maintainability and reliability."
-                                                           },
-                                                           {
-                                                               "state_id":  "system_design",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Architecture decisions depend on system design depth."
-                                                           }
-                                                       ],
-                                "role_dag":  {
-                                                 "entry_states":  [
-                                                                      "cloud_platforms",
-                                                                      "networking_fundamentals"
-                                                                  ],
-                                                 "final_state":  "system_design",
-                                                 "edges":  [
-                                                               [
-                                                                   "cloud_platforms",
-                                                                   "containers_orchestration"
-                                                               ],
-                                                               [
-                                                                   "networking_fundamentals",
-                                                                   "system_design"
-                                                               ],
-                                                               [
-                                                                   "cloud_platforms",
-                                                                   "system_design"
-                                                               ],
-                                                               [
-                                                                   "containers_orchestration",
-                                                                   "ci_cd_pipelines"
-                                                               ],
-                                                               [
-                                                                   "ci_cd_pipelines",
-                                                                   "system_design"
-                                                               ]
-                                                           ]
-                                             }
-                            },
-                            {
-                                "role_id":  "cybersecurity_specialist",
-                                "title":  "Cybersecurity Specialist",
-                                "continent_id":  "cloud_infrastructure",
-                                "summary":  "Protects applications, infrastructure, and delivery flows from modern threats.",
-                                "responsibilities":  [
-                                                         "Harden systems",
-                                                         "Review attack surfaces",
-                                                         "Build security guardrails",
-                                                         "Respond to incidents"
-                                                     ],
-                                "core_tools":  [
-                                                   "IAM",
-                                                   "Network policies",
-                                                   "Security scanning",
-                                                   "Secrets management",
-                                                   "Monitoring"
-                                               ],
-                                "state_requirements":  [
-                                                           {
-                                                               "state_id":  "networking_fundamentals",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Traffic paths and exposure are core security concerns."
-                                                           },
-                                                           {
-                                                               "state_id":  "cybersecurity_fundamentals",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Threat models and application security are core to the role."
-                                                           },
-                                                           {
-                                                               "state_id":  "cloud_platforms",
-                                                               "priority":  "supporting",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Security teams must understand the infrastructure they protect."
-                                                           },
-                                                           {
-                                                               "state_id":  "devsecops_security",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Modern security work includes automated policy and pipeline checks."
-                                                           },
-                                                           {
-                                                               "state_id":  "system_design",
-                                                               "priority":  "supporting",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Security must be designed into architecture decisions."
-                                                           }
-                                                       ],
-                                "role_dag":  {
-                                                 "entry_states":  [
-                                                                      "networking_fundamentals",
-                                                                      "cybersecurity_fundamentals"
-                                                                  ],
-                                                 "final_state":  "devsecops_security",
-                                                 "edges":  [
-                                                               [
-                                                                   "networking_fundamentals",
-                                                                   "cybersecurity_fundamentals"
-                                                               ],
-                                                               [
-                                                                   "cybersecurity_fundamentals",
-                                                                   "cloud_platforms"
-                                                               ],
-                                                               [
-                                                                   "cloud_platforms",
-                                                                   "devsecops_security"
-                                                               ],
-                                                               [
-                                                                   "cybersecurity_fundamentals",
-                                                                   "system_design"
-                                                               ],
-                                                               [
-                                                                   "system_design",
-                                                                   "devsecops_security"
-                                                               ]
-                                                           ]
-                                             }
-                            },
-                            {
-                                "role_id":  "software_developer",
-                                "title":  "Software Developer",
-                                "continent_id":  "cloud_infrastructure",
-                                "summary":  "Builds maintainable software features, services, and release-ready product logic.",
-                                "responsibilities":  [
-                                                         "Implement product features",
-                                                         "Write maintainable code",
-                                                         "Ship tested services",
-                                                         "Collaborate across product teams"
-                                                     ],
-                                "core_tools":  [
-                                                   "Python",
-                                                   "APIs",
-                                                   "Databases",
-                                                   "Git",
-                                                   "CI/CD"
-                                               ],
-                                "state_requirements":  [
-                                                           {
-                                                               "state_id":  "python_programming",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Solid coding fundamentals power all product work."
-                                                           },
-                                                           {
-                                                               "state_id":  "backend_development",
-                                                               "priority":  "core",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Many product features depend on service-side logic."
-                                                           },
-                                                           {
-                                                               "state_id":  "sql_databases",
-                                                               "priority":  "core",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Applications depend on good data modeling and queries."
-                                                           },
-                                                           {
-                                                               "state_id":  "ci_cd_pipelines",
-                                                               "priority":  "supporting",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Reliable releases keep development fast and safe."
-                                                           },
-                                                           {
-                                                               "state_id":  "system_design",
-                                                               "priority":  "supporting",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Design awareness helps features scale cleanly."
-                                                           }
-                                                       ],
-                                "role_dag":  {
-                                                 "entry_states":  [
-                                                                      "python_programming"
-                                                                  ],
-                                                 "final_state":  "backend_development",
-                                                 "edges":  [
-                                                               [
-                                                                   "python_programming",
-                                                                   "sql_databases"
-                                                               ],
-                                                               [
-                                                                   "python_programming",
-                                                                   "backend_development"
-                                                               ],
-                                                               [
-                                                                   "sql_databases",
-                                                                   "backend_development"
-                                                               ],
-                                                               [
-                                                                   "backend_development",
-                                                                   "ci_cd_pipelines"
-                                                               ],
-                                                               [
-                                                                   "backend_development",
-                                                                   "system_design"
-                                                               ]
-                                                           ]
-                                             }
-                            },
-                            {
-                                "role_id":  "full_stack_engineer",
-                                "title":  "Full Stack Engineer",
-                                "continent_id":  "cloud_infrastructure",
-                                "summary":  "Designs and ships complete product experiences across frontend, backend, and integration layers.",
-                                "responsibilities":  [
-                                                         "Build user interfaces",
-                                                         "Build backend services",
-                                                         "Connect APIs and data",
-                                                         "Own end-to-end product delivery"
-                                                     ],
-                                "core_tools":  [
-                                                   "Frontend frameworks",
-                                                   "Backend services",
-                                                   "SQL",
-                                                   "APIs",
-                                                   "System design"
-                                               ],
-                                "state_requirements":  [
-                                                           {
-                                                               "state_id":  "frontend_development",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "The role spans rich, polished interfaces."
-                                                           },
-                                                           {
-                                                               "state_id":  "backend_development",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Full-stack work must include strong service-side engineering."
-                                                           },
-                                                           {
-                                                               "state_id":  "sql_databases",
-                                                               "priority":  "core",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Apps depend on well-structured persistent data."
-                                                           },
-                                                           {
-                                                               "state_id":  "api_integration",
-                                                               "priority":  "core",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Modern products connect multiple external and internal services."
-                                                           },
-                                                           {
-                                                               "state_id":  "system_design",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "Full-stack engineers benefit from strong end-to-end architecture thinking."
-                                                           }
-                                                       ],
-                                "role_dag":  {
-                                                 "entry_states":  [
-                                                                      "frontend_development",
-                                                                      "backend_development"
-                                                                  ],
-                                                 "final_state":  "system_design",
-                                                 "edges":  [
-                                                               [
-                                                                   "frontend_development",
-                                                                   "api_integration"
-                                                               ],
-                                                               [
-                                                                   "backend_development",
-                                                                   "sql_databases"
-                                                               ],
-                                                               [
-                                                                   "api_integration",
-                                                                   "system_design"
-                                                               ],
-                                                               [
-                                                                   "sql_databases",
-                                                                   "system_design"
-                                                               ],
-                                                               [
-                                                                   "backend_development",
-                                                                   "system_design"
-                                                               ]
-                                                           ]
-                                             }
-                            },
-                            {
-                                "role_id":  "blockchain_developer",
-                                "title":  "Blockchain Developer",
-                                "continent_id":  "cloud_infrastructure",
-                                "summary":  "Builds blockchain products, smart contract flows, and Web3-connected application logic.",
-                                "responsibilities":  [
-                                                         "Build smart contract flows",
-                                                         "Connect wallet-based experiences",
-                                                         "Secure contract interactions",
-                                                         "Ship on-chain product logic"
-                                                     ],
-                                "core_tools":  [
-                                                   "Smart contracts",
-                                                   "Wallet tooling",
-                                                   "Client apps",
-                                                   "Security reviews",
-                                                   "Distributed systems thinking"
-                                               ],
-                                "state_requirements":  [
-                                                           {
-                                                               "state_id":  "python_programming",
-                                                               "priority":  "supporting",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Programming fluency supports backend and tooling work around chains."
-                                                           },
-                                                           {
-                                                               "state_id":  "backend_development",
-                                                               "priority":  "core",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Many blockchain applications still rely on strong service-side logic."
-                                                           },
-                                                           {
-                                                               "state_id":  "blockchain_fundamentals",
-                                                               "priority":  "core",
-                                                               "expected_level":  "advanced",
-                                                               "why_it_matters":  "This is the signature technical domain for the role."
-                                                           },
-                                                           {
-                                                               "state_id":  "cybersecurity_fundamentals",
-                                                               "priority":  "core",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Security failures are especially costly in blockchain systems."
-                                                           },
-                                                           {
-                                                               "state_id":  "system_design",
-                                                               "priority":  "supporting",
-                                                               "expected_level":  "intermediate",
-                                                               "why_it_matters":  "Distributed product decisions require strong systems thinking."
-                                                           }
-                                                       ],
-                                "role_dag":  {
-                                                 "entry_states":  [
-                                                                      "blockchain_fundamentals"
-                                                                  ],
-                                                 "final_state":  "system_design",
-                                                 "edges":  [
-                                                               [
-                                                                   "python_programming",
-                                                                   "backend_development"
-                                                               ],
-                                                               [
-                                                                   "blockchain_fundamentals",
-                                                                   "backend_development"
-                                                               ],
-                                                               [
-                                                                   "backend_development",
-                                                                   "cybersecurity_fundamentals"
-                                                               ],
-                                                               [
-                                                                   "cybersecurity_fundamentals",
-                                                                   "system_design"
-                                                               ],
-                                                               [
-                                                                   "blockchain_fundamentals",
-                                                                   "system_design"
-                                                               ]
-                                                           ]
-                                             }
-                            }
-                        ]
+  "role_blueprints": [
+    {
+      "role_id": "ai_engineer",
+      "title": "AI Engineer",
+      "continent_id": "ai_data",
+      "summary": "Builds AI product features and intelligent user experiences that ship to production.",
+      "responsibilities": [
+        "Integrate models into applications",
+        "Design inference flows",
+        "Evaluate model quality",
+        "Turn AI ideas into real features"
+      ],
+      "core_tools": [
+        "Python",
+        "PyTorch or TensorFlow",
+        "APIs",
+        "Experiment tracking",
+        "Deployment workflows"
+      ],
+      "state_requirements": [
+        {
+          "state_id": "python_programming",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Strong coding, debugging, and automation skills are required for production-grade work."
+        },
+        {
+          "state_id": "mathematics_statistics",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Quantitative reasoning helps explain model behavior, performance, and trade-offs."
+        },
+        {
+          "state_id": "machine_learning",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "This skill teaches how predictive systems are trained, evaluated, and improved."
+        },
+        {
+          "state_id": "deep_learning",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Modern AI products rely on neural systems, embeddings, and transformer-style workflows."
+        },
+        {
+          "state_id": "data_engineering",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Reliable pipelines and data movement support production systems and analytics."
+        },
+        {
+          "state_id": "prompt_engineering",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Prompt design helps shape practical AI workflows, assistants, and evaluation loops."
+        },
+        {
+          "state_id": "api_integration",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "Real products depend on secure and reliable integration between internal and external services."
+        },
+        {
+          "state_id": "system_design",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "System thinking is needed to connect components into scalable, production-ready products."
+        },
+        {
+          "state_id": "cloud_platforms",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Cloud fluency supports deployment, scaling, and reliable infrastructure choices."
+        },
+        {
+          "state_id": "data_visualization",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Clear visual communication turns analysis into decisions and product direction."
+        }
+      ],
+      "role_dag": {
+        "entry_states": [
+          "python_programming",
+          "mathematics_statistics"
+        ],
+        "final_state": "data_visualization",
+        "edges": [
+          [
+            "python_programming",
+            "mathematics_statistics"
+          ],
+          [
+            "mathematics_statistics",
+            "machine_learning"
+          ],
+          [
+            "machine_learning",
+            "deep_learning"
+          ],
+          [
+            "deep_learning",
+            "data_engineering"
+          ],
+          [
+            "data_engineering",
+            "prompt_engineering"
+          ],
+          [
+            "prompt_engineering",
+            "api_integration"
+          ],
+          [
+            "api_integration",
+            "system_design"
+          ],
+          [
+            "system_design",
+            "cloud_platforms"
+          ],
+          [
+            "cloud_platforms",
+            "data_visualization"
+          ]
+        ]
+      }
+    },
+    {
+      "role_id": "ml_engineer",
+      "title": "ML Engineer",
+      "continent_id": "ai_data",
+      "summary": "Designs, trains, validates, and operationalizes machine learning systems.",
+      "responsibilities": [
+        "Train and tune models",
+        "Build feature pipelines",
+        "Deploy learning systems",
+        "Monitor performance over time"
+      ],
+      "core_tools": [
+        "Python",
+        "scikit-learn",
+        "PyTorch",
+        "Feature pipelines",
+        "Evaluation dashboards"
+      ],
+      "state_requirements": [
+        {
+          "state_id": "python_programming",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Strong coding, debugging, and automation skills are required for production-grade work."
+        },
+        {
+          "state_id": "mathematics_statistics",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Quantitative reasoning helps explain model behavior, performance, and trade-offs."
+        },
+        {
+          "state_id": "sql_databases",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Professional software work depends on strong data modeling, querying, and persistence skills."
+        },
+        {
+          "state_id": "data_engineering",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Reliable pipelines and data movement support production systems and analytics."
+        },
+        {
+          "state_id": "machine_learning",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "This skill teaches how predictive systems are trained, evaluated, and improved."
+        },
+        {
+          "state_id": "deep_learning",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "Modern AI products rely on neural systems, embeddings, and transformer-style workflows."
+        },
+        {
+          "state_id": "data_visualization",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Clear visual communication turns analysis into decisions and product direction."
+        },
+        {
+          "state_id": "cloud_platforms",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Cloud fluency supports deployment, scaling, and reliable infrastructure choices."
+        },
+        {
+          "state_id": "ci_cd_pipelines",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Delivery automation keeps releases safe, repeatable, and fast."
+        },
+        {
+          "state_id": "system_design",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "System thinking is needed to connect components into scalable, production-ready products."
+        }
+      ],
+      "role_dag": {
+        "entry_states": [
+          "python_programming",
+          "mathematics_statistics"
+        ],
+        "final_state": "system_design",
+        "edges": [
+          [
+            "python_programming",
+            "mathematics_statistics"
+          ],
+          [
+            "mathematics_statistics",
+            "sql_databases"
+          ],
+          [
+            "sql_databases",
+            "data_engineering"
+          ],
+          [
+            "data_engineering",
+            "machine_learning"
+          ],
+          [
+            "machine_learning",
+            "deep_learning"
+          ],
+          [
+            "deep_learning",
+            "data_visualization"
+          ],
+          [
+            "data_visualization",
+            "cloud_platforms"
+          ],
+          [
+            "cloud_platforms",
+            "ci_cd_pipelines"
+          ],
+          [
+            "ci_cd_pipelines",
+            "system_design"
+          ]
+        ]
+      }
+    },
+    {
+      "role_id": "data_scientist",
+      "title": "Data Scientist",
+      "continent_id": "ai_data",
+      "summary": "Uses analysis, experimentation, and predictive modeling to drive better decisions.",
+      "responsibilities": [
+        "Frame analytical questions",
+        "Explore and model datasets",
+        "Run experiments",
+        "Communicate insights"
+      ],
+      "core_tools": [
+        "Python",
+        "SQL",
+        "Notebook workflows",
+        "Visualization libraries",
+        "Experiment design"
+      ],
+      "state_requirements": [
+        {
+          "state_id": "sql_databases",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Professional software work depends on strong data modeling, querying, and persistence skills."
+        },
+        {
+          "state_id": "python_programming",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "Strong coding, debugging, and automation skills are required for production-grade work."
+        },
+        {
+          "state_id": "mathematics_statistics",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Quantitative reasoning helps explain model behavior, performance, and trade-offs."
+        },
+        {
+          "state_id": "data_visualization",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Clear visual communication turns analysis into decisions and product direction."
+        },
+        {
+          "state_id": "machine_learning",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "This skill teaches how predictive systems are trained, evaluated, and improved."
+        },
+        {
+          "state_id": "prompt_engineering",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Prompt design helps shape practical AI workflows, assistants, and evaluation loops."
+        },
+        {
+          "state_id": "api_integration",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Real products depend on secure and reliable integration between internal and external services."
+        },
+        {
+          "state_id": "data_engineering",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Reliable pipelines and data movement support production systems and analytics."
+        }
+      ],
+      "role_dag": {
+        "entry_states": [
+          "sql_databases",
+          "python_programming"
+        ],
+        "final_state": "data_engineering",
+        "edges": [
+          [
+            "sql_databases",
+            "python_programming"
+          ],
+          [
+            "python_programming",
+            "mathematics_statistics"
+          ],
+          [
+            "mathematics_statistics",
+            "data_visualization"
+          ],
+          [
+            "data_visualization",
+            "machine_learning"
+          ],
+          [
+            "machine_learning",
+            "prompt_engineering"
+          ],
+          [
+            "prompt_engineering",
+            "api_integration"
+          ],
+          [
+            "api_integration",
+            "data_engineering"
+          ]
+        ]
+      }
+    },
+    {
+      "role_id": "data_engineer",
+      "title": "Data Engineer",
+      "continent_id": "ai_data",
+      "summary": "Builds the pipelines, data platforms, and reliable movement of information across systems.",
+      "responsibilities": [
+        "Build ETL workflows",
+        "Model data platforms",
+        "Maintain data quality",
+        "Scale pipelines reliably"
+      ],
+      "core_tools": [
+        "Python",
+        "SQL",
+        "Orchestration tools",
+        "Cloud services",
+        "CI/CD"
+      ],
+      "state_requirements": [
+        {
+          "state_id": "python_programming",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Strong coding, debugging, and automation skills are required for production-grade work."
+        },
+        {
+          "state_id": "sql_databases",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Professional software work depends on strong data modeling, querying, and persistence skills."
+        },
+        {
+          "state_id": "data_engineering",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Reliable pipelines and data movement support production systems and analytics."
+        },
+        {
+          "state_id": "api_integration",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "Real products depend on secure and reliable integration between internal and external services."
+        },
+        {
+          "state_id": "cloud_platforms",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "Cloud fluency supports deployment, scaling, and reliable infrastructure choices."
+        },
+        {
+          "state_id": "containers_orchestration",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Containers and orchestration help package, deploy, and operate modern services."
+        },
+        {
+          "state_id": "ci_cd_pipelines",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Delivery automation keeps releases safe, repeatable, and fast."
+        },
+        {
+          "state_id": "backend_development",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Service-side engineering powers product logic, reliability, and system behavior."
+        },
+        {
+          "state_id": "system_design",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "System thinking is needed to connect components into scalable, production-ready products."
+        }
+      ],
+      "role_dag": {
+        "entry_states": [
+          "python_programming",
+          "sql_databases"
+        ],
+        "final_state": "system_design",
+        "edges": [
+          [
+            "python_programming",
+            "sql_databases"
+          ],
+          [
+            "sql_databases",
+            "data_engineering"
+          ],
+          [
+            "data_engineering",
+            "api_integration"
+          ],
+          [
+            "api_integration",
+            "cloud_platforms"
+          ],
+          [
+            "cloud_platforms",
+            "containers_orchestration"
+          ],
+          [
+            "containers_orchestration",
+            "ci_cd_pipelines"
+          ],
+          [
+            "ci_cd_pipelines",
+            "backend_development"
+          ],
+          [
+            "backend_development",
+            "system_design"
+          ]
+        ]
+      }
+    },
+    {
+      "role_id": "prompt_engineer",
+      "title": "Prompt Engineer",
+      "continent_id": "ai_data",
+      "summary": "Designs prompt systems, evaluation loops, and AI workflows that feel reliable and useful.",
+      "responsibilities": [
+        "Design prompt strategies",
+        "Evaluate outputs",
+        "Build retrieval context",
+        "Tune assistant behavior"
+      ],
+      "core_tools": [
+        "Prompt patterns",
+        "Evaluation loops",
+        "Knowledge retrieval",
+        "Python",
+        "LLM APIs"
+      ],
+      "state_requirements": [
+        {
+          "state_id": "prompt_engineering",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Prompt design helps shape practical AI workflows, assistants, and evaluation loops."
+        },
+        {
+          "state_id": "python_programming",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Strong coding, debugging, and automation skills are required for production-grade work."
+        },
+        {
+          "state_id": "machine_learning",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "This skill teaches how predictive systems are trained, evaluated, and improved."
+        },
+        {
+          "state_id": "deep_learning",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Modern AI products rely on neural systems, embeddings, and transformer-style workflows."
+        },
+        {
+          "state_id": "data_visualization",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Clear visual communication turns analysis into decisions and product direction."
+        },
+        {
+          "state_id": "api_integration",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "Real products depend on secure and reliable integration between internal and external services."
+        },
+        {
+          "state_id": "backend_development",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Service-side engineering powers product logic, reliability, and system behavior."
+        },
+        {
+          "state_id": "frontend_development",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Polished user interfaces are needed for complete professional product delivery."
+        },
+        {
+          "state_id": "system_design",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "System thinking is needed to connect components into scalable, production-ready products."
+        }
+      ],
+      "role_dag": {
+        "entry_states": [
+          "prompt_engineering",
+          "python_programming"
+        ],
+        "final_state": "system_design",
+        "edges": [
+          [
+            "prompt_engineering",
+            "python_programming"
+          ],
+          [
+            "python_programming",
+            "machine_learning"
+          ],
+          [
+            "machine_learning",
+            "deep_learning"
+          ],
+          [
+            "deep_learning",
+            "data_visualization"
+          ],
+          [
+            "data_visualization",
+            "api_integration"
+          ],
+          [
+            "api_integration",
+            "backend_development"
+          ],
+          [
+            "backend_development",
+            "frontend_development"
+          ],
+          [
+            "frontend_development",
+            "system_design"
+          ]
+        ]
+      }
+    },
+    {
+      "role_id": "cloud_architect",
+      "title": "Cloud Architect",
+      "continent_id": "cloud_infrastructure",
+      "summary": "Designs scalable, secure, and cost-aware cloud systems for complex products.",
+      "responsibilities": [
+        "Design cloud platforms",
+        "Plan reliability",
+        "Guide deployment standards",
+        "Balance scale, cost, and security"
+      ],
+      "core_tools": [
+        "Cloud platforms",
+        "Architecture diagrams",
+        "IaC",
+        "Monitoring",
+        "Security reviews"
+      ],
+      "state_requirements": [
+        {
+          "state_id": "networking_fundamentals",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Networking fundamentals are essential for security, reachability, and system reliability."
+        },
+        {
+          "state_id": "cloud_platforms",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Cloud fluency supports deployment, scaling, and reliable infrastructure choices."
+        },
+        {
+          "state_id": "containers_orchestration",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Containers and orchestration help package, deploy, and operate modern services."
+        },
+        {
+          "state_id": "ci_cd_pipelines",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "Delivery automation keeps releases safe, repeatable, and fast."
+        },
+        {
+          "state_id": "devsecops_security",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "Security in the delivery pipeline is needed for production-grade engineering."
+        },
+        {
+          "state_id": "backend_development",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Service-side engineering powers product logic, reliability, and system behavior."
+        },
+        {
+          "state_id": "sql_databases",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Professional software work depends on strong data modeling, querying, and persistence skills."
+        },
+        {
+          "state_id": "system_design",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "System thinking is needed to connect components into scalable, production-ready products."
+        }
+      ],
+      "role_dag": {
+        "entry_states": [
+          "networking_fundamentals",
+          "cloud_platforms"
+        ],
+        "final_state": "system_design",
+        "edges": [
+          [
+            "networking_fundamentals",
+            "cloud_platforms"
+          ],
+          [
+            "cloud_platforms",
+            "containers_orchestration"
+          ],
+          [
+            "containers_orchestration",
+            "ci_cd_pipelines"
+          ],
+          [
+            "ci_cd_pipelines",
+            "devsecops_security"
+          ],
+          [
+            "devsecops_security",
+            "backend_development"
+          ],
+          [
+            "backend_development",
+            "sql_databases"
+          ],
+          [
+            "sql_databases",
+            "system_design"
+          ]
+        ]
+      }
+    },
+    {
+      "role_id": "cybersecurity_specialist",
+      "title": "Cybersecurity Specialist",
+      "continent_id": "cloud_infrastructure",
+      "summary": "Protects applications, infrastructure, and delivery flows from modern threats.",
+      "responsibilities": [
+        "Harden systems",
+        "Review attack surfaces",
+        "Build security guardrails",
+        "Respond to incidents"
+      ],
+      "core_tools": [
+        "IAM",
+        "Network policies",
+        "Security scanning",
+        "Secrets management",
+        "Monitoring"
+      ],
+      "state_requirements": [
+        {
+          "state_id": "networking_fundamentals",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Networking fundamentals are essential for security, reachability, and system reliability."
+        },
+        {
+          "state_id": "cybersecurity_fundamentals",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Security fundamentals protect product data, accounts, and system boundaries."
+        },
+        {
+          "state_id": "backend_development",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Service-side engineering powers product logic, reliability, and system behavior."
+        },
+        {
+          "state_id": "cloud_platforms",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Cloud fluency supports deployment, scaling, and reliable infrastructure choices."
+        },
+        {
+          "state_id": "devsecops_security",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Security in the delivery pipeline is needed for production-grade engineering."
+        },
+        {
+          "state_id": "ci_cd_pipelines",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Delivery automation keeps releases safe, repeatable, and fast."
+        },
+        {
+          "state_id": "api_integration",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Real products depend on secure and reliable integration between internal and external services."
+        },
+        {
+          "state_id": "system_design",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "System thinking is needed to connect components into scalable, production-ready products."
+        }
+      ],
+      "role_dag": {
+        "entry_states": [
+          "networking_fundamentals",
+          "cybersecurity_fundamentals"
+        ],
+        "final_state": "system_design",
+        "edges": [
+          [
+            "networking_fundamentals",
+            "cybersecurity_fundamentals"
+          ],
+          [
+            "cybersecurity_fundamentals",
+            "backend_development"
+          ],
+          [
+            "backend_development",
+            "cloud_platforms"
+          ],
+          [
+            "cloud_platforms",
+            "devsecops_security"
+          ],
+          [
+            "devsecops_security",
+            "ci_cd_pipelines"
+          ],
+          [
+            "ci_cd_pipelines",
+            "api_integration"
+          ],
+          [
+            "api_integration",
+            "system_design"
+          ]
+        ]
+      }
+    },
+    {
+      "role_id": "software_developer",
+      "title": "Software Developer",
+      "continent_id": "cloud_infrastructure",
+      "summary": "Builds maintainable software features, services, and release-ready product logic.",
+      "responsibilities": [
+        "Implement product features",
+        "Write maintainable code",
+        "Ship tested services",
+        "Collaborate across product teams"
+      ],
+      "core_tools": [
+        "Python",
+        "APIs",
+        "Databases",
+        "Git",
+        "CI/CD"
+      ],
+      "state_requirements": [
+        {
+          "state_id": "python_programming",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Strong coding, debugging, and automation skills are required for production-grade work."
+        },
+        {
+          "state_id": "backend_development",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Service-side engineering powers product logic, reliability, and system behavior."
+        },
+        {
+          "state_id": "sql_databases",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "Professional software work depends on strong data modeling, querying, and persistence skills."
+        },
+        {
+          "state_id": "api_integration",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "Real products depend on secure and reliable integration between internal and external services."
+        },
+        {
+          "state_id": "frontend_development",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Polished user interfaces are needed for complete professional product delivery."
+        },
+        {
+          "state_id": "ci_cd_pipelines",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Delivery automation keeps releases safe, repeatable, and fast."
+        },
+        {
+          "state_id": "cloud_platforms",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Cloud fluency supports deployment, scaling, and reliable infrastructure choices."
+        },
+        {
+          "state_id": "system_design",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "System thinking is needed to connect components into scalable, production-ready products."
+        }
+      ],
+      "role_dag": {
+        "entry_states": [
+          "python_programming",
+          "backend_development"
+        ],
+        "final_state": "system_design",
+        "edges": [
+          [
+            "python_programming",
+            "backend_development"
+          ],
+          [
+            "backend_development",
+            "sql_databases"
+          ],
+          [
+            "sql_databases",
+            "api_integration"
+          ],
+          [
+            "api_integration",
+            "frontend_development"
+          ],
+          [
+            "frontend_development",
+            "ci_cd_pipelines"
+          ],
+          [
+            "ci_cd_pipelines",
+            "cloud_platforms"
+          ],
+          [
+            "cloud_platforms",
+            "system_design"
+          ]
+        ]
+      }
+    },
+    {
+      "role_id": "full_stack_engineer",
+      "title": "Full Stack Engineer",
+      "continent_id": "cloud_infrastructure",
+      "summary": "Designs and ships complete product experiences across frontend, backend, and integration layers.",
+      "responsibilities": [
+        "Build user interfaces",
+        "Build backend services",
+        "Connect APIs and data",
+        "Own end-to-end product delivery"
+      ],
+      "core_tools": [
+        "Frontend frameworks",
+        "Backend services",
+        "SQL",
+        "APIs",
+        "System design"
+      ],
+      "state_requirements": [
+        {
+          "state_id": "frontend_development",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Polished user interfaces are needed for complete professional product delivery."
+        },
+        {
+          "state_id": "backend_development",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Service-side engineering powers product logic, reliability, and system behavior."
+        },
+        {
+          "state_id": "sql_databases",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "Professional software work depends on strong data modeling, querying, and persistence skills."
+        },
+        {
+          "state_id": "api_integration",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Real products depend on secure and reliable integration between internal and external services."
+        },
+        {
+          "state_id": "ci_cd_pipelines",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Delivery automation keeps releases safe, repeatable, and fast."
+        },
+        {
+          "state_id": "cloud_platforms",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Cloud fluency supports deployment, scaling, and reliable infrastructure choices."
+        },
+        {
+          "state_id": "cybersecurity_fundamentals",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Security fundamentals protect product data, accounts, and system boundaries."
+        },
+        {
+          "state_id": "system_design",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "System thinking is needed to connect components into scalable, production-ready products."
+        }
+      ],
+      "role_dag": {
+        "entry_states": [
+          "frontend_development",
+          "backend_development"
+        ],
+        "final_state": "system_design",
+        "edges": [
+          [
+            "frontend_development",
+            "backend_development"
+          ],
+          [
+            "backend_development",
+            "sql_databases"
+          ],
+          [
+            "sql_databases",
+            "api_integration"
+          ],
+          [
+            "api_integration",
+            "ci_cd_pipelines"
+          ],
+          [
+            "ci_cd_pipelines",
+            "cloud_platforms"
+          ],
+          [
+            "cloud_platforms",
+            "cybersecurity_fundamentals"
+          ],
+          [
+            "cybersecurity_fundamentals",
+            "system_design"
+          ]
+        ]
+      }
+    },
+    {
+      "role_id": "blockchain_developer",
+      "title": "Blockchain Developer",
+      "continent_id": "cloud_infrastructure",
+      "summary": "Builds blockchain products, smart contract flows, and Web3-connected application logic.",
+      "responsibilities": [
+        "Build smart contract flows",
+        "Connect wallet-based experiences",
+        "Secure contract interactions",
+        "Ship on-chain product logic"
+      ],
+      "core_tools": [
+        "Smart contracts",
+        "Wallet tooling",
+        "Client apps",
+        "Security reviews",
+        "Distributed systems thinking"
+      ],
+      "state_requirements": [
+        {
+          "state_id": "python_programming",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Strong coding, debugging, and automation skills are required for production-grade work."
+        },
+        {
+          "state_id": "backend_development",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "Service-side engineering powers product logic, reliability, and system behavior."
+        },
+        {
+          "state_id": "sql_databases",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Professional software work depends on strong data modeling, querying, and persistence skills."
+        },
+        {
+          "state_id": "blockchain_fundamentals",
+          "priority": "core",
+          "expected_level": "advanced",
+          "why_it_matters": "Blockchain systems require deep understanding of smart contracts, wallets, and secure on-chain logic."
+        },
+        {
+          "state_id": "cybersecurity_fundamentals",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "Security fundamentals protect product data, accounts, and system boundaries."
+        },
+        {
+          "state_id": "api_integration",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "Real products depend on secure and reliable integration between internal and external services."
+        },
+        {
+          "state_id": "cloud_platforms",
+          "priority": "supporting",
+          "expected_level": "intermediate",
+          "why_it_matters": "Cloud fluency supports deployment, scaling, and reliable infrastructure choices."
+        },
+        {
+          "state_id": "system_design",
+          "priority": "core",
+          "expected_level": "intermediate",
+          "why_it_matters": "System thinking is needed to connect components into scalable, production-ready products."
+        }
+      ],
+      "role_dag": {
+        "entry_states": [
+          "python_programming",
+          "backend_development"
+        ],
+        "final_state": "system_design",
+        "edges": [
+          [
+            "python_programming",
+            "backend_development"
+          ],
+          [
+            "backend_development",
+            "sql_databases"
+          ],
+          [
+            "sql_databases",
+            "blockchain_fundamentals"
+          ],
+          [
+            "blockchain_fundamentals",
+            "cybersecurity_fundamentals"
+          ],
+          [
+            "cybersecurity_fundamentals",
+            "api_integration"
+          ],
+          [
+            "api_integration",
+            "cloud_platforms"
+          ],
+          [
+            "cloud_platforms",
+            "system_design"
+          ]
+        ]
+      }
+    }
+  ]
 }

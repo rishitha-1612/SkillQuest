@@ -41,7 +41,7 @@ export default function AssessmentWindow({
       const nextResult = {
         score: 0,
         correctCount: 0,
-        totalQuestions: questions.length || 25,
+        totalQuestions: questions.length || 30,
         passed: false,
         reason: 'Attempt failed: tab switching detected.',
       };
@@ -115,11 +115,11 @@ export default function AssessmentWindow({
       <div className="window-body assessment-body">
         <div className="assessment-topline">
           <div>
-            <strong>25 questions</strong>
-            <p className="muted">{`Drawn from a ${questionBankSize || 100}-question interview-style bank. Score 75% or higher to unlock the next skill.`}</p>
+            <strong>30 questions</strong>
+            <p className="muted">{`Drawn from a ${questionBankSize || 100}-question interview-style bank with 7 easy, 15 medium, and 8 hard questions. Score 75% or higher to unlock the next skill.`}</p>
           </div>
           <div className="assessment-progress-pill">
-            <span>{answeredCount}/25 answered</span>
+            <span>{`${answeredCount}/${questions.length || 30} answered`}</span>
           </div>
         </div>
 
