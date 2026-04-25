@@ -137,6 +137,52 @@ body::before {
   margin-bottom: 18px;
 }
 
+.academy-lanes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.academy-lane-card {
+  border-radius: 26px;
+  padding: 18px;
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.72), transparent 30%),
+    linear-gradient(180deg, rgba(255,255,255,0.98), rgba(238,249,255,0.96));
+  border: 1px solid rgba(127, 188, 235, 0.22);
+  box-shadow: 0 18px 40px rgba(100, 156, 202, 0.12);
+}
+
+.academy-lane-card-accent {
+  background:
+    radial-gradient(circle at top right, rgba(255,248,198,0.82), transparent 34%),
+    linear-gradient(180deg, rgba(255,252,231,0.98), rgba(255,244,197,0.95));
+}
+
+.academy-lane-card span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--theme-accent);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 900;
+}
+
+.academy-lane-card strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #254d72;
+  font-size: 1.02rem;
+}
+
+.academy-lane-card small {
+  color: #6286a4;
+  line-height: 1.45;
+  font-weight: 700;
+}
+
 .banner,
 .inline-banner {
   margin-bottom: 12px;
@@ -644,11 +690,119 @@ body::before {
   gap: 10px;
 }
 
+.quest-loop-banner {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.quest-loop-step,
+.mission-rank-card {
+  border-radius: 18px;
+  padding: 12px 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(236,248,255,0.96));
+  border: 1px solid rgba(134, 195, 239, 0.2);
+}
+
+.quest-loop-step span {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #58cc02, #4db400);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.quest-loop-step strong,
+.mission-rank-card strong {
+  display: block;
+  color: #27567f;
+  font-size: 0.94rem;
+}
+
+.quest-loop-step small,
+.mission-rank-card span {
+  display: block;
+  margin-top: 4px;
+  color: #6c90af;
+  font-weight: 700;
+}
+
 .level-card {
   border-radius: 18px;
   border: 1px solid rgba(145, 199, 244, 0.16);
   background: rgba(255,255,255,0.78);
   padding: 12px 14px;
+}
+
+.quest-card {
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.78), transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,0.98), rgba(240,249,255,0.96));
+  box-shadow: inset 0 -4px 0 rgba(143, 204, 244, 0.16);
+}
+
+.quest-card.is-boss {
+  background:
+    radial-gradient(circle at top right, rgba(255, 247, 196, 0.72), transparent 28%),
+    linear-gradient(180deg, rgba(255,252,229,0.98), rgba(255,244,194,0.96));
+  border-color: rgba(246, 203, 71, 0.28);
+  box-shadow: inset 0 -4px 0 rgba(244, 191, 61, 0.18);
+}
+
+.quest-card-topline,
+.quest-card-meta,
+.mission-rank-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.mission-rank-strip {
+  margin: 14px 0 16px;
+  flex-wrap: wrap;
+}
+
+.mission-rank-card {
+  flex: 1 1 140px;
+}
+
+.quest-mode-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 11px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.quest-mode-pill.learn {
+  background: #e8f5ff;
+  color: #2f73a9;
+}
+
+.quest-mode-pill.arena {
+  background: #e9ffd0;
+  color: #4f8600;
+}
+
+.quest-mode-pill.ranked {
+  background: #fff2d0;
+  color: #976617;
+}
+
+.quest-mode-pill.boss {
+  background: #ffe4d8;
+  color: #ae4f20;
 }
 
 .level-card h4 {
@@ -662,6 +816,16 @@ body::before {
 
 .level-card small {
   color: #7093b2;
+}
+
+.quest-card-meta {
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.quest-card-meta strong {
+  color: #4d7698;
+  font-size: 0.88rem;
 }
 
 .level-badge {
@@ -1577,6 +1741,7 @@ body::before {
   .hero-shell,
   .layout,
   .mission-strip,
+  .academy-lanes,
   .country-hero,
   .country-layout {
     grid-template-columns: 1fr;

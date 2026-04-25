@@ -24,17 +24,17 @@ export default function SkillJourneyPanel({
         <span className="dot green" />
         <span className="dot yellow" />
         <span className="dot blue" />
-        <strong>Rider Progress</strong>
+        <strong>Quest Road</strong>
       </div>
       <div className="window-body">
         <div className="rider-hud">
           <div className="rider-avatar">R</div>
           <div className="rider-copy">
             <strong>{stateById.get(currentStateId)?.title || 'Journey Start'}</strong>
-            <span>Next stop: {stateById.get(nextStateId)?.title || 'Free roam'}</span>
+            <span>{`Next unlock: ${stateById.get(nextStateId)?.title || 'Free roam'}`}</span>
           </div>
           <div className="rider-badge">
-            <span>{passedCount}/{stateOrder.length} skills cleared</span>
+            <span>{`${passedCount}/${stateOrder.length} states cleared`}</span>
           </div>
         </div>
 

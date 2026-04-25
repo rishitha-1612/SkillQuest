@@ -62,6 +62,36 @@ function launchAssessmentWindow(countryId, stateId) {
   window.open(url.toString(), '_blank', 'noopener,width=1320,height=920');
 }
 
+function getQuestMode(type) {
+  const value = (type || '').toLowerCase();
+  if (value.includes('challenge')) {
+    return {
+      label: 'Boss Quest',
+      detail: 'High-pressure final mission',
+      className: 'boss',
+    };
+  }
+  if (value.includes('quiz')) {
+    return {
+      label: 'Ranked Drill',
+      detail: 'Timed confidence check',
+      className: 'ranked',
+    };
+  }
+  if (value.includes('interactive') || value.includes('game')) {
+    return {
+      label: 'Skill Arena',
+      detail: 'Hands-on game mission',
+      className: 'arena',
+    };
+  }
+  return {
+    label: 'Learn Run',
+    detail: 'Core concept lesson',
+    className: 'learn',
+  };
+}
+
 function ProgressWindow({ countryId, stateDetails, assessmentResult }) {
   if (!stateDetails) {
     return (
@@ -109,6 +139,24 @@ function ProgressWindow({ countryId, stateDetails, assessmentResult }) {
         <strong>{stateDetails.title}</strong>
       </div>
       <div className="window-body">
+        <div className="quest-loop-banner">
+          <article className="quest-loop-step">
+            <span>1</span>
+            <strong>Learn</strong>
+            <small>understand the core idea</small>
+          </article>
+          <article className="quest-loop-step">
+            <span>2</span>
+            <strong>Play</strong>
+            <small>solve the city challenge</small>
+          </article>
+          <article className="quest-loop-step">
+            <span>3</span>
+            <strong>Clear</strong>
+            <small>beat the state assessment</small>
+          </article>
+        </div>
+
         <div className="path-shell">
           <svg width="100%" height={Math.max(320, 150 + nodes.length * 40)} viewBox={`0 0 820 ${Math.max(320, 150 + nodes.length * 40)}`}>
             <defs>
@@ -150,14 +198,24 @@ function ProgressWindow({ countryId, stateDetails, assessmentResult }) {
         </div>
 
         <div className="level-list">
-          {nodes.map((node, index) => (
-            <article key={node.id} className="level-card">
-              <span className="level-badge">Lv {index + 1}</span>
-              <h4>{node.title}</h4>
-              <p>{node.description}</p>
-              <small>{`${node.type} • ${node.estimated_time_minutes} min • ${node.xp_reward} XP`}</small>
-            </article>
-          ))}
+          {nodes.map((node, index) => {
+            const questMode = getQuestMode(node.type);
+            const isBoss = index === nodes.length - 1;
+            return (
+              <article key={node.id} className={`level-card quest-card${isBoss ? ' is-boss' : ''}`}>
+                <div className="quest-card-topline">
+                  <span className="level-badge">Lv {index + 1}</span>
+                  <span className={`quest-mode-pill ${questMode.className}`}>{questMode.label}</span>
+                </div>
+                <h4>{node.title}</h4>
+                <p>{node.description}</p>
+                <div className="quest-card-meta">
+                  <strong>{questMode.detail}</strong>
+                  <small>{`${node.estimated_time_minutes} min • ${node.xp_reward} XP`}</small>
+                </div>
+              </article>
+            );
+          })}
         </div>
 
         <div className="assessment-lock-note">
@@ -262,6 +320,7 @@ export default function CountryWindow({ countryId }) {
   const selectedAssessment = selectedStateId ? progress.assessments?.[selectedStateId] || null : null;
   const totalLevels = stateOrder.reduce((sum, stateId) => sum + (stateById.get(stateId)?.nodes?.length || 0), 0);
   const passedCount = stateOrder.filter((stateId) => progress.assessments?.[stateId]?.passed).length;
+  const activeStateIndex = Math.max(0, stateOrder.indexOf(selectedStateId));
   const useChinaCraftedMap = profile.iso3 === 'CHN';
   const useIndiaCraftedMap = profile.iso3 === 'IND';
   const useKoreaCraftedMap = profile.iso3 === 'KOR';
@@ -370,12 +429,27 @@ export default function CountryWindow({ countryId }) {
             </div>
             <div className="window-body">
               <p className="panel-summary">{roleDetails?.summary}</p>
+              <div className="mission-rank-strip">
+                <article className="mission-rank-card">
+                  <span>Current State</span>
+                  <strong>{`${activeStateIndex + 1}/${stateOrder.length}`}</strong>
+                </article>
+                <article className="mission-rank-card">
+                  <span>Roadmap Loop</span>
+                  <strong>Learn • Play • Clear</strong>
+                </article>
+                <article className="mission-rank-card">
+                  <span>Boss Gates</span>
+                  <strong>{`${stateOrder.length - passedCount} left`}</strong>
+                </article>
+              </div>
               <div className="skills-list">
                 {stateOrder.map((stateId, index) => {
                   const state = stateById.get(stateId);
                   const active = selectedStateId === stateId;
                   const locked = index > highestUnlockedIndex;
                   const passed = !!progress.assessments?.[stateId]?.passed;
+                  const cityCount = state?.nodes?.length || 0;
                   return (
                     <button
                       key={stateId}
@@ -389,7 +463,7 @@ export default function CountryWindow({ countryId }) {
                           ? 'locked'
                           : passed
                             ? `passed ${progress.assessments?.[stateId]?.score || PASS_PERCENT}%`
-                            : `${state?.nodes?.length || 0} levels`}
+                            : `${cityCount} cities`}
                       </small>
                     </button>
                   );

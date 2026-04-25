@@ -61,7 +61,7 @@ export default function AssessmentWindow({
           <strong>Assessment Gate</strong>
         </div>
         <div className="window-body">
-          <p className="muted">Open a skill to start its 25-question assessment.</p>
+          <p className="muted">Open a skill to start its 30-question boss assessment.</p>
         </div>
       </section>
     );

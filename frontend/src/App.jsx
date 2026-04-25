@@ -144,9 +144,9 @@ function WorldLobby() {
     >
       <header className="hero-shell">
         <div className="hero-copy">
-          <p className="eyebrow">SkillQuest</p>
-          <h1>Open a realm. Learn by playing.</h1>
-          <p className="hero-text">Each country is a career. Each state inside it is a skill path you unlock level by level.</p>
+          <p className="eyebrow">SkillQuest Academy</p>
+          <h1>Play the roadmap. Master the job.</h1>
+          <p className="hero-text">SkillQuest blends a Duolingo-style learning path with a LeetCode-style challenge loop so users learn real professional skills by clearing game missions, drills, and boss gates.</p>
         </div>
 
         <div className="hero-stats">
@@ -171,16 +171,39 @@ function WorldLobby() {
 
       <section className="mission-strip">
         <article className="mission-card">
-          <span>Theme</span>
-          <strong>Large nations now host the most complex career worlds.</strong>
+          <span>Academy Loop</span>
+          <strong>Learn mini-lessons. Play challenge games. Clear ranked drills. Beat boss assessments.</strong>
         </article>
         <article className="mission-card">
-          <span>Provinces</span>
+          <span>Active Skill States</span>
           <strong>{questStats.activeStates}</strong>
         </article>
         <article className="mission-card mission-card-accent">
           <span>World Status</span>
-          <strong>{LOCKED_WORLD_REGIONS.join(' - ')} are still locked.</strong>
+          <strong>{`${LOCKED_WORLD_REGIONS.join(' • ')} are still locked.`}</strong>
+        </article>
+      </section>
+
+      <section className="academy-lanes">
+        <article className="academy-lane-card">
+          <span>Mini Lessons</span>
+          <strong>Concept-first missions</strong>
+          <small>Short explainers, guided walkthroughs, and memory anchors before the harder work begins.</small>
+        </article>
+        <article className="academy-lane-card">
+          <span>Challenge Games</span>
+          <strong>Hands-on city clears</strong>
+          <small>Interactive quests where the learner solves practical problems inside each skill state.</small>
+        </article>
+        <article className="academy-lane-card">
+          <span>Ranked Drills</span>
+          <strong>Pattern repetition</strong>
+          <small>Focused rounds for speed, recall, and confidence building before the state boss gate.</small>
+        </article>
+        <article className="academy-lane-card academy-lane-card-accent">
+          <span>Boss Battles</span>
+          <strong>State assessments</strong>
+          <small>Subject-heavy tests that decide whether the next professional skill province unlocks.</small>
         </article>
       </section>
 
@@ -190,8 +213,8 @@ function WorldLobby() {
       <main className="layout">
         <section className="map-panel">
           <div className="panel-heading">
-            <h2>World Map</h2>
-            <p className="muted">Click a job-country marker to open its skill-state map in a new window.</p>
+            <h2>Career Realms</h2>
+            <p className="muted">Click any job-country marker to open its structured academy world in a dedicated game window.</p>
           </div>
           <GlobeView
             countryMetrics={playableCountryMetrics}
