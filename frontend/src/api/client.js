@@ -32,6 +32,11 @@ export const api = {
   states: () => request('/states'),
   roleDetails: (roleId) => request(`/roles/${encodeURIComponent(roleId)}`),
   stateDetails: (stateId) => request(`/states/${encodeURIComponent(stateId)}`),
+  progression: (stateId, payload) =>
+    requestJson(`/states/${encodeURIComponent(stateId)}/progression`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
   tutorChat: (payload) =>
     requestJson('/tutor/chat', {
       method: 'POST',

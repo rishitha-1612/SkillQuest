@@ -69,6 +69,16 @@ def _build_system_prompt(role: RoleBlueprint | None, state: StateGraph | None) -
     )
 
 
+def _build_player_context(player_level: int, recent_mistakes: Sequence[str]) -> str:
+    if not recent_mistakes:
+        return f"Player level: {player_level}\nRecent mistakes: none recorded."
+    return (
+        f"Player level: {player_level}\n"
+        "Recent mistakes:\n"
+        + _bullet(recent_mistakes[:5])
+    )
+
+
 def _fallback_reply(message: str, role: RoleBlueprint | None, state: StateGraph | None) -> str:
     role_name = role.title if role else "this job path"
     skill_name = state.title if state else "this skill"
@@ -91,6 +101,8 @@ def _generate_gemini_reply(
     history: Sequence[dict[str, str]],
     role: RoleBlueprint | None,
     state: StateGraph | None,
+    player_level: int,
+    recent_mistakes: Sequence[str],
 ) -> str | None:
     if not GEMINI_API_KEY:
         return None
@@ -107,7 +119,7 @@ def _generate_gemini_reply(
 
     payload = {
         "system_instruction": {
-            "parts": [{"text": _build_system_prompt(role, state)}],
+            "parts": [{"text": f"{_build_system_prompt(role, state)}\n\n{_build_player_context(player_level, recent_mistakes)}"}],
         },
         "contents": contents,
         "generationConfig": {
@@ -141,11 +153,20 @@ def generate_tutor_reply(
     history: Sequence[dict[str, str]],
     role: RoleBlueprint | None,
     state: StateGraph | None,
+    player_level: int = 1,
+    recent_mistakes: Sequence[str] = (),
 ) -> tuple[str, str]:
-    system_prompt = _build_system_prompt(role, state)
+    system_prompt = f"{_build_system_prompt(role, state)}\n\n{_build_player_context(player_level, recent_mistakes)}"
 
     try:
-        text = _generate_gemini_reply(message=message, history=history, role=role, state=state)
+        text = _generate_gemini_reply(
+            message=message,
+            history=history,
+            role=role,
+            state=state,
+            player_level=player_level,
+            recent_mistakes=recent_mistakes,
+        )
         if text:
             return text, "gemini"
     except Exception:

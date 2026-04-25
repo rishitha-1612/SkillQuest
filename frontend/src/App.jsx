@@ -6,6 +6,7 @@ import StatePathwayPanel from './components/StatePathwayPanel';
 import CountryWindow from './components/CountryWindow';
 import AssessmentRouteWindow from './components/AssessmentRouteWindow';
 import { getClusterTheme, isPlayableRealm, LOCKED_WORLD_REGIONS } from './data/worldConfig';
+import { usePlayerStore } from './store/playerStore';
 
 const LEVEL_WEIGHT = {
   beginner: 1,
@@ -42,6 +43,14 @@ function buildQuestStats(countryMetrics, selectedCountry, roleDetails, stateDeta
     activeCities: stateDetails?.nodes?.length || 0,
     selectedCountryName: selectedCountry?.title || 'Pick a realm',
   };
+}
+
+function getPrestigeTier(level) {
+  if (level >= 15) return 'Legend';
+  if (level >= 11) return 'Architect';
+  if (level >= 7) return 'Expert';
+  if (level >= 4) return 'Journeyman';
+  return 'Apprentice';
 }
 
 function useBootstrapData() {
@@ -91,6 +100,9 @@ function WorldLobby() {
   const [roleDetails, setRoleDetails] = useState(null);
   const [selectedStateId, setSelectedStateId] = useState('');
   const [stateDetails, setStateDetails] = useState(null);
+  const level = usePlayerStore((state) => state.level);
+  const xp = usePlayerStore((state) => state.xp);
+  const streakCount = usePlayerStore((state) => state.streakCount);
 
   const statesMeta = useMemo(() => new Map(states.map((s) => [s.state_id, s])), [states]);
   const countryMetrics = useMemo(
@@ -106,6 +118,7 @@ function WorldLobby() {
     [playableCountryMetrics, selectedCountry, roleDetails, stateDetails]
   );
   const selectedTheme = getClusterTheme(selectedContinentId || playableCountryMetrics[0]?.continentId || 'ai_data');
+  const prestigeTier = getPrestigeTier(level);
 
   async function onCountrySelect(continentId, country) {
     setSelectedContinentId(continentId);
@@ -142,56 +155,58 @@ function WorldLobby() {
         '--theme-atmosphere': selectedTheme.atmosphere,
       }}
     >
-      <header className="hero-shell">
-        <div className="hero-copy">
+      <header className="hero-shell simple-hero-shell">
+        <div className="hero-copy simple-hero-copy">
           <p className="eyebrow">SkillQuest</p>
-          <h1>Open a realm. Learn by playing.</h1>
-          <p className="hero-text">Each country is a career. Each state inside it is a skill path you unlock level by level.</p>
+          <h1>Learn skills by playing through job worlds.</h1>
+          <p className="hero-text">
+            Pick a country, open its skill map, clear city games, and unlock the next state.
+          </p>
         </div>
 
-        <div className="hero-stats">
+        <div className="hero-stats simple-hero-stats">
           <article className="stat-card">
-            <span>Status</span>
-            <strong>{health === 'ok' ? 'Online' : health}</strong>
+            <span>Level</span>
+            <strong>{level}</strong>
           </article>
           <article className="stat-card">
-            <span>Realms</span>
-            <strong>{questStats.totalJobs}</strong>
+            <span>XP</span>
+            <strong>{xp}</strong>
           </article>
           <article className="stat-card">
-            <span>Now Playing</span>
-            <strong>{questStats.selectedCountryName}</strong>
+            <span>Rank</span>
+            <strong>{prestigeTier}</strong>
           </article>
           <article className="stat-card">
-            <span>Levels</span>
-            <strong>{questStats.activeCities}</strong>
+            <span>Streak</span>
+            <strong>{`${streakCount} days`}</strong>
           </article>
         </div>
       </header>
 
-      <section className="mission-strip">
+      <section className="mission-strip simple-mission-strip">
         <article className="mission-card">
-          <span>Theme</span>
-          <strong>Large nations now host the most complex career worlds.</strong>
+          <span>How It Works</span>
+          <strong>Learn, play, and clear boss battles.</strong>
         </article>
         <article className="mission-card">
-          <span>Provinces</span>
-          <strong>{questStats.activeStates}</strong>
+          <span>Worlds</span>
+          <strong>{questStats.totalJobs}</strong>
         </article>
         <article className="mission-card mission-card-accent">
-          <span>World Status</span>
-          <strong>{LOCKED_WORLD_REGIONS.join(' - ')} are still locked.</strong>
+          <span>Locked</span>
+          <strong>{LOCKED_WORLD_REGIONS.join(', ')}</strong>
         </article>
       </section>
 
-      {loading && <div className="banner">Loading map...</div>}
+      {loading && <div className="banner">Loading world lobby...</div>}
       {!!error && <div className="banner error">{error}</div>}
 
       <main className="layout">
-        <section className="map-panel">
+        <section className="map-panel simple-map-panel">
           <div className="panel-heading">
-            <h2>World Map</h2>
-            <p className="muted">Click a job-country marker to open its skill-state map in a new window.</p>
+            <h2>Choose A Job World</h2>
+            <p className="muted">Click a country label to open its game world.</p>
           </div>
           <GlobeView
             countryMetrics={playableCountryMetrics}
@@ -209,6 +224,29 @@ function WorldLobby() {
             onStateSelect={onStateSelect}
           />
           <StatePathwayPanel stateDetails={stateDetails} />
+          <section className="panel-card simple-tip-card">
+            <div className="panel-heading">
+              <h2>Quick View</h2>
+            </div>
+            <div className="forge-panel-grid quick-view-grid">
+              <article className="forge-stat-tile">
+                <span>Selected World</span>
+                <strong>{questStats.selectedCountryName}</strong>
+              </article>
+              <article className="forge-stat-tile">
+                <span>States</span>
+                <strong>{questStats.activeStates}</strong>
+              </article>
+              <article className="forge-stat-tile">
+                <span>Cities</span>
+                <strong>{questStats.activeCities}</strong>
+              </article>
+              <article className="forge-stat-tile">
+                <span>Status</span>
+                <strong>{health === 'ok' ? 'Ready' : health}</strong>
+              </article>
+            </div>
+          </section>
         </section>
       </main>
     </div>

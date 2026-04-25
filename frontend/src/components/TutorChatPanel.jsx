@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { api } from '../api/client';
 import { getAssessmentLock } from '../data/assessmentLock';
+import { usePlayerStore } from '../store/playerStore';
 
 const QUICK_PROMPTS = [
   'Explain this skill simply',
@@ -22,6 +23,9 @@ export default function TutorChatPanel({ roleDetails, stateDetails }) {
   const [assessmentLock, setAssessmentLockState] = useState(() => getAssessmentLock());
   const listRef = useRef(null);
   const recognitionRef = useRef(null);
+  const playerLevel = usePlayerStore((state) => state.level);
+  const avatar = usePlayerStore((state) => state.avatar);
+  const recentMistakes = usePlayerStore((state) => state.recentMistakes);
   const voiceSupported = useMemo(
     () => typeof window !== 'undefined' && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window),
     []
@@ -49,8 +53,8 @@ export default function TutorChatPanel({ roleDetails, stateDetails }) {
         id: `welcome-${stateDetails?.state_id || 'base'}`,
         role: 'assistant',
         text: stateDetails
-          ? `Tutor online for ${stateDetails.title}. I can explain concepts simply, compare ideas, turn them into analogies, and guide your next city on the roadmap.`
-          : 'Tutor online. Open a skill and I will guide the active subject.',
+          ? `Nova online for ${stateDetails.title}. I can simplify concepts, turn them into analogies, coach you through mistakes, and guide your next city on the roadmap.`
+          : 'Nova online. Open a skill and I will guide the active subject.',
       },
     ]);
   }, [stateDetails?.state_id]);
@@ -74,6 +78,8 @@ export default function TutorChatPanel({ roleDetails, stateDetails }) {
           .slice(-6)
           .filter((item) => item.role === 'user' || item.role === 'assistant')
           .map((item) => ({ role: item.role, text: item.text })),
+        player_level: playerLevel,
+        recent_mistakes: recentMistakes,
       });
 
       setMessages((prev) => [
@@ -122,6 +128,14 @@ export default function TutorChatPanel({ roleDetails, stateDetails }) {
         <strong>Quest Tutor</strong>
       </div>
       <div className="window-body tutor-chat-body">
+        <div className="companion-header">
+          <div className="companion-avatar">{avatar || 'N'}</div>
+          <div className="companion-copy">
+            <strong>Nova</strong>
+            <span>{`AI companion • Lv ${playerLevel} coach`}</span>
+          </div>
+        </div>
+
         {assessmentLock.active && (
           <div className="assessment-chat-lock">
             Chat is locked while an assessment window is open.
