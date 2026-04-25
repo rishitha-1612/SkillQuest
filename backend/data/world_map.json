@@ -8,27 +8,78 @@
         {
           "id": "ai_engineer",
           "title": "AI Engineer",
-          "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "data_visualization"]
+          "states": [
+            "python_programming",
+            "mathematics_statistics",
+            "machine_learning",
+            "deep_learning",
+            "data_engineering",
+            "prompt_engineering",
+            "api_integration",
+            "system_design",
+            "cloud_platforms",
+            "data_visualization"
+          ]
         },
         {
           "id": "ml_engineer",
           "title": "ML Engineer",
-          "states": ["python_programming", "mathematics_statistics", "machine_learning", "deep_learning", "system_design"]
+          "states": [
+            "python_programming",
+            "mathematics_statistics",
+            "sql_databases",
+            "data_engineering",
+            "machine_learning",
+            "deep_learning",
+            "data_visualization",
+            "cloud_platforms",
+            "ci_cd_pipelines",
+            "system_design"
+          ]
         },
         {
           "id": "data_scientist",
           "title": "Data Scientist",
-          "states": ["python_programming", "mathematics_statistics", "machine_learning", "data_visualization", "sql_databases"]
+          "states": [
+            "sql_databases",
+            "python_programming",
+            "mathematics_statistics",
+            "data_visualization",
+            "machine_learning",
+            "prompt_engineering",
+            "api_integration",
+            "data_engineering"
+          ]
         },
         {
           "id": "data_engineer",
           "title": "Data Engineer",
-          "states": ["python_programming", "sql_databases", "data_engineering", "cloud_platforms", "ci_cd_pipelines"]
+          "states": [
+            "python_programming",
+            "sql_databases",
+            "data_engineering",
+            "api_integration",
+            "cloud_platforms",
+            "containers_orchestration",
+            "ci_cd_pipelines",
+            "backend_development",
+            "system_design"
+          ]
         },
         {
           "id": "prompt_engineer",
           "title": "Prompt Engineer",
-          "states": ["prompt_engineering", "machine_learning", "api_integration", "data_visualization", "python_programming"]
+          "states": [
+            "prompt_engineering",
+            "python_programming",
+            "machine_learning",
+            "deep_learning",
+            "data_visualization",
+            "api_integration",
+            "backend_development",
+            "frontend_development",
+            "system_design"
+          ]
         }
       ]
     },
@@ -40,27 +91,72 @@
         {
           "id": "cloud_architect",
           "title": "Cloud Architect",
-          "states": ["cloud_platforms", "networking_fundamentals", "containers_orchestration", "ci_cd_pipelines", "system_design"]
+          "states": [
+            "networking_fundamentals",
+            "cloud_platforms",
+            "containers_orchestration",
+            "ci_cd_pipelines",
+            "devsecops_security",
+            "backend_development",
+            "sql_databases",
+            "system_design"
+          ]
         },
         {
           "id": "cybersecurity_specialist",
           "title": "Cybersecurity Specialist",
-          "states": ["networking_fundamentals", "cybersecurity_fundamentals", "cloud_platforms", "devsecops_security", "system_design"]
+          "states": [
+            "networking_fundamentals",
+            "cybersecurity_fundamentals",
+            "backend_development",
+            "cloud_platforms",
+            "devsecops_security",
+            "ci_cd_pipelines",
+            "api_integration",
+            "system_design"
+          ]
         },
         {
           "id": "software_developer",
           "title": "Software Developer",
-          "states": ["python_programming", "backend_development", "sql_databases", "ci_cd_pipelines", "system_design"]
+          "states": [
+            "python_programming",
+            "backend_development",
+            "sql_databases",
+            "api_integration",
+            "frontend_development",
+            "ci_cd_pipelines",
+            "cloud_platforms",
+            "system_design"
+          ]
         },
         {
           "id": "full_stack_engineer",
           "title": "Full Stack Engineer",
-          "states": ["frontend_development", "backend_development", "sql_databases", "api_integration", "system_design"]
+          "states": [
+            "frontend_development",
+            "backend_development",
+            "sql_databases",
+            "api_integration",
+            "ci_cd_pipelines",
+            "cloud_platforms",
+            "cybersecurity_fundamentals",
+            "system_design"
+          ]
         },
         {
           "id": "blockchain_developer",
           "title": "Blockchain Developer",
-          "states": ["python_programming", "backend_development", "blockchain_fundamentals", "cybersecurity_fundamentals", "system_design"]
+          "states": [
+            "python_programming",
+            "backend_development",
+            "sql_databases",
+            "blockchain_fundamentals",
+            "cybersecurity_fundamentals",
+            "api_integration",
+            "cloud_platforms",
+            "system_design"
+          ]
         }
       ]
     }

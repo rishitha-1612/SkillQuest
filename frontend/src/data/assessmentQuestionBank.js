@@ -762,8 +762,8 @@ export function buildAssessmentQuestionsFromBank(stateDetails, seed = 1) {
   const bank = buildAssessmentQuestionBank(stateDetails);
   if (!bank.length) return [];
 
-  const easy = shuffleWithSeed(bank.filter((question) => question.difficulty === 'easy'), seed + 11).slice(0, 9);
-  const medium = shuffleWithSeed(bank.filter((question) => question.difficulty === 'medium'), seed + 22).slice(0, 8);
+  const easy = shuffleWithSeed(bank.filter((question) => question.difficulty === 'easy'), seed + 11).slice(0, 7);
+  const medium = shuffleWithSeed(bank.filter((question) => question.difficulty === 'medium'), seed + 22).slice(0, 15);
   const hard = shuffleWithSeed(bank.filter((question) => question.difficulty === 'hard'), seed + 33).slice(0, 8);
 
   return shuffleWithSeed([...easy, ...medium, ...hard], seed + 44).map((question, index) => ({
