@@ -18,8 +18,8 @@ function latLonToVector3(lat, lon, radius = 1.02) {
 function projectLabel(vector, camera, width, height) {
   const projected = vector.clone().project(camera);
   return {
-    x: (projected.x * 0.5 + 0.5) * width,
-    y: (-projected.y * 0.5 + 0.5) * height,
+    x: Math.round((projected.x * 0.5 + 0.5) * width),
+    y: Math.round((-projected.y * 0.5 + 0.5) * height),
     visible: projected.z < 1,
   };
 }
@@ -56,7 +56,9 @@ function buildOverlayTexture(countryMetrics, selectedCountryId) {
 
     ctx.beginPath();
     ctx.ellipse(x, y, radius * 1.3, radius, 0, 0, Math.PI * 2);
-    ctx.fillStyle = active ? 'rgba(255, 241, 168, 0.7)' : theme.glow;
+    ctx.fillStyle = active
+      ? 'rgba(255, 241, 168, 0.76)'
+      : theme.glow;
     ctx.fill();
     ctx.lineWidth = active ? 4 : 2;
     ctx.strokeStyle = active ? 'rgba(255, 247, 204, 1)' : theme.accent;
@@ -76,7 +78,8 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
   const overlayRef = useRef(null);
   const frameRef = useRef(0);
   const labelsRef = useRef([]);
-  const [projected, setProjected] = useState([]);
+  const markerRefs = useRef(new Map());
+  const [labelItems, setLabelItems] = useState([]);
 
   const overlayData = useMemo(
     () => buildOverlayTexture(countryMetrics, selectedCountryId),
@@ -153,13 +156,16 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
     function updateLabels() {
       const width = mount.clientWidth;
       const height = 680;
-      const nextLabels = labelsRef.current.map((item) => {
+      labelsRef.current.forEach((item) => {
         const anchor = latLonToVector3(item.lat, item.lon, 1.08).applyQuaternion(earth.quaternion);
         const pos = projectLabel(anchor, camera, width, height);
         const frontFacing = anchor.z > -0.15;
-        return { ...item, ...pos, visible: pos.visible && frontFacing };
+        const marker = markerRefs.current.get(item.id);
+        if (!marker) return;
+        marker.style.left = `${pos.x}px`;
+        marker.style.top = `${pos.y}px`;
+        marker.style.opacity = pos.visible && frontFacing ? '1' : '0';
       });
-      setProjected(nextLabels);
     }
 
     function animate() {
@@ -246,25 +252,28 @@ function GlobeMode({ countryMetrics, selectedCountryId, onCountrySelect }) {
       lon: item.lon,
       country: item.country,
     }));
+    setLabelItems(labelsRef.current);
   }, [overlayData]);
 
   return (
     <div className="globe-shell">
       <div className="globe-stage" ref={mountRef} />
       <div className="label-layer">
-        {projected.map((item) => (
+        {labelItems.map((item) => (
           <div
             key={item.id}
-            className={item.id === selectedCountryId ? 'globe-marker active' : 'globe-marker'}
-            style={{
-              left: item.x,
-              top: item.y,
-              opacity: item.visible ? 1 : 0,
-              transform: `translate(-50%, -50%) scale(${item.id === selectedCountryId ? 1.08 : 1})`,
+            className={`globe-marker${item.id === selectedCountryId ? ' active' : ''}`}
+            ref={(node) => {
+              if (node) {
+                markerRefs.current.set(item.id, node);
+              } else {
+                markerRefs.current.delete(item.id);
+              }
             }}
+            style={{ left: 0, top: 0, opacity: 0 }}
           >
             <button
-              className={item.id === selectedCountryId ? 'globe-label active' : 'globe-label'}
+              className={`globe-label${item.id === selectedCountryId ? ' active' : ''}`}
               onClick={() => onCountrySelect(item.continentId, item.country)}
             >
               {item.label}

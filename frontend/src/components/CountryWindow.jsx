@@ -8,6 +8,16 @@ import Korea3DMap from './Korea3DMap';
 import SaudiArabia3DMap from './SaudiArabia3DMap';
 import SkillJourneyPanel from './SkillJourneyPanel';
 import TutorChatPanel from './TutorChatPanel';
+import CodePuzzle from '../minigames/CodePuzzle';
+import DragDropLogic from '../minigames/DragDropLogic';
+import DebugChallenge from '../minigames/DebugChallenge';
+import ArchitectureArena from '../minigames/ArchitectureArena';
+import PromptDuel from '../minigames/PromptDuel';
+import DataDetective from '../minigames/DataDetective';
+import ThreatHunt from '../minigames/ThreatHunt';
+import ModelSculptor from '../minigames/ModelSculptor';
+import ChainBuilder from '../minigames/ChainBuilder';
+import { usePlayerStore } from '../store/playerStore';
 
 const PASS_PERCENT = 75;
 
@@ -92,7 +102,101 @@ function getQuestMode(type) {
   };
 }
 
-function ProgressWindow({ countryId, stateDetails, assessmentResult }) {
+function resolveMiniGame(roleId, stateDetails, city) {
+  const stateId = stateDetails?.state_id || '';
+  const cityType = (city?.type || '').toLowerCase();
+
+  if (roleId === 'blockchain_developer' || stateId.includes('blockchain')) {
+    return ChainBuilder;
+  }
+
+  if (roleId === 'prompt_engineer' || stateId.includes('prompt')) {
+    return PromptDuel;
+  }
+
+  if (
+    roleId === 'cloud_architect' ||
+    roleId === 'full_stack_engineer' ||
+    stateId.includes('system_design') ||
+    stateId.includes('cloud_platforms')
+  ) {
+    return ArchitectureArena;
+  }
+
+  if (
+    roleId === 'cybersecurity_specialist' ||
+    stateId.includes('cybersecurity') ||
+    stateId.includes('networking') ||
+    stateId.includes('devsecops')
+  ) {
+    return ThreatHunt;
+  }
+
+  if (
+    roleId === 'data_scientist' ||
+    roleId === 'data_engineer' ||
+    stateId.includes('sql') ||
+    stateId.includes('data_visualization') ||
+    stateId.includes('data_engineering')
+  ) {
+    return DataDetective;
+  }
+
+  if (
+    roleId === 'ml_engineer' ||
+    (roleId === 'ai_engineer' && (stateId.includes('machine_learning') || stateId.includes('deep_learning'))) ||
+    stateId.includes('machine_learning') ||
+    stateId.includes('deep_learning')
+  ) {
+    return ModelSculptor;
+  }
+
+  if (
+    cityType.includes('challenge') ||
+    stateId.includes('python') ||
+    stateId.includes('api_integration') ||
+    stateId.includes('backend')
+  ) {
+    return DebugChallenge;
+  }
+
+  if (cityType.includes('interactive') || cityType.includes('game')) {
+    return DragDropLogic;
+  }
+
+  return CodePuzzle;
+}
+
+function CityMinigameModal({ roleId, stateDetails, city, open, onClose, onFinish }) {
+  if (!open || !city) return null;
+  const MiniGame = resolveMiniGame(roleId, stateDetails, city);
+
+  return (
+    <div className="minigame-modal-backdrop" onClick={onClose}>
+      <div className="minigame-modal" onClick={(event) => event.stopPropagation()}>
+        <div className="window-bar">
+          <span className="dot green" />
+          <span className="dot yellow" />
+          <span className="dot blue" />
+          <strong>{`${city.title} Quest`}</strong>
+        </div>
+        <div className="window-body">
+          <MiniGame city={city} onFinish={onFinish} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProgressWindow({
+  countryId,
+  stateDetails,
+  assessmentResult,
+  completedCities,
+  unlockedCities,
+  onLaunchCity,
+  onContinueJourney,
+}) {
   if (!stateDetails) {
     return (
       <section className="game-window">
@@ -111,6 +215,8 @@ function ProgressWindow({ countryId, stateDetails, assessmentResult }) {
 
   const nodes = stateDetails.nodes || [];
   const edges = stateDetails.edges || [];
+  const completedSet = new Set(completedCities || []);
+  const unlockedSet = new Set(unlockedCities || [nodes[0]?.id].filter(Boolean));
   const levels = buildLevels(nodes, edges);
   const grouped = new Map();
   nodes.forEach((node) => {
@@ -201,8 +307,10 @@ function ProgressWindow({ countryId, stateDetails, assessmentResult }) {
           {nodes.map((node, index) => {
             const questMode = getQuestMode(node.type);
             const isBoss = index === nodes.length - 1;
+            const completed = completedSet.has(node.id);
+            const unlocked = unlockedSet.has(node.id) || index === 0;
             return (
-              <article key={node.id} className={`level-card quest-card${isBoss ? ' is-boss' : ''}`}>
+              <article key={node.id} className={`level-card quest-card${isBoss ? ' is-boss' : ''}${completed ? ' is-completed' : ''}${!unlocked ? ' is-locked' : ''}`}>
                 <div className="quest-card-topline">
                   <span className="level-badge">Lv {index + 1}</span>
                   <span className={`quest-mode-pill ${questMode.className}`}>{questMode.label}</span>
@@ -212,6 +320,18 @@ function ProgressWindow({ countryId, stateDetails, assessmentResult }) {
                 <div className="quest-card-meta">
                   <strong>{questMode.detail}</strong>
                   <small>{`${node.estimated_time_minutes} min • ${node.xp_reward} XP`}</small>
+                </div>
+                <div className="quest-card-actions">
+                  <button
+                    className="assessment-ghost-btn"
+                    disabled={!unlocked}
+                    onClick={() => onLaunchCity(node)}
+                  >
+                    {completed ? 'Replay City' : 'Play City'}
+                  </button>
+                  <span className="quest-status-chip">
+                    {completed ? 'cleared' : unlocked ? 'ready' : 'locked'}
+                  </span>
                 </div>
               </article>
             );
@@ -229,9 +349,9 @@ function ProgressWindow({ countryId, stateDetails, assessmentResult }) {
 
         <button
           className="assessment-launch-btn"
-          onClick={() => launchAssessmentWindow(countryId, stateDetails.state_id)}
+          onClick={onContinueJourney || (() => launchAssessmentWindow(countryId, stateDetails.state_id))}
         >
-          Take Assessment
+          Continue Journey
         </button>
       </div>
     </section>
@@ -247,6 +367,15 @@ export default function CountryWindow({ countryId }) {
   const [mapData, setMapData] = useState(null);
   const [selectedStateId, setSelectedStateId] = useState('');
   const [progress, setProgress] = useState(() => loadCountryProgress(countryId));
+  const [activeCity, setActiveCity] = useState(null);
+  const gainXP = usePlayerStore((state) => state.gainXP);
+  const unlockSkill = usePlayerStore((state) => state.unlockSkill);
+  const setCurrentRole = usePlayerStore((state) => state.setCurrentRole);
+  const markCityCompleted = usePlayerStore((state) => state.markCityCompleted);
+  const unlockCity = usePlayerStore((state) => state.unlockCity);
+  const addMistake = usePlayerStore((state) => state.addMistake);
+  const playerLevel = usePlayerStore((state) => state.level);
+  const playerXp = usePlayerStore((state) => state.xp);
 
   useEffect(() => {
     setProgress(loadCountryProgress(countryId));
@@ -255,6 +384,10 @@ export default function CountryWindow({ countryId }) {
   useEffect(() => {
     saveCountryProgress(countryId, progress);
   }, [countryId, progress]);
+
+  useEffect(() => {
+    setCurrentRole(countryId);
+  }, [countryId, setCurrentRole]);
 
   useEffect(() => {
     async function load() {
@@ -321,6 +454,8 @@ export default function CountryWindow({ countryId }) {
   const totalLevels = stateOrder.reduce((sum, stateId) => sum + (stateById.get(stateId)?.nodes?.length || 0), 0);
   const passedCount = stateOrder.filter((stateId) => progress.assessments?.[stateId]?.passed).length;
   const activeStateIndex = Math.max(0, stateOrder.indexOf(selectedStateId));
+  const completedCities = progress.completedCities?.[selectedStateId] || [];
+  const unlockedCities = progress.unlockedCities?.[selectedStateId] || [selectedState?.nodes?.[0]?.id].filter(Boolean);
   const useChinaCraftedMap = profile.iso3 === 'CHN';
   const useIndiaCraftedMap = profile.iso3 === 'IND';
   const useKoreaCraftedMap = profile.iso3 === 'KOR';
@@ -330,6 +465,52 @@ export default function CountryWindow({ countryId }) {
     const index = stateOrder.indexOf(stateId);
     if (index <= highestUnlockedIndex) {
       setSelectedStateId(stateId);
+    }
+  }
+
+  async function handleCityResult(city, result) {
+    setActiveCity(null);
+    if (!selectedState) return;
+    if (!result.success && result.mistake) {
+      addMistake(result.mistake);
+    }
+
+    const currentCompleted = progress.completedCities?.[selectedState.state_id] || [];
+    const apiResult = await api.progression(selectedState.state_id, {
+      completed_nodes: currentCompleted,
+      completed_city: city.id,
+      score: result.success ? 100 : 45,
+      player_level: playerLevel,
+      player_xp: playerXp,
+    });
+
+    gainXP(apiResult.xp_gained, city.title);
+    markCityCompleted(selectedState.state_id, city.id, 0);
+    unlockSkill(selectedState.state_id);
+    apiResult.unlocked_nodes.forEach((nodeId) => unlockCity(selectedState.state_id, nodeId));
+
+    setProgress((prev) => ({
+      ...prev,
+      completedCities: {
+        ...(prev.completedCities || {}),
+        [selectedState.state_id]: Array.from(new Set([...(prev.completedCities?.[selectedState.state_id] || []), city.id])),
+      },
+      unlockedCities: {
+        ...(prev.unlockedCities || {}),
+        [selectedState.state_id]: Array.from(new Set([...(prev.unlockedCities?.[selectedState.state_id] || []), ...apiResult.unlocked_nodes])),
+      },
+    }));
+  }
+
+  function launchNextAction() {
+    const nodes = selectedState?.nodes || [];
+    const nextCity = nodes.find((node) => !(progress.completedCities?.[selectedStateId] || []).includes(node.id));
+    if (nextCity) {
+      setActiveCity(nextCity);
+      return;
+    }
+    if (selectedState) {
+      launchAssessmentWindow(countryId, selectedState.state_id);
     }
   }
 
@@ -485,11 +666,24 @@ export default function CountryWindow({ countryId }) {
             countryId={countryId}
             stateDetails={selectedState}
             assessmentResult={selectedAssessment}
+            completedCities={completedCities}
+            unlockedCities={unlockedCities}
+            onLaunchCity={setActiveCity}
+            onContinueJourney={launchNextAction}
           />
 
           <TutorChatPanel roleDetails={roleDetails} stateDetails={selectedState} />
         </aside>
       </main>
+
+      <CityMinigameModal
+        roleId={countryId}
+        stateDetails={selectedState}
+        city={activeCity}
+        open={!!activeCity}
+        onClose={() => setActiveCity(null)}
+        onFinish={(result) => handleCityResult(activeCity, result)}
+      />
     </div>
   );
 }

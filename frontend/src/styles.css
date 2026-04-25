@@ -16,7 +16,7 @@
 
 body {
   margin: 0;
-  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  font-family: "Segoe UI", "Inter", sans-serif;
   color: var(--ink);
   min-height: 100vh;
   background:
@@ -87,6 +87,7 @@ body::before {
   margin: 12px 0 0;
   color: #446b8f;
   font-size: 1.02rem;
+  line-height: 1.55;
 }
 
 .hero-stats {
@@ -128,6 +129,7 @@ body::before {
 .mini-stats strong {
   display: block;
   font-size: 1.15rem;
+  color: var(--ink);
 }
 
 .mission-strip {
@@ -163,7 +165,7 @@ body::before {
 .academy-lane-card span {
   display: block;
   margin-bottom: 8px;
-  color: var(--theme-accent);
+  color: #f5a623;
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -181,6 +183,97 @@ body::before {
   color: #6286a4;
   line-height: 1.45;
   font-weight: 700;
+}
+
+.forge-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.forge-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -20% -40% 40%;
+  height: 260px;
+  background: radial-gradient(circle, rgba(127, 119, 221, 0.18), transparent 60%);
+  pointer-events: none;
+}
+
+.hero-spotlight-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.spotlight-card,
+.forge-stat-tile,
+.daily-quest-card,
+.live-ops-card {
+  border-radius: 20px;
+  padding: 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(237,248,255,0.96));
+  border: 1px solid rgba(137, 195, 238, 0.18);
+}
+
+.spotlight-card span,
+.forge-stat-tile span,
+.live-ops-card span {
+  display: block;
+  margin-bottom: 8px;
+  color: #f5a623;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 900;
+}
+
+.spotlight-card strong,
+.forge-stat-tile strong,
+.live-ops-card strong {
+  color: #24557f;
+  line-height: 1.45;
+}
+
+.forge-panel {
+  background: var(--surface);
+}
+
+.forge-panel-grid,
+.quest-daily-list,
+.live-ops-list {
+  display: grid;
+  gap: 12px;
+}
+
+.forge-panel-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.daily-quest-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.daily-quest-card strong {
+  display: block;
+  color: #f7f8ff;
+  margin-bottom: 4px;
+}
+
+.daily-quest-card p,
+.live-ops-card small {
+  margin: 0;
+  color: #678dad;
+  line-height: 1.55;
+}
+
+.daily-quest-card span {
+  color: #f5a623;
+  font-weight: 900;
+  white-space: nowrap;
 }
 
 .banner,
@@ -823,9 +916,41 @@ body::before {
   flex-wrap: wrap;
 }
 
+.quest-card.is-completed {
+  border-color: rgba(88, 204, 2, 0.28);
+  box-shadow: inset 0 -5px 0 rgba(88, 204, 2, 0.18);
+}
+
+.quest-card.is-locked {
+  opacity: 0.62;
+}
+
 .quest-card-meta strong {
   color: #4d7698;
   font-size: 0.88rem;
+}
+
+.quest-card-actions {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.quest-status-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #eefaff, #e1f4ff);
+  color: #53799a;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .level-badge {
@@ -876,6 +1001,34 @@ body::before {
 .panel-summary {
   color: #4e7494;
   line-height: 1.55;
+}
+
+.simple-hero-shell {
+  gap: 14px;
+}
+
+.simple-hero-copy h1 {
+  max-width: 720px;
+}
+
+.simple-hero-stats {
+  align-self: stretch;
+}
+
+.simple-mission-strip {
+  margin-bottom: 16px;
+}
+
+.simple-map-panel {
+  padding: 18px;
+}
+
+.simple-tip-card .panel-heading {
+  margin-bottom: 10px;
+}
+
+.quick-view-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .mini-stats {
@@ -950,7 +1103,13 @@ body::before {
   justify-items: center;
   gap: 6px;
   pointer-events: none;
-  transition: transform 160ms ease, opacity 160ms ease;
+  transition: opacity 120ms ease;
+  will-change: left, top, opacity;
+  transform: translate(-50%, -50%);
+}
+
+.globe-marker.active {
+  transform: translate(-50%, -50%) scale(1.08);
 }
 
 .globe-label {
@@ -958,14 +1117,15 @@ body::before {
   cursor: pointer;
   pointer-events: auto;
   white-space: nowrap;
-  transition: transform 160ms ease, opacity 160ms ease, background 160ms ease;
-  padding: 10px 15px;
+  transition: background 120ms ease, box-shadow 120ms ease;
+  min-width: 120px;
+  padding: 12px 18px;
   border-radius: 999px;
   background: #ffffff;
   color: #2a5f8b;
   box-shadow: 0 10px 20px rgba(86, 157, 214, 0.2), inset 0 -4px 0 rgba(165, 220, 255, 0.35);
   font-weight: 900;
-  font-size: 0.82rem;
+  font-size: 0.86rem;
 }
 
 .globe-label.active {
@@ -975,8 +1135,8 @@ body::before {
 }
 
 .globe-pin {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 999px;
   background: var(--theme-accent);
   border: 3px solid rgba(255, 255, 255, 0.92);
@@ -993,6 +1153,34 @@ body::before {
   height: 18px;
   transform: translateX(-50%);
   background: linear-gradient(180deg, rgba(59, 115, 162, 0.85), rgba(59, 115, 162, 0.08));
+}
+
+.globe-marker.active .globe-pin,
+.globe-marker.hovered .globe-pin {
+  animation: pulsePin 1.8s ease-in-out infinite;
+}
+
+.globe-tooltip {
+  pointer-events: none;
+  min-width: 170px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(142, 200, 244, 0.24);
+  box-shadow: 0 18px 36px rgba(91, 150, 197, 0.18);
+  color: #3e6d96;
+  display: grid;
+  gap: 4px;
+}
+
+.globe-tooltip strong {
+  color: #285985;
+  font-size: 0.95rem;
+}
+
+.globe-tooltip span {
+  font-size: 0.8rem;
+  font-weight: 800;
 }
 
 .globe-caption {
@@ -1289,6 +1477,56 @@ body::before {
   gap: 12px;
 }
 
+.battle-bars {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.battle-bar-card {
+  border-radius: 18px;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(239,249,255,0.96));
+  border: 1px solid rgba(137, 195, 238, 0.18);
+  display: grid;
+  gap: 8px;
+}
+
+.battle-bar-card span {
+  color: #6a8fb0;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 900;
+}
+
+.battle-bar-card strong {
+  color: #25577f;
+  font-size: 1.2rem;
+}
+
+.battle-bar-track {
+  width: 100%;
+  height: 12px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(204, 230, 248, 0.72);
+}
+
+.battle-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.battle-bar-fill.player {
+  background: linear-gradient(90deg, #58cc02, #8ae13b);
+}
+
+.battle-bar-fill.boss {
+  background: linear-gradient(90deg, #ff8461, #ffb15d);
+}
+
 .assessment-progress-pill {
   padding: 10px 14px;
   border-radius: 999px;
@@ -1486,6 +1724,43 @@ body::before {
 .tutor-chat-body {
   display: grid;
   gap: 14px;
+}
+
+.companion-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(237,248,255,0.96));
+  border: 1px solid rgba(137, 195, 238, 0.18);
+}
+
+.companion-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  font-weight: 900;
+  background: linear-gradient(180deg, #56b8ff, #3f90dc);
+  box-shadow: 0 10px 18px rgba(63, 144, 220, 0.24);
+}
+
+.companion-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.companion-copy strong {
+  color: #24557f;
+}
+
+.companion-copy span {
+  color: #678dad;
+  font-size: 0.88rem;
+  font-weight: 800;
 }
 
 .tutor-quick-prompts {
@@ -1695,6 +1970,84 @@ body::before {
   font-weight: 800;
 }
 
+.minigame-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(114, 180, 223, 0.28);
+  backdrop-filter: blur(10px);
+}
+
+.minigame-modal {
+  width: min(900px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  border-radius: 28px;
+  background: rgba(255,255,255,0.96);
+  border: 1px solid rgba(140, 196, 241, 0.24);
+  box-shadow: 0 28px 72px rgba(92, 151, 197, 0.24);
+}
+
+.minigame-shell {
+  display: grid;
+  gap: 18px;
+}
+
+.minigame-kicker {
+  color: var(--theme-accent);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.minigame-options,
+.logic-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.minigame-option,
+.logic-chip {
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(143, 199, 241, 0.22);
+  border-radius: 18px;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, #ffffff, #eef8ff);
+  color: #2c628d;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.minigame-option.active,
+.logic-chip.active {
+  background: linear-gradient(180deg, #fff8cf, #ffeaa8);
+  border-color: rgba(247, 206, 69, 0.34);
+  color: #7d5d00;
+}
+
+.logic-chip-actions,
+.minigame-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@keyframes pulsePin {
+  0%, 100% {
+    box-shadow: 0 0 0 6px rgba(88, 204, 2, 0.14);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(88, 204, 2, 0.08);
+    transform: scale(1.08);
+  }
+}
+
 @keyframes popupRise {
   from {
     opacity: 0;
@@ -1774,6 +2127,10 @@ body::before {
   }
 
   .assessment-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .battle-bars {
     grid-template-columns: 1fr;
   }
 

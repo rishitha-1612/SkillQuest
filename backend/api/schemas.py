@@ -24,3 +24,13 @@ class TutorChatRequest(BaseModel):
     state_id: str | None = None
     message: str = Field(min_length=1, max_length=4000)
     history: List[TutorChatMessage] = Field(default_factory=list)
+    player_level: int = 1
+    recent_mistakes: List[str] = Field(default_factory=list)
+
+
+class ProgressionRequest(BaseModel):
+    completed_nodes: List[str] = Field(default_factory=list)
+    completed_city: str
+    score: int = Field(ge=0, le=100)
+    player_level: int = Field(default=1, ge=1)
+    player_xp: int = Field(default=0, ge=0)

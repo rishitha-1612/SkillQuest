@@ -6,10 +6,11 @@ from typing import Dict, List
 
 from fastapi import APIRouter, HTTPException, Query
 
-from backend.api.schemas import ReadinessRequest, TutorChatRequest, UnlockRequest
+from backend.api.schemas import ProgressionRequest, ReadinessRequest, TutorChatRequest, UnlockRequest
 from backend.models.career_models import RoleBlueprint, StateGraph
 from backend.services.data_loader import load_role_blueprints, load_state_graphs, load_world_map
 from backend.services.question_bank_service import get_question_slice
+from backend.services.progression_engine import serialize_progression_result, update_progression
 from backend.services.readiness_engine import get_readiness_score
 from backend.services.recommendation_engine import get_next_recommended_nodes, get_recommended_path
 from backend.services.role_path_engine import get_role_state_path
@@ -212,6 +213,8 @@ def tutor_chat(payload: TutorChatRequest) -> Dict[str, object]:
         history=[{"role": item.role, "text": item.text} for item in payload.history],
         role=role,
         state=state,
+        player_level=payload.player_level,
+        recent_mistakes=payload.recent_mistakes,
     )
 
     return {
@@ -222,4 +225,27 @@ def tutor_chat(payload: TutorChatRequest) -> Dict[str, object]:
             "ollama": "local-open-source",
             "fallback": "fallback",
         }.get(provider, provider),
+    }
+
+
+@router.post("/states/{state_id}/progression")
+def state_progression(state_id: str, payload: ProgressionRequest) -> Dict[str, object]:
+    graphs = get_state_graphs()
+    if state_id not in graphs:
+        raise HTTPException(status_code=404, detail=f"Unknown state: {state_id}")
+    graph = graphs[state_id]
+    if payload.completed_city not in {node.id for node in graph.nodes}:
+        raise HTTPException(status_code=404, detail=f"Unknown city '{payload.completed_city}' in state '{state_id}'")
+
+    result = update_progression(
+        graph=graph,
+        completed_nodes=payload.completed_nodes,
+        completed_city=payload.completed_city,
+        score=payload.score,
+        player_level=payload.player_level,
+        player_xp=payload.player_xp,
+    )
+    return {
+        "state_id": state_id,
+        **serialize_progression_result(result),
     }

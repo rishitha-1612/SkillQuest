@@ -1,281 +1,338 @@
 # SkillQuest AI
 
-SkillQuest AI is a gamified career-learning platform prototype where:
+SkillQuest AI is being rebuilt as a professional learning-game platform inspired by the clarity of Duolingo, the challenge loop of LeetCode, and the world-building feel of a game map.
 
-- continents are job clusters
-- countries are jobs
-- states are the professional skills required for that job
-- cities inside each state are the step-by-step learning trajectory
-- the end of each state contains an assessment gate before the next state unlocks
+Current core fantasy:
 
-The current project is a React + Vite frontend with a FastAPI backend, a rotating Earth lobby, country-specific skill windows, local map assets, professional role roadmaps, a rider journey system, a subject-based assessment engine, and a tutor chat that can use a local open-source LLM.
+- continents = job clusters
+- countries = job roles
+- states = major professional skills for that role
+- cities = learning quests inside a skill
+- boss fights = end-of-skill assessments
+- Nova = AI companion tutor
+
+The goal is not a generic course site. The goal is a structured gaming platform where users learn job-ready skills by progressing through worlds, quests, minigames, and boss battles.
 
 ## Resume Here
 
-If this project is opened in a fresh chat, this is the fastest way to regain context:
+When this project is reopened in a fresh chat, use this order:
 
-1. Read this README first.
-2. Check [frontend/src/App.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/App.jsx) to understand the multi-window flow.
-3. Check [frontend/src/components/CountryWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx) to understand the main gameplay screen.
-4. Check [backend/data/role_blueprints.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/role_blueprints.json) and [backend/data/state_graphs.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/state_graphs.json) for the actual learning roadmap.
-5. Check [frontend/src/data/assessmentQuestionBank.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentQuestionBank.js) for the current assessment content.
-6. Check [backend/services/tutor_service.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/tutor_service.py) and [frontend/src/components/TutorChatPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx) for the current tutor chat flow.
+1. Read this README.
+2. Open [frontend/src/App.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/App.jsx) for the top-level window flow.
+3. Open [frontend/src/components/WorldMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/WorldMap.jsx) for the lobby globe.
+4. Open [frontend/src/components/CountryWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx) for the main gameplay loop.
+5. Open [frontend/src/store/playerStore.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/store/playerStore.js) for player identity, XP, unlocks, and persistence.
+6. Open [backend/data/role_blueprints.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/role_blueprints.json) and [backend/data/state_graphs.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/state_graphs.json) for the actual skill roadmap.
+7. Open [frontend/src/data/assessmentQuestionBank.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentQuestionBank.js) for the assessment content.
+8. Open [frontend/src/components/TutorChatPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx) and [backend/services/tutor_service.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/tutor_service.py) for the tutor flow.
 
-## Current Product Shape
+## Product Architecture Target
 
-### World Lobby
+The target platform has 6 major systems:
 
-The main world screen is a rotating Earth:
+1. Identity System
+2. Exploration System
+3. Gameplay System
+4. Progression System
+5. Assessment System
+6. Social + Retention System
 
-- job labels are pinned to countries
-- labels move with the rotating globe
-- clicking a country opens a separate country window
-- the world is meant to feel like a playable realm map, not a dashboard
+The current rebuild already covers meaningful parts of the first 5. Social + retention has been scaffolded in state/store ideas, but it is not complete yet.
 
-Main files:
+## What Exists Right Now
 
-- [frontend/src/App.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/App.jsx)
-- [frontend/src/components/WorldMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/WorldMap.jsx)
-- [frontend/src/data/worldConfig.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/worldConfig.js)
+### 1. Identity System
 
-### Country Window
+Implemented in [frontend/src/store/playerStore.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/store/playerStore.js).
 
-Each country is the playable learning area for one job:
+Current player state includes:
 
-- left side shows the country map
-- right side shows mission board, rider journey, skill route, and tutor chat
-- each state is a professional skill for the role
-- each city is a learning node inside that skill
-- passing the state assessment unlocks the next state
+- `username`
+- `level`
+- `xp`
+- `avatar`
+- `unlockedSkills`
+- `currentRole`
+- `achievements`
+- `recentMistakes`
+- `completedCities`
+- `unlockedCities`
+- `dailyQuests`
 
-Main file:
+Current capabilities:
 
-- [frontend/src/components/CountryWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx)
+- XP gain
+- level progression
+- city completion tracking
+- skill unlock tracking
+- recent mistake memory for tutor guidance
+- local persistence with Zustand + localStorage
 
-### Assessments
+### 2. Exploration System
 
-Each skill state ends with an assessment:
+The world lobby is in [frontend/src/components/WorldMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/WorldMap.jsx).
 
-- each skill has a `100`-question bank
-- each attempt draws `30` questions
-- current live split is:
+Current lobby behavior:
+
+- rotating 3D globe
+- role-country labels pinned to countries
+- labels move with globe rotation
+- labels use a simplified stable click-target mode for easier interaction
+- active countries glow more strongly
+- clicking a country opens a dedicated game window
+
+Top-level lobby shell is in [frontend/src/App.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/App.jsx).
+
+### 3. Gameplay System
+
+The main country gameplay screen is in [frontend/src/components/CountryWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx).
+
+Current game loop:
+
+- select a skill-state
+- open city quests
+- play a minigame
+- gain XP
+- unlock the next city
+- finish all cities
+- open boss assessment
+- unlock the next skill-state
+
+Current minigames:
+
+- [frontend/src/minigames/CodePuzzle.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/CodePuzzle.jsx)
+- [frontend/src/minigames/DragDropLogic.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/DragDropLogic.jsx)
+- [frontend/src/minigames/DebugChallenge.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/DebugChallenge.jsx)
+- [frontend/src/minigames/ArchitectureArena.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/ArchitectureArena.jsx)
+- [frontend/src/minigames/PromptDuel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/PromptDuel.jsx)
+- [frontend/src/minigames/DataDetective.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/DataDetective.jsx)
+- [frontend/src/minigames/ThreatHunt.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/ThreatHunt.jsx)
+- [frontend/src/minigames/ModelSculptor.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/ModelSculptor.jsx)
+- [frontend/src/minigames/ChainBuilder.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/ChainBuilder.jsx)
+
+These are lightweight gameplay components for now. They establish the minigame architecture, but they still need deeper subject-specific logic to feel like a full production platform.
+
+### 4. Progression System
+
+Backend progression logic now exists in [backend/services/progression_engine.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/progression_engine.py).
+
+Current progression rules:
+
+- XP is awarded based on city difficulty and performance
+- completing a city unlocks the next connected city
+- finishing all non-boss cities unlocks the boss gate
+- player level progression is returned from the backend
+
+API route:
+
+- [backend/api/routes.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/api/routes.py) -> `POST /career-globe/states/{state_id}/progression`
+
+Frontend API helper:
+
+- [frontend/src/api/client.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/api/client.js)
+
+Journey UI:
+
+- [frontend/src/components/SkillJourneyPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/SkillJourneyPanel.jsx)
+
+### 5. Assessment System
+
+Assessments are no longer just plain quizzes. The main assessment experience is in [frontend/src/components/AssessmentWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentWindow.jsx).
+
+Current assessment behavior:
+
+- opens in a separate window
+- uses a 3-wave boss-fight presentation
+- has player HP
+- has boss HP
+- has a per-question timer
+- correct answers damage the boss
+- wrong answers damage the player
+- wave 2 uses a tighter timer
+- wave 3 uses harsher damage on mistakes
+- tab switching fails the run
+- the tutor is locked while assessment is active
+
+Assessment window shell:
+
+- [frontend/src/components/AssessmentRouteWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentRouteWindow.jsx)
+
+Question generation:
+
+- [frontend/src/data/assessmentGenerator.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentGenerator.js)
+- [frontend/src/data/assessmentQuestionBank.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentQuestionBank.js)
+
+Current assessment format:
+
+- `30` questions per attempt
+- fresh set each attempt
+- pulled from a `100` question bank per skill
+- difficulty mix:
   - `7` easy
   - `15` medium
   - `8` hard
-- pass mark is `75%`
-- assessments open in a separate window
-- tutor chat is locked while an assessment is open
-- tab switching fails the attempt
 
-Main files:
+### 6. AI Companion
 
-- [frontend/src/components/AssessmentRouteWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentRouteWindow.jsx)
-- [frontend/src/components/AssessmentWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentWindow.jsx)
-- [frontend/src/data/assessmentGenerator.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentGenerator.js)
-- [frontend/src/data/assessmentQuestionBank.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentQuestionBank.js)
-- [frontend/src/data/assessmentLock.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentLock.js)
+The tutor is now a guided companion, not just a textbox.
 
-### Tutor Chat
-
-The tutor is now structured to work as a real learning assistant:
-
-- frontend sends the active role, state, chat history, and user message
-- backend builds grounded context from the active job and skill roadmap
-- backend tries Gemini free tier first when `GEMINI_API_KEY` or `GOOGLE_API_KEY` is set
-- backend falls back to a local Ollama model if Gemini is not configured
-- if the local model is unavailable, the backend falls back to a grounded roadmap reply instead of crashing
-- tutor is meant to explain concepts simply, guide next steps, and use analogies
-
-Main files:
+Frontend:
 
 - [frontend/src/components/TutorChatPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx)
-- [frontend/src/api/client.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/api/client.js)
+
+Backend:
+
 - [backend/services/tutor_service.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/tutor_service.py)
 - [backend/api/routes.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/api/routes.py)
 - [backend/api/schemas.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/api/schemas.py)
 
-### Maps and Visual Worlds
+Current tutor features:
 
-- India has a custom special world
-- Korea has its own custom path and should be treated carefully
-- generic countries use local cached boundary files and 3D-style shared rendering
-- maps are local to avoid runtime download failures
+- named AI companion: `Nova`
+- role-aware replies
+- skill-aware replies
+- recent mistake awareness
+- player level awareness
+- simple explanations
+- analogy-style help
+- roadmap-aware guidance
+- assessment lockout support
 
-Main files:
+Current provider order:
 
-- [frontend/src/components/India3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/India3DMap.jsx)
-- [frontend/src/components/Korea3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/Korea3DMap.jsx)
-- [frontend/src/components/CountryMap3D.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryMap3D.jsx)
-- [frontend/public/maps](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/public/maps)
+1. Gemini free-tier API when configured
+2. Ollama local model fallback
+3. grounded local fallback reply
 
-## Current Job Countries
+## Role and Skill Data
 
-The active jobs currently mapped as countries are:
+These are the main content files:
+
+- [backend/data/world_map.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/world_map.json)
+  - continent and country mapping
+- [backend/data/role_blueprints.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/role_blueprints.json)
+  - job titles, summaries, tools, state requirements, and professional role structure
+- [backend/data/state_graphs.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/state_graphs.json)
+  - state-level city graphs and learning nodes
+
+These are the current major job countries:
 
 - AI Engineer
 - ML Engineer
 - Data Scientist
-- Data Engineer
-- Prompt Engineer
-- Cloud Architect
 - Cybersecurity Specialist
+- Cloud Architect
 - Software Developer
 - Full Stack Engineer
+- Data Engineer
 - Blockchain Developer
+- Prompt Engineer
 
-Current country assignment:
+Important note:
 
-- Russia -> Cloud Architect
-- Canada -> Full Stack Engineer
-- China -> Cybersecurity Specialist
-- United States -> Data Engineer
-- South Korea -> ML Engineer
-- India -> AI Engineer
-- Australia -> Data Scientist
-- Kazakhstan -> Blockchain Developer
-- Saudi Arabia -> Prompt Engineer
-- South Africa -> Software Developer
+- South Korea has custom work from another contributor and should not be carelessly overwritten.
 
-## Roadmap Data Model
+## Country and Map Systems
 
-### Role Blueprints
+Map rendering components:
 
-Each job now has a broader professional roadmap instead of a basic 5-skill version.
+- [frontend/src/components/CountryMap3D.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryMap3D.jsx)
+- [frontend/src/components/India3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/India3DMap.jsx)
+- [frontend/src/components/Korea3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/Korea3DMap.jsx)
+- [frontend/src/components/China3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/China3DMap.jsx)
+- [frontend/src/components/SaudiArabia3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/SaudiArabia3DMap.jsx)
 
-Each role blueprint contains:
+Local map assets:
 
-- title
-- summary
-- responsibilities
-- tools
-- state requirements
-- importance level
-- expected proficiency
-- role DAG for progression
+- [frontend/public/maps](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/public/maps)
 
-File:
+Current map status:
 
-- [backend/data/role_blueprints.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/role_blueprints.json)
+- world lobby works
+- country windows work
+- several custom country renderers exist
+- India and Korea have more custom treatment than the generic countries
+- India, Korea, Saudi Arabia, and China keep their explicit custom map routes
+- other countries fall back to the simpler local state-border renderer for stability
 
-### State Graphs
+## UI Layer
 
-Each state graph contains:
+Global styling is in [frontend/src/styles.css](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/styles.css).
 
-- the state title
-- entry city
-- final assessment city
-- city nodes inside the skill
-- edges between cities
+Current UI direction:
 
-This is the detailed learning trajectory inside a single professional skill.
+- lighter Duolingo-like homepage aesthetic
+- simpler lobby copy
+- softer white cards and sky background
+- reduced homepage panel density
+- quest cards and boss-fight windows still keep the game layer
 
-File:
+This is more game-like than before, but it still needs another serious polish pass to reach true premium product quality.
 
-- [backend/data/state_graphs.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/state_graphs.json)
-
-### World Map Data
-
-This ties jobs to continents and country-level state lists.
-
-File:
-
-- [backend/data/world_map.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/world_map.json)
-
-## File Guide
-
-### Backend
+## Backend File Guide
 
 - [backend/main.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/main.py)
-  - FastAPI app startup and CORS wiring
+  - FastAPI app startup
 - [backend/api/routes.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/api/routes.py)
-  - all main API routes for world map, roles, states, readiness, questions, and tutor chat
+  - health, world map, role details, state details, tutor chat, progression
 - [backend/api/schemas.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/api/schemas.py)
-  - request schemas for unlocks, readiness, and tutor chat
+  - tutor request schema, progression request schema, unlock/readiness schemas
 - [backend/services/data_loader.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/data_loader.py)
-  - loads world map, role blueprints, and state graphs from JSON
+  - JSON loading
+- [backend/services/progression_engine.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/progression_engine.py)
+  - XP and node unlocking logic
 - [backend/services/tutor_service.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/tutor_service.py)
-  - local Ollama tutor integration and grounded fallback reply
+  - Nova backend logic, provider selection, grounded fallback
 - [backend/services/question_bank_service.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/question_bank_service.py)
-  - backend question slicing for city-node questions
-- [backend/data/world_map.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/world_map.json)
-  - continent/country/state mapping
-- [backend/data/role_blueprints.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/role_blueprints.json)
-  - professional job roadmaps
-- [backend/data/state_graphs.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/state_graphs.json)
-  - skill-state city roadmap definitions
+  - question slice utilities
 
-### Frontend
+## Frontend File Guide
 
 - [frontend/src/App.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/App.jsx)
-  - entry routing for world, country, and assessment windows
+  - lobby + country window + assessment window routing
 - [frontend/src/components/WorldMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/WorldMap.jsx)
-  - rotating globe and country launcher
+  - lobby globe and country launch flow
 - [frontend/src/components/CountryWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx)
-  - main gameplay screen for a job country
+  - main playable country screen
 - [frontend/src/components/SkillJourneyPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/SkillJourneyPanel.jsx)
-  - rider road and progression status
+  - road progression display
 - [frontend/src/components/AssessmentRouteWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentRouteWindow.jsx)
-  - separate assessment window shell
+  - separate assessment shell and anti-cheat locking
 - [frontend/src/components/AssessmentWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentWindow.jsx)
-  - assessment UI and question navigation
+  - boss fight assessment gameplay
 - [frontend/src/components/TutorChatPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx)
-  - tutor UI, chat history, prompts, and frontend tutor requests
+  - Nova chat UI
+- [frontend/src/store/playerStore.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/store/playerStore.js)
+  - persistent player identity and progress
+- [frontend/src/minigames](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames)
+  - quest minigame components
 - [frontend/src/api/client.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/api/client.js)
-  - frontend API client for backend calls including tutor chat
-- [frontend/src/data/assessmentQuestionBank.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentQuestionBank.js)
-  - subject-based bank content for each skill
-- [frontend/src/data/assessmentGenerator.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentGenerator.js)
-  - selects the live 30-question assessment slice
-- [frontend/src/styles.css](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/styles.css)
-  - global styling and game-window UI theme
+  - frontend API wrapper
+- [frontend/src/data/worldConfig.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/worldConfig.js)
+  - world/country role config and realm metadata
+- [frontend/src/data/assessmentLock.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentLock.js)
+  - assessment lock state used to disable tutor during tests
 
-## Tutor Model Setup
+## Tutor Setup
 
-The tutor now supports:
+### Free API path
 
-1. Gemini free tier via API key
-2. local Ollama models
-3. grounded fallback replies if neither model path is available
-
-### Recommended Free API Setup
-
-Current default free-tier API tutor model:
-
-- `gemini-2.5-flash-lite`
-
-Set either:
-
-- `GEMINI_API_KEY`
-- `GOOGLE_API_KEY`
-
-Optional override:
-
-- `GEMINI_MODEL`
-
-Example:
+Use Gemini free tier with an API key:
 
 ```powershell
+cd C:\Users\admin\Desktop\SkillQuest-Ai
 $env:GEMINI_API_KEY="your_key_here"
 $env:GEMINI_MODEL="gemini-2.5-flash-lite"
 python start_backend.py
 ```
 
-### Local Model Fallback
+### Local model fallback
 
-If Gemini is not configured, the backend tries Ollama:
-
-- base URL: `http://127.0.0.1:11434`
-- model: `qwen2.5:3b`
-
-Configurable with:
-
-- `OLLAMA_BASE_URL`
-- `OLLAMA_MODEL`
-
-Example:
+Use Ollama if desired:
 
 ```powershell
 ollama pull qwen2.5:3b
+cd C:\Users\admin\Desktop\SkillQuest-Ai
 $env:OLLAMA_MODEL="qwen2.5:3b"
 python start_backend.py
 ```
@@ -298,41 +355,84 @@ npm install
 npm start
 ```
 
-## What Has Been Done So Far
+## What We Have Done So Far
 
-- built the FastAPI backend for world map, role details, state details, and readiness
-- built the React + Vite frontend shell
-- created the rotating Earth world lobby
-- pinned moving country job labels to the globe
-- created multi-window country and assessment flow
-- built rider road progression between skill states
-- added local map caching and 3D-style country map rendering
-- kept India as the most custom country experience
-- preserved the Korea-specific custom country flow
-- built subject-based assessment banks with 100 questions per skill
-- changed assessments to 30 questions using a 7 easy / 15 medium / 8 hard mix
-- expanded the job roadmaps so roles now include broader professional skill coverage
-- added a tutor chat backend route
-- wired the tutor to a local open-source Ollama model with grounded fallback behavior
-- updated the README into a real restart and handoff guide
+- built the FastAPI backend
+- built the React frontend shell
+- created the rotating world lobby
+- pinned moving role labels to countries
+- simplified globe labels into a more stable click-target mode
+- created dedicated country windows
+- created dedicated assessment windows
+- introduced a persistent player store with XP and unlocks
+- turned city nodes into minigame launchers
+- added 3 starter minigame components
+- added backend progression logic
+- turned assessments into boss-fight style battles
+- locked the tutor during assessments
+- added anti-tab-switch cheating protection
+- upgraded the tutor into Nova, a player-aware AI companion
+- added free API tutor support with Gemini
+- kept Ollama as a local fallback
+- expanded assessment banks to 100 questions per skill
+- kept assessments fresh on every attempt
+- preserved custom country flows like Korea
+- updated the UI toward a more game-academy structure
+- simplified the homepage back toward a cleaner, lighter, easier-to-understand style
 
 ## What Still Needs To Be Done
 
-- turn each city node into an actual playable minigame instead of only static route cards
-- redesign the frontend further so it feels more like a premium gaming platform and less like a polished prototype
-- add player profiles, authentication, and backend progress persistence
-- connect rider movement more directly onto geographic state maps
-- add richer job-specific custom worlds beyond India and Korea
-- deepen state graphs further with more cities for each professional skill
-- add handcrafted explanations for wrong assessment answers
-- add real tutoring memory and player history over time
-- split the frontend bundle because the build is still large
-- add automated tests for tutor routes, world data, and assessment generation
+The project is improved, but it is not yet at the final target quality. These are the next major steps:
 
-## Notes
+1. Replace starter minigames with deeper subject-specific gameplay.
+2. Add real mini-lessons, not just quest cards and minigame entry points.
+3. Add ranked drill mode as a standalone gameplay system.
+4. Make boss fights richer with stronger feedback, audio, and visual response.
+5. Add cinematic zoom and camera transition into countries on globe click.
+6. Add proper social systems:
+   - leaderboard
+   - friends
+   - weekly reset
+7. Add retention systems:
+   - daily streaks
+   - daily quests UI
+   - rewards and badges
+8. Move persistence from localStorage toward a real backend database layer.
+9. Introduce auth and user accounts.
+10. Upgrade the UI from polished prototype to premium gaming product quality.
 
-- current assessment counts intentionally total 30 using `7 easy`, `15 medium`, and `8 hard`
-- local open-source tutor setup was chosen around Ollama with `qwen2.5:3b` as the default lightweight model
-- according to the current official Ollama model library, `qwen2.5` and `qwen3` are available local open-source options:
-  - [Ollama library](https://ollama.com/library)
-  - [qwen2.5 model page](https://ollama.com/library/qwen2.5%3A3b)
+## Recommended Stack Direction
+
+Frontend:
+
+- React
+- Zustand
+- Framer Motion
+- React Three Fiber / Three.js
+
+Backend:
+
+- FastAPI
+- PostgreSQL
+- Redis
+- WebSockets
+
+AI:
+
+- Gemini API for low-cost tutor calls
+- optional local Ollama fallback
+- later: memory store / vector retrieval for longer-term tutor memory
+
+## Verification
+
+After major changes, run:
+
+```powershell
+cd C:\Users\admin\Desktop\SkillQuest-Ai\frontend
+npm run build
+```
+
+```powershell
+cd C:\Users\admin\Desktop\SkillQuest-Ai
+python -m compileall backend
+```

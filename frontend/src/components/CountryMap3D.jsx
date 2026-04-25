@@ -1,27 +1,28 @@
 import { useMemo } from 'react';
 import { geoMercator, geoPath } from 'd3-geo';
 
-const DEPTH_LAYERS = 8;
-const DEPTH_STEP = 3;
-
 function colorFor(index, active) {
   if (active) {
     return {
-      top: '#e8ffc8',
-      side: '#9ccc5a',
-      stroke: '#4b8d1f',
+      fill: '#dff7bf',
+      stroke: '#58cc02',
     };
   }
 
-  const palette = [
-    ['#dff3e5', '#7ec78e'],
-    ['#d9f0ff', '#78b0dd'],
-    ['#efe6ff', '#9e8fdd'],
-    ['#fff0d9', '#e0ac64'],
-    ['#e2f9ef', '#77c0a0'],
-  ];
-  const [top, side] = palette[index % palette.length];
-  return { top, side, stroke: '#4b83b3' };
+  const palette = ['#dff3e5', '#d9f0ff', '#efe6ff', '#fff0d9', '#e2f9ef'];
+  return { fill: palette[index % palette.length], stroke: '#4b83b3' };
+}
+
+function isSelectedFeature(feature, selectedStateId) {
+  if (!selectedStateId) return false;
+  const featureName = (
+    feature.properties?.shapeName ||
+    feature.properties?.name ||
+    feature.properties?.shapeISO ||
+    ''
+  ).toLowerCase();
+  const tokens = selectedStateId.toLowerCase().split('_');
+  return tokens.some((token) => token.length > 3 && featureName.includes(token));
 }
 
 export default function CountryMap3D({ mapData, selectedStateId }) {
@@ -48,36 +49,14 @@ export default function CountryMap3D({ mapData, selectedStateId }) {
         </defs>
         <rect width="920" height="640" rx="24" fill="url(#countrySea)" />
 
-        {Array.from({ length: DEPTH_LAYERS }).map((_, layer) => {
-          const yOffset = (DEPTH_LAYERS - layer) * DEPTH_STEP;
-          return (
-            <g key={`layer-${layer}`} transform={`translate(0 ${yOffset})`} pointerEvents="none">
-              {features.map((feature, index) => {
-                const name = feature.properties?.shapeName || feature.properties?.name || '';
-                const active = selectedStateId && name.toLowerCase().includes(selectedStateId.split('_')[0]);
-                const tone = colorFor(index, active);
-                return (
-                  <path
-                    key={`${layer}-${name}-${index}`}
-                    d={pathBuilder(feature)}
-                    fill={tone.side}
-                    stroke={tone.side}
-                    strokeWidth="1.2"
-                  />
-                );
-              })}
-            </g>
-          );
-        })}
-
         {features.map((feature, index) => {
           const name = feature.properties?.shapeName || feature.properties?.name || '';
-          const active = false;
+          const active = isSelectedFeature(feature, selectedStateId);
           const tone = colorFor(index, active);
           const [cx, cy] = pathBuilder.centroid(feature);
           return (
             <g key={`${name}-${index}`}>
-              <path d={pathBuilder(feature)} fill={tone.top} stroke={tone.stroke} strokeWidth="1.5" />
+              <path d={pathBuilder(feature)} fill={tone.fill} stroke={tone.stroke} strokeWidth="1.6" />
               {Number.isFinite(cx) && Number.isFinite(cy) && (
                 <circle cx={cx} cy={cy} r="2.8" className="country-state-anchor" />
               )}
