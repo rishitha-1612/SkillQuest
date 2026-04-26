@@ -1194,6 +1194,55 @@ body::before {
   font-weight: 700;
 }
 
+.pastel-globe-shell {
+  position: relative;
+}
+
+.pastel-globe-stage {
+  background:
+    radial-gradient(circle at 30% 18%, rgba(255, 255, 255, 0.5), transparent 18%),
+    radial-gradient(circle at 72% 22%, rgba(255, 255, 255, 0.32), transparent 16%),
+    linear-gradient(180deg, #e6fbff 0%, #d8f6ff 28%, #ccf3f0 58%, #eafcdf 100%);
+}
+
+.pastel-globe-labels {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 680px;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.pastel-globe-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0;
+  min-width: 132px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #2f6c61;
+  box-shadow: 0 12px 28px rgba(101, 176, 171, 0.22);
+  font-size: 0.84rem;
+  font-weight: 900;
+  white-space: nowrap;
+  transition: opacity 140ms ease, transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.pastel-globe-label.active {
+  background: #fff5b1;
+  color: #5d5200;
+  box-shadow: 0 12px 28px rgba(232, 208, 93, 0.24);
+}
+
+.pastel-globe-label.is-hovered {
+  box-shadow: 0 16px 34px rgba(101, 176, 171, 0.3);
+}
+
 .map-popup {
   position: absolute;
   left: 50%;
