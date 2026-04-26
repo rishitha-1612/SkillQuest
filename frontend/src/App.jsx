@@ -1,10 +1,16 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { api } from './api/client';
 import GlobeView from './components/WorldMap';
 import CountrySkillsPanel from './components/CountrySkillsPanel';
 import StatePathwayPanel from './components/StatePathwayPanel';
 import CountryWindow from './components/CountryWindow';
 import AssessmentRouteWindow from './components/AssessmentRouteWindow';
+import IconDock from './components/IconDock';
+import OverlayBackdrop from './components/OverlayBackdrop';
+import SearchPanel from './components/SearchPanel';
+import HelpPanel from './components/HelpPanel';
+import LeaderboardPanel from './components/LeaderboardPanel';
+import RealmOverviewPanel from './components/RealmOverviewPanel';
 import { getClusterTheme, isPlayableRealm, LOCKED_WORLD_REGIONS } from './data/worldConfig';
 import { usePlayerStore } from './store/playerStore';
 
@@ -100,9 +106,13 @@ function WorldLobby() {
   const [roleDetails, setRoleDetails] = useState(null);
   const [selectedStateId, setSelectedStateId] = useState('');
   const [stateDetails, setStateDetails] = useState(null);
+  const [activeOverlay, setActiveOverlay] = useState(null);
+  const [renderedOverlay, setRenderedOverlay] = useState(null);
   const level = usePlayerStore((state) => state.level);
   const xp = usePlayerStore((state) => state.xp);
   const streakCount = usePlayerStore((state) => state.streakCount);
+  const closeTimeoutRef = useRef(0);
+  const lastOverlayButtonRef = useRef(null);
 
   const statesMeta = useMemo(() => new Map(states.map((s) => [s.state_id, s])), [states]);
   const countryMetrics = useMemo(
@@ -146,6 +156,53 @@ function WorldLobby() {
     }
   }
 
+  function focusLastOverlayButton() {
+    window.requestAnimationFrame(() => {
+      lastOverlayButtonRef.current?.focus();
+    });
+  }
+
+  function closeOverlay() {
+    if (!renderedOverlay) return;
+    window.clearTimeout(closeTimeoutRef.current);
+    setActiveOverlay(null);
+    closeTimeoutRef.current = window.setTimeout(() => {
+      setRenderedOverlay(null);
+      focusLastOverlayButton();
+    }, 220);
+  }
+
+  function handleOverlayToggle(nextOverlay, buttonNode) {
+    if (buttonNode) {
+      lastOverlayButtonRef.current = buttonNode;
+    }
+
+    window.clearTimeout(closeTimeoutRef.current);
+
+    if (activeOverlay === nextOverlay) {
+      closeOverlay();
+      return;
+    }
+
+    setActiveOverlay(null);
+    setRenderedOverlay(nextOverlay);
+    window.requestAnimationFrame(() => {
+      setActiveOverlay(nextOverlay);
+    });
+  }
+
+  useEffect(() => {
+    function handleEscape(e) {
+      if (e.key === 'Escape' && activeOverlay) {
+        closeOverlay();
+      }
+    }
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [activeOverlay]);
+
+  useEffect(() => () => window.clearTimeout(closeTimeoutRef.current), []);
+
   return (
     <div
       className="app-root"
@@ -155,100 +212,62 @@ function WorldLobby() {
         '--theme-atmosphere': selectedTheme.atmosphere,
       }}
     >
-      <header className="hero-shell simple-hero-shell">
-        <div className="hero-copy simple-hero-copy">
-          <p className="eyebrow">SkillQuest</p>
-          <h1>Learn skills by playing through job worlds.</h1>
-          <p className="hero-text">
-            Pick a country, open its skill map, clear city games, and unlock the next state.
-          </p>
-        </div>
-
-        <div className="hero-stats simple-hero-stats">
-          <article className="stat-card">
-            <span>Level</span>
-            <strong>{level}</strong>
-          </article>
-          <article className="stat-card">
-            <span>XP</span>
-            <strong>{xp}</strong>
-          </article>
-          <article className="stat-card">
-            <span>Rank</span>
-            <strong>{prestigeTier}</strong>
-          </article>
-          <article className="stat-card">
-            <span>Streak</span>
-            <strong>{`${streakCount} days`}</strong>
-          </article>
-        </div>
-      </header>
-
-      <section className="mission-strip simple-mission-strip">
-        <article className="mission-card">
-          <span>How It Works</span>
-          <strong>Learn, play, and clear boss battles.</strong>
-        </article>
-        <article className="mission-card">
-          <span>Worlds</span>
-          <strong>{questStats.totalJobs}</strong>
-        </article>
-        <article className="mission-card mission-card-accent">
-          <span>Locked</span>
-          <strong>{LOCKED_WORLD_REGIONS.join(', ')}</strong>
-        </article>
-      </section>
-
       {loading && <div className="banner">Loading world lobby...</div>}
       {!!error && <div className="banner error">{error}</div>}
 
-      <main className="layout">
-        <section className="map-panel simple-map-panel">
-          <div className="panel-heading">
-            <h2>Choose A Job World</h2>
-            <p className="muted">Click a country label to open its game world.</p>
-          </div>
-          <GlobeView
-            countryMetrics={playableCountryMetrics}
-            selectedCountryId={selectedCountry?.id || ''}
-            onCountrySelect={onCountrySelect}
-          />
-        </section>
+      <div className="globe-container">
+        <GlobeView
+          countryMetrics={playableCountryMetrics}
+          selectedCountryId={selectedCountry?.id || ''}
+          onCountrySelect={onCountrySelect}
+        />
+      </div>
 
-        <section className="side-panel">
-          <CountrySkillsPanel
-            country={selectedCountry}
-            roleDetails={roleDetails}
-            statesMeta={statesMeta}
-            selectedStateId={selectedStateId}
-            onStateSelect={onStateSelect}
-          />
-          <StatePathwayPanel stateDetails={stateDetails} />
-          <section className="panel-card simple-tip-card">
-            <div className="panel-heading">
-              <h2>Quick View</h2>
-            </div>
-            <div className="forge-panel-grid quick-view-grid">
-              <article className="forge-stat-tile">
-                <span>Selected World</span>
-                <strong>{questStats.selectedCountryName}</strong>
-              </article>
-              <article className="forge-stat-tile">
-                <span>States</span>
-                <strong>{questStats.activeStates}</strong>
-              </article>
-              <article className="forge-stat-tile">
-                <span>Cities</span>
-                <strong>{questStats.activeCities}</strong>
-              </article>
-              <article className="forge-stat-tile">
-                <span>Status</span>
-                <strong>{health === 'ok' ? 'Ready' : health}</strong>
-              </article>
-            </div>
-          </section>
-        </section>
-      </main>
+      <IconDock activeOverlay={activeOverlay} onIconClick={handleOverlayToggle} />
+
+      {renderedOverlay && <OverlayBackdrop isVisible={Boolean(activeOverlay)} onClose={closeOverlay} />}
+
+      {renderedOverlay === 'search' && (
+        <SearchPanel
+          isOpen={activeOverlay === 'search'}
+          onClose={closeOverlay}
+          countryMetrics={playableCountryMetrics}
+          onCountrySelect={onCountrySelect}
+        />
+      )}
+
+      {renderedOverlay === 'help' && (
+        <HelpPanel
+          isOpen={activeOverlay === 'help'}
+          onClose={closeOverlay}
+          lockedRegions={LOCKED_WORLD_REGIONS}
+        />
+      )}
+
+      {renderedOverlay === 'leaderboard' && (
+        <LeaderboardPanel
+          isOpen={activeOverlay === 'leaderboard'}
+          onClose={closeOverlay}
+          level={level}
+          xp={xp}
+          streakCount={streakCount}
+          prestigeTier={prestigeTier}
+          totalRealms={playableCountryMetrics.length}
+        />
+      )}
+
+      {renderedOverlay === 'realm-overview' && (
+        <RealmOverviewPanel
+          isOpen={activeOverlay === 'realm-overview'}
+          onClose={closeOverlay}
+          country={selectedCountry}
+          roleDetails={roleDetails}
+          statesMeta={statesMeta}
+          selectedStateId={selectedStateId}
+          onStateSelect={onStateSelect}
+          stateDetails={stateDetails}
+        />
+      )}
     </div>
   );
 }

@@ -3,17 +3,17 @@ import * as THREE from 'three';
 import worldData from '../data/worldGlobe.json';
 import { getClusterTheme, getRoleWorldProfile } from '../data/worldConfig';
 
-const GLOBE_RADIUS = 5;
+const GLOBE_RADIUS = 4.45;
 const ACTIVE_LIFT = 0.06;
 const HOVER_LIFT = 0.18;
 const HOVER_SCALE = 1.04;
-const OCEAN_COLOR = '#7cc6f2';
-const LAND_MUTED = '#cfe7c8';
-const LAND_MUTED_SIDE = '#9ecf95';
-const OUTLINE_COLOR = '#3f8f76';
-const HOVER_EMISSIVE = '#f5b94a';
-const SELECTED_TOP = '#fff5b1';
-const SELECTED_SIDE = '#e1b83f';
+const OCEAN_COLOR = '#92ddff';
+const LAND_MUTED = '#f8fcff';
+const LAND_MUTED_SIDE = '#d8eefb';
+const OUTLINE_COLOR = '#77c8ec';
+const HOVER_EMISSIVE = '#fff8c8';
+const SELECTED_TOP = '#ffffff';
+const SELECTED_SIDE = '#bfe8ff';
 
 function lonLatToVec3(lon, lat, r, out = new THREE.Vector3()) {
   const phi = (90 - lat) * (Math.PI / 180);
@@ -195,15 +195,15 @@ export default function WorldMap({ countryMetrics, selectedCountryId, onCountryS
 
     const scene = new THREE.Scene();
     scene.background = null;
-    scene.fog = new THREE.Fog(0xeaf6f3, 25, 60);
+    scene.fog = new THREE.Fog(0xe7f8ff, 24, 60);
 
-    const camera = new THREE.PerspectiveCamera(38, mount.clientWidth / 680, 0.1, 200);
-    camera.position.set(0, 2.4, 14.5);
+    const camera = new THREE.PerspectiveCamera(38, mount.clientWidth / mount.clientHeight, 0.1, 200);
+    camera.position.set(0, 2.2, 15.8);
     camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(mount.clientWidth, 680);
+    renderer.setSize(mount.clientWidth, mount.clientHeight);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -211,12 +211,12 @@ export default function WorldMap({ countryMetrics, selectedCountryId, onCountryS
     mount.appendChild(renderer.domElement);
 
     scene.add(new THREE.AmbientLight(0xffffff, 0.78));
-    const hemi = new THREE.HemisphereLight(0xfff8e6, 0xb9e4d8, 0.55);
+    const hemi = new THREE.HemisphereLight(0xffffff, 0xc7ecff, 0.72);
     scene.add(hemi);
     const key = new THREE.DirectionalLight(0xffffff, 1);
     key.position.set(8, 6, 10);
     scene.add(key);
-    const fill = new THREE.DirectionalLight(0x9fd9ff, 0.35);
+    const fill = new THREE.DirectionalLight(0xdff5ff, 0.52);
     fill.position.set(-10, -2, 4);
     scene.add(fill);
 
@@ -241,7 +241,7 @@ export default function WorldMap({ countryMetrics, selectedCountryId, onCountryS
         depthWrite: false,
         blending: THREE.AdditiveBlending,
         side: THREE.BackSide,
-        uniforms: { uColor: { value: new THREE.Color('#cdd6ff') } },
+        uniforms: { uColor: { value: new THREE.Color('#eef8ff') } },
         vertexShader: `
           varying vec3 vN;
           void main() {
@@ -431,8 +431,9 @@ export default function WorldMap({ countryMetrics, selectedCountryId, onCountryS
 
     function onResize() {
       const width = mount.clientWidth;
-      renderer.setSize(width, 680);
-      camera.aspect = width / 680;
+      const height = mount.clientHeight;
+      renderer.setSize(width, height);
+      camera.aspect = width / height;
       camera.updateProjectionMatrix();
     }
 
@@ -554,7 +555,13 @@ export default function WorldMap({ countryMetrics, selectedCountryId, onCountryS
   return (
     <div className="map-mode-shell">
       <div className="globe-shell pastel-globe-shell">
-        <div className="globe-stage pastel-globe-stage" ref={mountRef} />
+        <div className="globe-stage pastel-globe-stage" ref={mountRef}>
+          <div className="shooting-stars" aria-hidden="true">
+            <div className="shooting-star star-1" />
+            <div className="shooting-star star-2" />
+            <div className="shooting-star star-3" />
+          </div>
+        </div>
         <div ref={labelsLayerRef} className="pastel-globe-labels" />
         <div className="globe-caption">
           <span>Click any realm.</span>
