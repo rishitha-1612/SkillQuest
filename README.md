@@ -24,7 +24,8 @@ When this project is reopened in a fresh chat, use this order:
 5. Open [frontend/src/store/playerStore.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/store/playerStore.js) for player identity, XP, unlocks, and persistence.
 6. Open [backend/data/role_blueprints.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/role_blueprints.json) and [backend/data/state_graphs.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/state_graphs.json) for the actual skill roadmap.
 7. Open [frontend/src/data/assessmentQuestionBank.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentQuestionBank.js) for the assessment content.
-8. Open [frontend/src/components/TutorChatPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx) and [backend/services/tutor_service.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/tutor_service.py) for the tutor flow.
+8. Open [frontend/src/data/learningResources.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/learningResources.js) for the YouTube lesson packs and note helpers.
+9. Open [frontend/src/components/TutorChatPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx) and [backend/services/tutor_service.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/tutor_service.py) for the tutor flow.
 
 ## Product Architecture Target
 
@@ -79,7 +80,7 @@ Current lobby behavior:
 - labels move with globe rotation
 - labels use a simplified stable click-target mode for easier interaction
 - active countries glow more strongly
-- clicking a country opens a dedicated game window
+- clicking a country opens a dedicated game tab
 
 Top-level lobby shell is in [frontend/src/App.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/App.jsx).
 
@@ -90,6 +91,8 @@ The main country gameplay screen is in [frontend/src/components/CountryWindow.js
 Current game loop:
 
 - select a skill-state
+- complete the required YouTube lesson
+- read the required notes
 - open city quests
 - play a minigame
 - gain XP
@@ -141,7 +144,9 @@ Assessments are no longer just plain quizzes. The main assessment experience is 
 
 Current assessment behavior:
 
-- opens in a separate window
+- opens in a separate browser tab
+- stays locked until the required lesson video is completed
+- stays locked until the required notes are marked read
 - uses a 3-wave boss-fight presentation
 - has player HP
 - has boss HP
@@ -297,7 +302,7 @@ This is more game-like than before, but it still needs another serious polish pa
 - [frontend/src/components/SkillJourneyPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/SkillJourneyPanel.jsx)
   - road progression display
 - [frontend/src/components/AssessmentRouteWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentRouteWindow.jsx)
-  - separate assessment shell and anti-cheat locking
+  - separate assessment tab shell and anti-cheat locking
 - [frontend/src/components/AssessmentWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentWindow.jsx)
   - boss fight assessment gameplay
 - [frontend/src/components/TutorChatPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx)
@@ -306,6 +311,8 @@ This is more game-like than before, but it still needs another serious polish pa
   - persistent player identity and progress
 - [frontend/src/minigames](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames)
   - quest minigame components
+- [frontend/src/data/learningResources.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/learningResources.js)
+  - curated YouTube lesson pack per skill-state plus notes helpers
 - [frontend/src/api/client.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/api/client.js)
   - frontend API wrapper
 - [frontend/src/data/worldConfig.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/worldConfig.js)
@@ -362,8 +369,8 @@ npm start
 - created the rotating world lobby
 - pinned moving role labels to countries
 - simplified globe labels into a more stable click-target mode
-- created dedicated country windows
-- created dedicated assessment windows
+- created dedicated country tabs
+- created dedicated assessment tabs
 - introduced a persistent player store with XP and unlocks
 - turned city nodes into minigame launchers
 - added 3 starter minigame components

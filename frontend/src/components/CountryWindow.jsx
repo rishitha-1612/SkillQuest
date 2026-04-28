@@ -17,17 +17,24 @@ import DataDetective from '../minigames/DataDetective';
 import ThreatHunt from '../minigames/ThreatHunt';
 import ModelSculptor from '../minigames/ModelSculptor';
 import ChainBuilder from '../minigames/ChainBuilder';
+import {
+  buildSkillNotes,
+  getLearningProgress,
+  getLearningResource,
+  isLearningRequirementComplete,
+} from '../data/learningResources';
 import { usePlayerStore } from '../store/playerStore';
 
 const PASS_PERCENT = 75;
+const YT_SCRIPT_ID = 'skillquest-youtube-iframe-api';
 
 function loadCountryProgress(countryId) {
   try {
     const raw = window.localStorage.getItem(`skillquest-progress:${countryId}`);
-    if (!raw) return { highestUnlockedIndex: 0, assessments: {} };
+    if (!raw) return { highestUnlockedIndex: 0, assessments: {}, learning: {} };
     return JSON.parse(raw);
   } catch {
-    return { highestUnlockedIndex: 0, assessments: {} };
+    return { highestUnlockedIndex: 0, assessments: {}, learning: {} };
   }
 }
 
@@ -69,7 +76,7 @@ function launchAssessmentWindow(countryId, stateId) {
   url.searchParams.set('window', 'assessment');
   url.searchParams.set('country', countryId);
   url.searchParams.set('state', stateId);
-  window.open(url.toString(), '_blank', 'noopener,width=1320,height=920');
+  window.open(url.toString(), '_blank', 'noopener');
 }
 
 function getQuestMode(type) {
@@ -188,6 +195,101 @@ function CityMinigameModal({ roleId, stateDetails, city, open, onClose, onFinish
   );
 }
 
+function ensureYouTubeApi() {
+  if (window.YT?.Player) {
+    return Promise.resolve(window.YT);
+  }
+
+  return new Promise((resolve) => {
+    const existing = document.getElementById(YT_SCRIPT_ID);
+    if (!existing) {
+      const script = document.createElement('script');
+      script.id = YT_SCRIPT_ID;
+      script.src = 'https://www.youtube.com/iframe_api';
+      document.body.appendChild(script);
+    }
+
+    const previousReady = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      previousReady?.();
+      resolve(window.YT);
+    };
+  });
+}
+
+function LessonVideoModal({ resource, open, onClose, onVideoComplete }) {
+  const playerMountId = useMemo(
+    () => `lesson-player-${resource?.video?.id || 'empty'}-${Math.random().toString(36).slice(2)}`,
+    [resource]
+  );
+
+  useEffect(() => {
+    if (!open || !resource?.video?.id) return undefined;
+    let player;
+    let cancelled = false;
+
+    ensureYouTubeApi().then((YT) => {
+      if (cancelled) return;
+      player = new YT.Player(playerMountId, {
+        videoId: resource.video.id,
+        playerVars: {
+          rel: 0,
+          modestbranding: 1,
+        },
+        events: {
+          onStateChange: (event) => {
+            if (event.data === YT.PlayerState.ENDED) {
+              onVideoComplete(resource.video.id);
+            }
+          },
+        },
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      if (player?.destroy) player.destroy();
+    };
+  }, [open, onVideoComplete, playerMountId, resource]);
+
+  if (!open || !resource?.video) return null;
+
+  return (
+    <div className="minigame-modal-backdrop" onClick={onClose}>
+      <div className="lesson-modal" onClick={(event) => event.stopPropagation()}>
+        <div className="window-bar">
+          <span className="dot green" />
+          <span className="dot yellow" />
+          <span className="dot blue" />
+          <strong>{resource.video.title}</strong>
+        </div>
+        <div className="window-body lesson-modal-body">
+          <div className="lesson-modal-copy">
+            <p className="panel-summary">
+              Finish the full lesson video. When the video ends, this requirement is marked complete automatically.
+            </p>
+            <div className="lesson-resource-meta">
+              <span>{resource.video.channel}</span>
+              <span>{resource.video.duration}</span>
+            </div>
+          </div>
+          <div className="lesson-video-frame">
+            <div id={playerMountId} />
+          </div>
+          <div className="lesson-modal-actions">
+            <a className="assessment-ghost-btn lesson-link-btn" href={resource.video.url} target="_blank" rel="noreferrer">
+              Open on YouTube
+            </a>
+            <button type="button" className="assessment-submit-btn" onClick={onClose}>
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ProgressWindow({
   countryId,
   stateDetails,
@@ -196,6 +298,12 @@ function ProgressWindow({
   unlockedCities,
   onLaunchCity,
   onContinueJourney,
+  learningResource,
+  learningProgress,
+  notesSections,
+  onOpenLesson,
+  onMarkNotesRead,
+  assessmentLocked,
 }) {
   if (!stateDetails) {
     return (
@@ -217,6 +325,11 @@ function ProgressWindow({
   const edges = stateDetails.edges || [];
   const completedSet = new Set(completedCities || []);
   const unlockedSet = new Set(unlockedCities || [nodes[0]?.id].filter(Boolean));
+  const completedAllCities = nodes.length > 0 && nodes.every((node) => completedSet.has(node.id));
+  const lessonVideoDone = learningResource?.video
+    ? (learningProgress?.watchedVideos || []).includes(learningResource.video.id)
+    : true;
+  const notesDone = Boolean(learningProgress?.notesRead);
   const levels = buildLevels(nodes, edges);
   const grouped = new Map();
   nodes.forEach((node) => {
@@ -245,6 +358,56 @@ function ProgressWindow({
         <strong>{stateDetails.title}</strong>
       </div>
       <div className="window-body">
+        <section className="lesson-gate-panel">
+          <div className="lesson-gate-topline">
+            <div>
+              <span className="panel-kicker">Required Course</span>
+              <h4>{learningResource?.title || `${stateDetails.title} lesson pack`}</h4>
+            </div>
+            <span className={`lesson-gate-status${assessmentLocked ? ' locked' : ' ready'}`}>
+              {assessmentLocked ? 'Locked' : 'Ready for assessment'}
+            </span>
+          </div>
+
+          {learningResource?.video && (
+            <article className={`lesson-resource-card${lessonVideoDone ? ' is-complete' : ''}`}>
+              <div>
+                <strong>{learningResource.video.title}</strong>
+                <p>{`${learningResource.video.channel} • ${learningResource.video.duration}`}</p>
+              </div>
+              <div className="lesson-resource-actions">
+                <button type="button" className="assessment-ghost-btn" onClick={onOpenLesson}>
+                  {lessonVideoDone ? 'Rewatch lesson' : 'Watch lesson'}
+                </button>
+                <span className="quest-status-chip">
+                  {lessonVideoDone ? 'watched' : 'required'}
+                </span>
+              </div>
+            </article>
+          )}
+
+          <article className={`lesson-notes-card${notesDone ? ' is-complete' : ''}`}>
+            <div className="lesson-notes-header">
+              <strong>Required notes</strong>
+              <button type="button" className="assessment-ghost-btn" onClick={onMarkNotesRead}>
+                {notesDone ? 'Notes completed' : 'Mark notes as read'}
+              </button>
+            </div>
+            <div className="lesson-notes-sections">
+              {notesSections.map((section) => (
+                <div key={section.title} className="lesson-notes-section">
+                  <h5>{section.title}</h5>
+                  <ul>
+                    {section.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </article>
+        </section>
+
         <div className="quest-loop-banner">
           <article className="quest-loop-step">
             <span>1</span>
@@ -339,19 +502,28 @@ function ProgressWindow({
         </div>
 
         <div className="assessment-lock-note">
-          <strong>{assessmentResult?.passed ? 'Assessment cleared.' : `Pass ${PASS_PERCENT}% or higher to unlock the next skill.`}</strong>
+          <strong>
+            {assessmentResult?.passed
+              ? 'Assessment cleared.'
+              : assessmentLocked
+                ? 'Finish the lesson video, read the notes, and clear all cities to unlock the assessment.'
+                : `Pass ${PASS_PERCENT}% or higher to unlock the next skill.`}
+          </strong>
           <div>
             {assessmentResult
               ? `Latest score: ${assessmentResult.score}% (${assessmentResult.correctCount}/${assessmentResult.totalQuestions})`
-              : 'The assessment opens in a separate window so the learning screen stays clean.'}
+              : assessmentLocked
+                ? 'The boss battle unlocks only after the learning requirements and city route are complete.'
+                : 'The assessment opens in a separate window so the learning screen stays clean.'}
           </div>
         </div>
 
         <button
           className="assessment-launch-btn"
+          disabled={assessmentLocked}
           onClick={onContinueJourney || (() => launchAssessmentWindow(countryId, stateDetails.state_id))}
         >
-          Continue Journey
+          Take Assessment
         </button>
       </div>
     </section>
@@ -456,10 +628,21 @@ export default function CountryWindow({ countryId }) {
   const activeStateIndex = Math.max(0, stateOrder.indexOf(selectedStateId));
   const completedCities = progress.completedCities?.[selectedStateId] || [];
   const unlockedCities = progress.unlockedCities?.[selectedStateId] || [selectedState?.nodes?.[0]?.id].filter(Boolean);
+  const learningResource = selectedState ? getLearningResource(selectedState.state_id) : null;
+  const learningProgress = getLearningProgress(progress, selectedStateId);
+  const notesSections = buildSkillNotes(selectedState);
+  const assessmentLocked = Boolean(
+    selectedState &&
+      (
+        selectedState.nodes?.some((node) => !completedCities.includes(node.id)) ||
+        !isLearningRequirementComplete(learningResource, learningProgress)
+      )
+  );
   const useChinaCraftedMap = profile.iso3 === 'CHN';
   const useIndiaCraftedMap = profile.iso3 === 'IND';
   const useKoreaCraftedMap = profile.iso3 === 'KOR';
   const useSaudiCraftedMap = profile.iso3 === 'SAU';
+  const [lessonModalOpen, setLessonModalOpen] = useState(false);
 
   function handleSelectState(stateId) {
     const index = stateOrder.indexOf(stateId);
@@ -509,9 +692,35 @@ export default function CountryWindow({ countryId }) {
       setActiveCity(nextCity);
       return;
     }
-    if (selectedState) {
+    if (selectedState && !assessmentLocked) {
       launchAssessmentWindow(countryId, selectedState.state_id);
     }
+  }
+
+  function handleLessonComplete(videoId) {
+    setProgress((prev) => ({
+      ...prev,
+      learning: {
+        ...(prev.learning || {}),
+        [selectedStateId]: {
+          ...getLearningProgress(prev, selectedStateId),
+          watchedVideos: Array.from(new Set([...(getLearningProgress(prev, selectedStateId).watchedVideos || []), videoId])),
+        },
+      },
+    }));
+  }
+
+  function handleNotesRead() {
+    setProgress((prev) => ({
+      ...prev,
+      learning: {
+        ...(prev.learning || {}),
+        [selectedStateId]: {
+          ...getLearningProgress(prev, selectedStateId),
+          notesRead: true,
+        },
+      },
+    }));
   }
 
   return (
@@ -670,6 +879,12 @@ export default function CountryWindow({ countryId }) {
             unlockedCities={unlockedCities}
             onLaunchCity={setActiveCity}
             onContinueJourney={launchNextAction}
+            learningResource={learningResource}
+            learningProgress={learningProgress}
+            notesSections={notesSections}
+            onOpenLesson={() => setLessonModalOpen(true)}
+            onMarkNotesRead={handleNotesRead}
+            assessmentLocked={assessmentLocked}
           />
 
           <TutorChatPanel roleDetails={roleDetails} stateDetails={selectedState} />
@@ -683,6 +898,13 @@ export default function CountryWindow({ countryId }) {
         open={!!activeCity}
         onClose={() => setActiveCity(null)}
         onFinish={(result) => handleCityResult(activeCity, result)}
+      />
+
+      <LessonVideoModal
+        resource={learningResource}
+        open={lessonModalOpen}
+        onClose={() => setLessonModalOpen(false)}
+        onVideoComplete={handleLessonComplete}
       />
     </div>
   );
