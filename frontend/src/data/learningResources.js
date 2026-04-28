@@ -1,273 +1,359 @@
-const LESSON_LIBRARY = {
+const STATE_VIDEO_HINTS = {
   ci_cd_pipelines: {
-    stateId: 'ci_cd_pipelines',
-    title: 'CI/CD Pipelines Lesson Pack',
-    video: {
-      id: 'qP8kir2GUgo',
-      title: 'GitLab CI CD Tutorial for Beginners [Crash Course]',
-      channel: 'TechWorld with Nana',
-      duration: '1h+',
-      url: 'https://www.youtube.com/watch?v=qP8kir2GUgo',
-      provider: 'YouTube',
-    },
+    channelHint: 'TechWorld with Nana',
+    queryHint: 'CI CD beginner',
   },
   cloud_platforms: {
-    stateId: 'cloud_platforms',
-    title: 'Cloud Platforms Lesson Pack',
-    video: {
-      id: 'WkJ0xB1dPwM',
-      title: 'AWS Cloud Practitioner Full Course [12 Hours]',
-      channel: 'edureka!',
-      duration: '12h',
-      url: 'https://www.youtube.com/watch?v=WkJ0xB1dPwM',
-      provider: 'YouTube',
-    },
+    channelHint: 'AWS or TechWorld with Nana',
+    queryHint: 'cloud architecture beginner',
   },
   containers_orchestration: {
-    stateId: 'containers_orchestration',
-    title: 'Containers and Orchestration Lesson Pack',
-    video: {
-      id: 'X48VuDVv0do',
-      title: 'Kubernetes Tutorial for Beginners [FULL COURSE in 4 Hours]',
-      channel: 'TechWorld with Nana',
-      duration: '4h',
-      url: 'https://www.youtube.com/watch?v=X48VuDVv0do',
-      provider: 'YouTube',
-    },
+    channelHint: 'TechWorld with Nana',
+    queryHint: 'Docker Kubernetes beginner',
   },
   data_visualization: {
-    stateId: 'data_visualization',
-    title: 'Data Visualization Lesson Pack',
-    video: {
-      id: 'r-uOLxNrNk8',
-      title: 'Data Analysis with Python - Full Course for Beginners',
-      channel: 'freeCodeCamp.org',
-      duration: '4h+',
-      url: 'https://www.youtube.com/watch?v=r-uOLxNrNk8',
-      provider: 'YouTube',
-    },
+    channelHint: 'freeCodeCamp or Alex The Analyst',
+    queryHint: 'data visualization python',
   },
   deep_learning: {
-    stateId: 'deep_learning',
-    title: 'Deep Learning Lesson Pack',
-    video: {
-      id: 'V_xro1bcAuA',
-      title: 'PyTorch for Deep Learning & Machine Learning – Full Course',
-      channel: 'freeCodeCamp.org',
-      duration: '9h+',
-      url: 'https://www.youtube.com/watch?v=V_xro1bcAuA',
-      provider: 'YouTube',
-    },
+    channelHint: 'StatQuest or freeCodeCamp',
+    queryHint: 'deep learning explained',
   },
   machine_learning: {
-    stateId: 'machine_learning',
-    title: 'Machine Learning Lesson Pack',
-    video: {
-      id: 'i_LwzRVP7bg',
-      title: 'Machine Learning for Everybody – Full Course',
-      channel: 'freeCodeCamp.org',
-      duration: '4h',
-      url: 'https://www.youtube.com/watch?v=i_LwzRVP7bg',
-      provider: 'YouTube',
-    },
+    channelHint: 'StatQuest or freeCodeCamp',
+    queryHint: 'machine learning explained',
   },
   mathematics_statistics: {
-    stateId: 'mathematics_statistics',
-    title: 'Mathematics and Statistics Lesson Pack',
-    video: {
-      id: 'cl1H0gY0mVo',
-      title: 'Statistics For Data Science: COMPLETE Course For Beginners',
-      channel: 'Intellipaat',
-      duration: 'Long-form',
-      url: 'https://www.youtube.com/watch?v=cl1H0gY0mVo',
-      provider: 'YouTube',
-    },
+    channelHint: 'StatQuest or Khan Academy',
+    queryHint: 'statistics for data science',
   },
   networking_fundamentals: {
-    stateId: 'networking_fundamentals',
-    title: 'Networking Fundamentals Lesson Pack',
-    video: {
-      id: 'PSX61FxgCzw',
-      title: 'Computer Networking Full Course 2026',
-      channel: 'Simplilearn',
-      duration: 'Long-form',
-      url: 'https://www.youtube.com/watch?v=PSX61FxgCzw',
-      provider: 'YouTube',
-    },
+    channelHint: 'PowerCert Animated Videos',
+    queryHint: 'networking basics',
   },
   python_programming: {
-    stateId: 'python_programming',
-    title: 'Python Programming Lesson Pack',
-    video: {
-      id: 'rfscVS0vtbw',
-      title: 'Learn Python - Full Course for Beginners',
-      channel: 'freeCodeCamp.org',
-      duration: '4h+',
-      url: 'https://www.youtube.com/watch?v=rfscVS0vtbw',
-      provider: 'YouTube',
-    },
+    channelHint: 'Programming with Mosh or Corey Schafer',
+    queryHint: 'python tutorial',
   },
   system_design: {
-    stateId: 'system_design',
-    title: 'System Design Lesson Pack',
-    video: {
-      id: 'm8Icp_Cid5o',
-      title: 'System Design for Beginners Course',
-      channel: 'freeCodeCamp.org',
-      duration: '1h+',
-      url: 'https://www.youtube.com/watch?v=m8Icp_Cid5o',
-      provider: 'YouTube',
-    },
+    channelHint: 'ByteByteGo',
+    queryHint: 'system design interview',
   },
   blockchain_fundamentals: {
-    stateId: 'blockchain_fundamentals',
-    title: 'Blockchain Fundamentals Lesson Pack',
-    video: {
-      id: 'SyVMma1IkXM',
-      title: 'Blockchain Full Course - 4 Hours',
-      channel: 'Simplilearn',
-      duration: '4h',
-      url: 'https://www.youtube.com/watch?v=SyVMma1IkXM',
-      provider: 'YouTube',
-    },
+    channelHint: 'Whiteboard Crypto',
+    queryHint: 'blockchain explained',
   },
   api_integration: {
-    stateId: 'api_integration',
-    title: 'API Integration Lesson Pack',
-    video: {
-      id: 'WXsD0ZgxjRw',
-      title: 'APIs for Beginners - How to use an API (Full Course / Tutorial)',
-      channel: 'freeCodeCamp.org',
-      duration: '3h+',
-      url: 'https://www.youtube.com/watch?v=WXsD0ZgxjRw',
-      provider: 'YouTube',
-    },
+    channelHint: 'Web Dev Simplified or freeCodeCamp',
+    queryHint: 'REST API tutorial',
   },
   cybersecurity_fundamentals: {
-    stateId: 'cybersecurity_fundamentals',
-    title: 'Cybersecurity Fundamentals Lesson Pack',
-    video: {
-      id: 'hXSFdwIOfnE',
-      title: 'Cyber Security Full Course 2026 | Cyber Security Course Training For Beginners',
-      channel: 'Simplilearn',
-      duration: 'Long-form',
-      url: 'https://www.youtube.com/watch?v=hXSFdwIOfnE',
-      provider: 'YouTube',
-    },
+    channelHint: 'NetworkChuck or Simplilearn',
+    queryHint: 'cybersecurity basics',
   },
   devsecops_security: {
-    stateId: 'devsecops_security',
-    title: 'DevSecOps Security Lesson Pack',
-    video: {
-      id: 'JfiWi8RjN-8',
-      title: 'DevSecOps Course for Beginners – API Security',
-      channel: 'freeCodeCamp.org',
-      duration: 'Long-form',
-      url: 'https://www.youtube.com/watch?v=JfiWi8RjN-8',
-      provider: 'YouTube',
-    },
+    channelHint: 'freeCodeCamp or TechWorld with Nana',
+    queryHint: 'DevSecOps tutorial',
   },
   data_engineering: {
-    stateId: 'data_engineering',
-    title: 'Data Engineering Lesson Pack',
-    video: {
-      id: 'PHsC_t0j1dU',
-      title: 'Data Engineering Course for Beginners',
-      channel: 'freeCodeCamp.org',
-      duration: '3h+',
-      url: 'https://www.youtube.com/watch?v=PHsC_t0j1dU',
-      provider: 'YouTube',
-    },
+    channelHint: 'freeCodeCamp or Seattle Data Guy',
+    queryHint: 'data engineering tutorial',
   },
   backend_development: {
-    stateId: 'backend_development',
-    title: 'Backend Development Lesson Pack',
-    video: {
-      id: 'Oe421EPjeBE',
-      title: 'Node.js and Express.js - Full Course',
-      channel: 'freeCodeCamp.org',
-      duration: '8h',
-      url: 'https://www.youtube.com/watch?v=Oe421EPjeBE',
-      provider: 'YouTube',
-    },
+    channelHint: 'Web Dev Simplified or freeCodeCamp',
+    queryHint: 'backend development tutorial',
   },
   prompt_engineering: {
-    stateId: 'prompt_engineering',
-    title: 'Prompt Engineering Lesson Pack',
-    video: {
-      id: '2BpCk4d2Cc0',
-      title: 'Prompt Engineering Full Course',
-      channel: 'Tech With Tim',
-      duration: '35m+',
-      url: 'https://www.youtube.com/watch?v=2BpCk4d2Cc0',
-      provider: 'YouTube',
-    },
+    channelHint: 'DeepLearningAI or IBM Technology',
+    queryHint: 'prompt engineering tutorial',
   },
   frontend_development: {
-    stateId: 'frontend_development',
-    title: 'Frontend Development Lesson Pack',
-    video: {
-      id: 'zJSY8tbf_ys',
-      title: 'Frontend Web Development Bootcamp Course (JavaScript, HTML, CSS)',
-      channel: 'freeCodeCamp.org',
-      duration: '21h',
-      url: 'https://www.youtube.com/watch?v=zJSY8tbf_ys',
-      provider: 'YouTube',
-    },
+    channelHint: 'Kevin Powell or Web Dev Simplified',
+    queryHint: 'frontend development tutorial',
   },
   sql_databases: {
-    stateId: 'sql_databases',
-    title: 'SQL and Databases Lesson Pack',
-    video: {
-      id: 'q_JsgpiuY98',
-      title: 'SQL Full Course In 10 Hours | SQL Tutorial | Complete SQL Course For Beginners',
-      channel: 'edureka!',
-      duration: '10h',
-      url: 'https://www.youtube.com/watch?v=q_JsgpiuY98',
-      provider: 'YouTube',
-    },
+    channelHint: 'Alex The Analyst or freeCodeCamp',
+    queryHint: 'SQL tutorial',
   },
 };
 
-export function getLearningResource(stateId) {
-  return LESSON_LIBRARY[stateId] || null;
+const CONCEPT_VIDEO_OVERRIDES = {
+  python_basics: {
+    title: 'Python Variables - Python Tutorial for Beginners with Examples',
+    channel: 'Programming with Mosh',
+    duration: '6 min',
+    url: 'https://www.youtube.com/watch?v=cQT33yu9pY8',
+    provider: 'YouTube',
+    videoId: 'cQT33yu9pY8',
+  },
+  data_structures: {
+    title: 'Python Tutorial for Beginners 5: Dictionaries - Working with Key-Value Pairs',
+    channel: 'Corey Schafer',
+    duration: '10 min',
+    url: 'https://www.youtube.com/watch?v=daefaLgNkw0',
+    provider: 'YouTube',
+    videoId: 'daefaLgNkw0',
+  },
+  functions_modules: {
+    title: 'Python Tutorial for Beginners 8: Functions',
+    channel: 'Corey Schafer',
+    duration: '22 min',
+    url: 'https://www.youtube.com/watch?v=9Os0o3wzS_I',
+    provider: 'YouTube',
+    videoId: '9Os0o3wzS_I',
+  },
+  oop_files: {
+    title: 'Python OOP Tutorial 1: Classes and Instances',
+    channel: 'Corey Schafer',
+    duration: '19 min',
+    url: 'https://www.youtube.com/watch?v=ZDa-Z5JzLYM',
+    provider: 'YouTube',
+    videoId: 'ZDa-Z5JzLYM',
+  },
+  backprop_optimization: {
+    title: 'Gradient Descent, Step-by-Step',
+    channel: 'StatQuest with Josh Starmer',
+    duration: '12 min',
+    url: 'https://www.youtube.com/watch?v=sDv4f4s2SB8',
+    provider: 'YouTube',
+    videoId: 'sDv4f4s2SB8',
+  },
+};
+
+const STATE_PRACTICE_RESOURCES = {
+  python_programming: [
+    {
+      title: 'CheckiO Python',
+      type: 'Game',
+      url: 'https://py.checkio.org/',
+    },
+    {
+      title: 'Exercism Python Track',
+      type: 'Practice',
+      url: 'https://exercism.org/tracks/python',
+    },
+    {
+      title: 'Python Tutor',
+      type: 'Visualizer',
+      url: 'https://pythontutor.com/',
+    },
+  ],
+  mathematics_statistics: [
+    {
+      title: 'Seeing Theory',
+      type: 'Interactive',
+      url: 'https://seeing-theory.brown.edu/',
+    },
+    {
+      title: 'Khan Academy Statistics',
+      type: 'Practice',
+      url: 'https://www.khanacademy.org/math/statistics-probability',
+    },
+  ],
+  machine_learning: [
+    {
+      title: 'Kaggle Intro to Machine Learning',
+      type: 'Hands-on',
+      url: 'https://www.kaggle.com/learn/intro-to-machine-learning',
+    },
+    {
+      title: 'Google ML Crash Course',
+      type: 'Course',
+      url: 'https://developers.google.com/machine-learning/crash-course',
+    },
+  ],
+  deep_learning: [
+    {
+      title: 'TensorFlow Playground',
+      type: 'Interactive',
+      url: 'https://playground.tensorflow.org/',
+    },
+    {
+      title: 'Teachable Machine',
+      type: 'Experiment',
+      url: 'https://teachablemachine.withgoogle.com/',
+    },
+  ],
+  api_integration: [
+    {
+      title: 'Hoppscotch',
+      type: 'Playground',
+      url: 'https://hoppscotch.io/',
+    },
+    {
+      title: 'Postman API Fundamentals',
+      type: 'Practice',
+      url: 'https://academy.postman.com/path/postman-api-fundamentals-student-expert',
+    },
+  ],
+  sql_databases: [
+    {
+      title: 'SQLBolt',
+      type: 'Interactive',
+      url: 'https://sqlbolt.com/',
+    },
+    {
+      title: 'Mode SQL Tutorial',
+      type: 'Practice',
+      url: 'https://mode.com/sql-tutorial/',
+    },
+  ],
+  data_visualization: [
+    {
+      title: 'Kaggle Data Visualization',
+      type: 'Hands-on',
+      url: 'https://www.kaggle.com/learn/data-visualization',
+    },
+    {
+      title: 'Tableau Public',
+      type: 'Builder',
+      url: 'https://public.tableau.com/',
+    },
+  ],
+  prompt_engineering: [
+    {
+      title: 'Learn Prompting',
+      type: 'Interactive',
+      url: 'https://learnprompting.org/',
+    },
+    {
+      title: 'Prompting Guide',
+      type: 'Reference',
+      url: 'https://www.promptingguide.ai/',
+    },
+  ],
+  system_design: [
+    {
+      title: 'Excalidraw',
+      type: 'Whiteboard',
+      url: 'https://excalidraw.com/',
+    },
+    {
+      title: 'ByteByteGo Blog',
+      type: 'Reference',
+      url: 'https://blog.bytebytego.com/',
+    },
+  ],
+  cloud_platforms: [
+    {
+      title: 'AWS Skill Builder',
+      type: 'Lab',
+      url: 'https://skillbuilder.aws/',
+    },
+    {
+      title: 'Microsoft Learn Azure',
+      type: 'Lab',
+      url: 'https://learn.microsoft.com/en-us/training/azure/',
+    },
+  ],
+};
+
+function sanitizeTitle(title) {
+  return title.replace(/\uFFFD/g, '-');
 }
 
-export function getLearningProgress(progress, stateId) {
-  return progress?.learning?.[stateId] || {
-    notesRead: false,
-    watchedVideos: [],
+function buildYouTubeSearchUrl(query) {
+  return `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+}
+
+function buildConceptVideo(stateDetails, node) {
+  if (CONCEPT_VIDEO_OVERRIDES[node.id]) {
+    return {
+      searchQuery: `${node.title} ${stateDetails.title}`,
+      ...CONCEPT_VIDEO_OVERRIDES[node.id],
+    };
+  }
+
+  const hint = STATE_VIDEO_HINTS[stateDetails?.state_id] || {};
+  const query = `${node.title} ${stateDetails.title} ${hint.queryHint || 'tutorial'} ${hint.channelHint || ''} 5 to 15 minutes`;
+
+  return {
+    searchQuery: query.trim(),
+    title: `${node.title} recommended lesson`,
+    channel: hint.channelHint || 'Curated YouTube pick',
+    duration: '5-15 min target',
+    url: buildYouTubeSearchUrl(query),
+    provider: 'YouTube',
+    videoId: '',
   };
 }
 
-export function isLearningRequirementComplete(resource, learningProgress) {
-  if (!resource) return true;
-  const watchedVideos = learningProgress?.watchedVideos || [];
-  const notesRead = Boolean(learningProgress?.notesRead);
-  const videoDone = resource.video ? watchedVideos.includes(resource.video.id) : true;
-  return videoDone && notesRead;
+export function getConceptLearningPlan(stateDetails) {
+  if (!stateDetails) return [];
+
+  return (stateDetails.nodes || []).map((node) => {
+    const video = buildConceptVideo(stateDetails, node);
+    return {
+      nodeId: node.id,
+      stateId: stateDetails.state_id,
+      title: node.title,
+      description: sanitizeTitle(node.description),
+      videoId: video.videoId,
+      videoTitle: video.title,
+      channel: video.channel,
+      url: video.url,
+      provider: video.provider,
+      duration: video.duration,
+      searchQuery: video.searchQuery,
+    };
+  });
 }
 
-export function buildSkillNotes(stateDetails) {
+export function getPracticeResources(stateDetails) {
   if (!stateDetails) return [];
-  const nodes = stateDetails.nodes || [];
+  return STATE_PRACTICE_RESOURCES[stateDetails.state_id] || [];
+}
+
+export function getLearningProgress(progress, stateId) {
+  return progress?.learning?.[stateId] || { concepts: {} };
+}
+
+export function getConceptProgress(progress, stateId, nodeId) {
+  const learning = getLearningProgress(progress, stateId);
+  return learning.concepts?.[nodeId] || {
+    videoDone: false,
+    notesDone: false,
+  };
+}
+
+export function isConceptComplete(progress, stateId, nodeId) {
+  const concept = getConceptProgress(progress, stateId, nodeId);
+  return Boolean(concept.videoDone && concept.notesDone);
+}
+
+export function isLearningRequirementComplete(stateDetails, progress) {
+  if (!stateDetails) return false;
+  return (stateDetails.nodes || []).every((node) => isConceptComplete(progress, stateDetails.state_id, node.id));
+}
+
+export function buildConceptNotes(stateDetails, node, index) {
+  if (!stateDetails || !node) return [];
+  const previous = stateDetails.nodes?.[index - 1];
+  const next = stateDetails.nodes?.[index + 1];
 
   return [
     {
-      title: 'Core Concepts',
-      items: nodes.slice(0, 3).map((node) => `${node.title}: ${node.description}`),
+      title: 'What to Learn',
+      items: [
+        `${node.title} is the focus concept for this step in ${stateDetails.title}.`,
+        sanitizeTitle(node.description),
+        `This concept is expected to prepare you for practical work worth ${node.xp_reward} XP.`,
+      ],
     },
     {
-      title: 'Applied Workflow',
-      items: nodes.slice(3).map((node) => `${node.title}: ${node.description}`),
+      title: 'How it Fits',
+      items: [
+        previous ? `Build on the previous concept: ${previous.title}.` : `This is the entry concept for ${stateDetails.title}.`,
+        next ? `You should be ready to apply this before moving to ${next.title}.` : `This concept prepares you for the final capstone in this skill.`,
+      ],
     },
     {
       title: 'Assessment Focus',
       items: [
-        `Know the full learning path for ${stateDetails.title}.`,
-        'Be able to explain key trade-offs, common mistakes, and practical use cases.',
-        'Be ready to identify the right tool, pattern, or debugging move in scenario-based questions.',
+        `Be able to explain ${node.title} in simple words.`,
+        `Be ready to identify a common mistake or bad practice related to ${node.title}.`,
+        `Expect scenario-based questions that test when and why this concept should be used.`,
       ],
     },
-  ].filter((section) => section.items.length > 0);
+  ];
 }

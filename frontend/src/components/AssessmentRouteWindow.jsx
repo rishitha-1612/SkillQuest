@@ -1,11 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { api } from '../api/client';
 import { getClusterTheme, getRoleWorldProfile } from '../data/worldConfig';
-import {
-  getLearningProgress,
-  getLearningResource,
-  isLearningRequirementComplete,
-} from '../data/learningResources';
+import { isLearningRequirementComplete } from '../data/learningResources';
 import AssessmentWindow from './AssessmentWindow';
 import { clearAssessmentLock, setAssessmentLock } from '../data/assessmentLock';
 
@@ -87,9 +83,7 @@ export default function AssessmentRouteWindow({ countryId, stateId }) {
   const profile = getRoleWorldProfile(countryId);
   const theme = getClusterTheme(roleDetails?.continent_id || 'ai_data');
   const existingResult = progress.assessments?.[stateId] || null;
-  const learningResource = getLearningResource(stateId);
-  const learningProgress = getLearningProgress(progress, stateId);
-  const learningComplete = isLearningRequirementComplete(learningResource, learningProgress);
+  const learningComplete = isLearningRequirementComplete(stateDetails, progress);
   const routeComplete = Boolean(
     stateDetails?.nodes?.length &&
       stateDetails.nodes.every((node) => (progress.completedCities?.[stateId] || []).includes(node.id))
@@ -178,7 +172,7 @@ export default function AssessmentRouteWindow({ countryId, stateId }) {
               <div className="assessment-lock-note">
                 <strong>Assessment locked.</strong>
                 <div>
-                  Complete the required YouTube lesson, mark the notes as read, and clear every city in this skill before starting the boss battle.
+                  Complete every concept clip, mark every concept note as read, and clear every city in this skill before starting the boss battle.
                 </div>
               </div>
             )}
@@ -203,7 +197,7 @@ export default function AssessmentRouteWindow({ countryId, stateId }) {
             </div>
             <div className="window-body">
               <p className="panel-summary">
-                Return to the country window, finish the lesson pack, and clear the city route first.
+                Return to the country window, finish the concept track, and clear the city route first.
               </p>
             </div>
           </section>
