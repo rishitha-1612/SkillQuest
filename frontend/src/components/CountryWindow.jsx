@@ -18,9 +18,10 @@ import ThreatHunt from '../minigames/ThreatHunt';
 import ModelSculptor from '../minigames/ModelSculptor';
 import ChainBuilder from '../minigames/ChainBuilder';
 import {
-  buildSkillNotes,
+  buildConceptNotes,
+  getConceptLearningPlan,
+  getConceptProgress,
   getLearningProgress,
-  getLearningResource,
   isLearningRequirementComplete,
 } from '../data/learningResources';
 import { usePlayerStore } from '../store/playerStore';
@@ -217,29 +218,31 @@ function ensureYouTubeApi() {
   });
 }
 
-function LessonVideoModal({ resource, open, onClose, onVideoComplete }) {
+function LessonVideoModal({ concept, open, onClose, onVideoComplete }) {
   const playerMountId = useMemo(
-    () => `lesson-player-${resource?.video?.id || 'empty'}-${Math.random().toString(36).slice(2)}`,
-    [resource]
+    () => `lesson-player-${concept?.videoId || 'empty'}-${Math.random().toString(36).slice(2)}`,
+    [concept]
   );
 
   useEffect(() => {
-    if (!open || !resource?.video?.id) return undefined;
+    if (!open || !concept?.videoId) return undefined;
     let player;
     let cancelled = false;
 
     ensureYouTubeApi().then((YT) => {
       if (cancelled) return;
       player = new YT.Player(playerMountId, {
-        videoId: resource.video.id,
+        videoId: concept.videoId,
         playerVars: {
           rel: 0,
           modestbranding: 1,
+          start: concept.startSeconds || 0,
+          end: concept.endSeconds || undefined,
         },
         events: {
           onStateChange: (event) => {
             if (event.data === YT.PlayerState.ENDED) {
-              onVideoComplete(resource.video.id);
+              onVideoComplete(concept.nodeId);
             }
           },
         },
@@ -250,9 +253,9 @@ function LessonVideoModal({ resource, open, onClose, onVideoComplete }) {
       cancelled = true;
       if (player?.destroy) player.destroy();
     };
-  }, [open, onVideoComplete, playerMountId, resource]);
+  }, [concept, open, onVideoComplete, playerMountId]);
 
-  if (!open || !resource?.video) return null;
+  if (!open || !concept?.videoId) return null;
 
   return (
     <div className="minigame-modal-backdrop" onClick={onClose}>
@@ -261,23 +264,24 @@ function LessonVideoModal({ resource, open, onClose, onVideoComplete }) {
           <span className="dot green" />
           <span className="dot yellow" />
           <span className="dot blue" />
-          <strong>{resource.video.title}</strong>
+          <strong>{`${concept.title} Lesson`}</strong>
         </div>
         <div className="window-body lesson-modal-body">
           <div className="lesson-modal-copy">
             <p className="panel-summary">
-              Finish the full lesson video. When the video ends, this requirement is marked complete automatically.
+              Finish this concept clip before moving ahead. When the clip ends, this step is marked complete automatically.
             </p>
             <div className="lesson-resource-meta">
-              <span>{resource.video.channel}</span>
-              <span>{resource.video.duration}</span>
+              <span>{concept.channel}</span>
+              <span>{`${concept.startLabel} - ${concept.endLabel}`}</span>
+              <span>{concept.duration}</span>
             </div>
           </div>
           <div className="lesson-video-frame">
             <div id={playerMountId} />
           </div>
           <div className="lesson-modal-actions">
-            <a className="assessment-ghost-btn lesson-link-btn" href={resource.video.url} target="_blank" rel="noreferrer">
+            <a className="assessment-ghost-btn lesson-link-btn" href={`${concept.url}&t=${concept.startSeconds}s`} target="_blank" rel="noreferrer">
               Open on YouTube
             </a>
             <button type="button" className="assessment-submit-btn" onClick={onClose}>
@@ -293,16 +297,14 @@ function LessonVideoModal({ resource, open, onClose, onVideoComplete }) {
 function ProgressWindow({
   countryId,
   stateDetails,
+  progress,
   assessmentResult,
   completedCities,
   unlockedCities,
   onLaunchCity,
   onContinueJourney,
-  learningResource,
-  learningProgress,
-  notesSections,
   onOpenLesson,
-  onMarkNotesRead,
+  onMarkConceptNotesRead,
   assessmentLocked,
 }) {
   if (!stateDetails) {
@@ -323,13 +325,9 @@ function ProgressWindow({
 
   const nodes = stateDetails.nodes || [];
   const edges = stateDetails.edges || [];
+  const conceptPlan = getConceptLearningPlan(stateDetails);
   const completedSet = new Set(completedCities || []);
   const unlockedSet = new Set(unlockedCities || [nodes[0]?.id].filter(Boolean));
-  const completedAllCities = nodes.length > 0 && nodes.every((node) => completedSet.has(node.id));
-  const lessonVideoDone = learningResource?.video
-    ? (learningProgress?.watchedVideos || []).includes(learningResource.video.id)
-    : true;
-  const notesDone = Boolean(learningProgress?.notesRead);
   const levels = buildLevels(nodes, edges);
   const grouped = new Map();
   nodes.forEach((node) => {
@@ -358,69 +356,24 @@ function ProgressWindow({
         <strong>{stateDetails.title}</strong>
       </div>
       <div className="window-body">
-        <section className="lesson-gate-panel">
-          <div className="lesson-gate-topline">
-            <div>
-              <span className="panel-kicker">Required Course</span>
-              <h4>{learningResource?.title || `${stateDetails.title} lesson pack`}</h4>
-            </div>
-            <span className={`lesson-gate-status${assessmentLocked ? ' locked' : ' ready'}`}>
-              {assessmentLocked ? 'Locked' : 'Ready for assessment'}
-            </span>
-          </div>
-
-          {learningResource?.video && (
-            <article className={`lesson-resource-card${lessonVideoDone ? ' is-complete' : ''}`}>
-              <div>
-                <strong>{learningResource.video.title}</strong>
-                <p>{`${learningResource.video.channel} • ${learningResource.video.duration}`}</p>
-              </div>
-              <div className="lesson-resource-actions">
-                <button type="button" className="assessment-ghost-btn" onClick={onOpenLesson}>
-                  {lessonVideoDone ? 'Rewatch lesson' : 'Watch lesson'}
-                </button>
-                <span className="quest-status-chip">
-                  {lessonVideoDone ? 'watched' : 'required'}
-                </span>
-              </div>
-            </article>
-          )}
-
-          <article className={`lesson-notes-card${notesDone ? ' is-complete' : ''}`}>
-            <div className="lesson-notes-header">
-              <strong>Required notes</strong>
-              <button type="button" className="assessment-ghost-btn" onClick={onMarkNotesRead}>
-                {notesDone ? 'Notes completed' : 'Mark notes as read'}
-              </button>
-            </div>
-            <div className="lesson-notes-sections">
-              {notesSections.map((section) => (
-                <div key={section.title} className="lesson-notes-section">
-                  <h5>{section.title}</h5>
-                  <ul>
-                    {section.items.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </article>
-        </section>
-
         <div className="quest-loop-banner">
           <article className="quest-loop-step">
             <span>1</span>
             <strong>Learn</strong>
-            <small>understand the core idea</small>
+            <small>watch the short concept clip</small>
           </article>
           <article className="quest-loop-step">
             <span>2</span>
+            <strong>Read</strong>
+            <small>finish the concept notes</small>
+          </article>
+          <article className="quest-loop-step">
+            <span>3</span>
             <strong>Play</strong>
             <small>solve the city challenge</small>
           </article>
           <article className="quest-loop-step">
-            <span>3</span>
+            <span>4</span>
             <strong>Clear</strong>
             <small>beat the state assessment</small>
           </article>
@@ -469,9 +422,22 @@ function ProgressWindow({
         <div className="level-list">
           {nodes.map((node, index) => {
             const questMode = getQuestMode(node.type);
+            const concept = conceptPlan.find((item) => item.nodeId === node.id);
+            const conceptProgress = getConceptProgress(progress, stateDetails.state_id, node.id);
+            const previousNode = nodes[index - 1];
+            const previousReady =
+              !previousNode ||
+              (getConceptProgress(progress, stateDetails.state_id, previousNode.id).videoDone &&
+                getConceptProgress(progress, stateDetails.state_id, previousNode.id).notesDone &&
+                completedSet.has(previousNode.id));
+            const videoDone = Boolean(conceptProgress.videoDone);
+            const notesDone = Boolean(conceptProgress.notesDone);
+            const conceptReady = videoDone && notesDone;
             const isBoss = index === nodes.length - 1;
             const completed = completedSet.has(node.id);
-            const unlocked = unlockedSet.has(node.id) || index === 0;
+            const unlocked = previousReady && (unlockedSet.has(node.id) || index === 0);
+            const noteSections = buildConceptNotes(stateDetails, node, index);
+
             return (
               <article key={node.id} className={`level-card quest-card${isBoss ? ' is-boss' : ''}${completed ? ' is-completed' : ''}${!unlocked ? ' is-locked' : ''}`}>
                 <div className="quest-card-topline">
@@ -482,18 +448,62 @@ function ProgressWindow({
                 <p>{node.description}</p>
                 <div className="quest-card-meta">
                   <strong>{questMode.detail}</strong>
-                  <small>{`${node.estimated_time_minutes} min • ${node.xp_reward} XP`}</small>
+                  <small>{`${node.estimated_time_minutes} min - ${node.xp_reward} XP`}</small>
                 </div>
+                <article className={`lesson-resource-card${videoDone ? ' is-complete' : ''}`}>
+                  <div>
+                    <strong>{concept?.videoTitle || `${node.title} concept clip`}</strong>
+                    <p>{concept ? `${concept.channel} - ${concept.startLabel} to ${concept.endLabel}` : 'Concept clip'}</p>
+                  </div>
+                  <div className="lesson-resource-actions">
+                    <button
+                      type="button"
+                      className="assessment-ghost-btn"
+                      disabled={!unlocked}
+                      onClick={() => concept && onOpenLesson(concept)}
+                    >
+                      {videoDone ? 'Rewatch clip' : 'Watch clip'}
+                    </button>
+                    <span className="quest-status-chip">
+                      {videoDone ? 'watched' : unlocked ? 'watch now' : 'locked'}
+                    </span>
+                  </div>
+                </article>
+                <article className={`lesson-notes-card${notesDone ? ' is-complete' : ''}`}>
+                  <div className="lesson-notes-header">
+                    <strong>Concept notes</strong>
+                    <button
+                      type="button"
+                      className="assessment-ghost-btn"
+                      disabled={!videoDone}
+                      onClick={() => onMarkConceptNotesRead(node.id)}
+                    >
+                      {notesDone ? 'Notes completed' : 'Mark notes as read'}
+                    </button>
+                  </div>
+                  <div className="lesson-notes-sections">
+                    {noteSections.map((section) => (
+                      <div key={section.title} className="lesson-notes-section">
+                        <h5>{section.title}</h5>
+                        <ul>
+                          {section.items.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </article>
                 <div className="quest-card-actions">
                   <button
                     className="assessment-ghost-btn"
-                    disabled={!unlocked}
+                    disabled={!unlocked || !conceptReady}
                     onClick={() => onLaunchCity(node)}
                   >
                     {completed ? 'Replay City' : 'Play City'}
                   </button>
                   <span className="quest-status-chip">
-                    {completed ? 'cleared' : unlocked ? 'ready' : 'locked'}
+                    {completed ? 'cleared' : !unlocked ? 'locked' : !videoDone ? 'learn first' : !notesDone ? 'read notes' : 'ready'}
                   </span>
                 </div>
               </article>
@@ -506,14 +516,14 @@ function ProgressWindow({
             {assessmentResult?.passed
               ? 'Assessment cleared.'
               : assessmentLocked
-                ? 'Finish the lesson video, read the notes, and clear all cities to unlock the assessment.'
+                ? 'Finish every concept clip, every note, and every city to unlock the assessment.'
                 : `Pass ${PASS_PERCENT}% or higher to unlock the next skill.`}
           </strong>
           <div>
             {assessmentResult
               ? `Latest score: ${assessmentResult.score}% (${assessmentResult.correctCount}/${assessmentResult.totalQuestions})`
               : assessmentLocked
-                ? 'The boss battle unlocks only after the learning requirements and city route are complete.'
+                ? 'The boss battle unlocks only after the concept track and city route are complete.'
                 : 'The assessment opens in a separate window so the learning screen stays clean.'}
           </div>
         </div>
@@ -628,21 +638,18 @@ export default function CountryWindow({ countryId }) {
   const activeStateIndex = Math.max(0, stateOrder.indexOf(selectedStateId));
   const completedCities = progress.completedCities?.[selectedStateId] || [];
   const unlockedCities = progress.unlockedCities?.[selectedStateId] || [selectedState?.nodes?.[0]?.id].filter(Boolean);
-  const learningResource = selectedState ? getLearningResource(selectedState.state_id) : null;
-  const learningProgress = getLearningProgress(progress, selectedStateId);
-  const notesSections = buildSkillNotes(selectedState);
   const assessmentLocked = Boolean(
     selectedState &&
       (
         selectedState.nodes?.some((node) => !completedCities.includes(node.id)) ||
-        !isLearningRequirementComplete(learningResource, learningProgress)
+        !isLearningRequirementComplete(selectedState, progress)
       )
   );
   const useChinaCraftedMap = profile.iso3 === 'CHN';
   const useIndiaCraftedMap = profile.iso3 === 'IND';
   const useKoreaCraftedMap = profile.iso3 === 'KOR';
   const useSaudiCraftedMap = profile.iso3 === 'SAU';
-  const [lessonModalOpen, setLessonModalOpen] = useState(false);
+  const [activeConcept, setActiveConcept] = useState(null);
 
   function handleSelectState(stateId) {
     const index = stateOrder.indexOf(stateId);
@@ -687,6 +694,16 @@ export default function CountryWindow({ countryId }) {
 
   function launchNextAction() {
     const nodes = selectedState?.nodes || [];
+    const nextConceptNode = nodes.find((node) => !getConceptProgress(progress, selectedStateId, node.id).videoDone);
+    if (nextConceptNode) {
+      const concept = getConceptLearningPlan(selectedState).find((item) => item.nodeId === nextConceptNode.id);
+      if (concept) setActiveConcept(concept);
+      return;
+    }
+    const nextNotesNode = nodes.find((node) => !getConceptProgress(progress, selectedStateId, node.id).notesDone);
+    if (nextNotesNode) {
+      return;
+    }
     const nextCity = nodes.find((node) => !(progress.completedCities?.[selectedStateId] || []).includes(node.id));
     if (nextCity) {
       setActiveCity(nextCity);
@@ -697,27 +714,39 @@ export default function CountryWindow({ countryId }) {
     }
   }
 
-  function handleLessonComplete(videoId) {
+  function handleLessonComplete(nodeId) {
     setProgress((prev) => ({
       ...prev,
       learning: {
         ...(prev.learning || {}),
         [selectedStateId]: {
           ...getLearningProgress(prev, selectedStateId),
-          watchedVideos: Array.from(new Set([...(getLearningProgress(prev, selectedStateId).watchedVideos || []), videoId])),
+          concepts: {
+            ...(getLearningProgress(prev, selectedStateId).concepts || {}),
+            [nodeId]: {
+              ...getConceptProgress(prev, selectedStateId, nodeId),
+              videoDone: true,
+            },
+          },
         },
       },
     }));
   }
 
-  function handleNotesRead() {
+  function handleNotesRead(nodeId) {
     setProgress((prev) => ({
       ...prev,
       learning: {
         ...(prev.learning || {}),
         [selectedStateId]: {
           ...getLearningProgress(prev, selectedStateId),
-          notesRead: true,
+          concepts: {
+            ...(getLearningProgress(prev, selectedStateId).concepts || {}),
+            [nodeId]: {
+              ...getConceptProgress(prev, selectedStateId, nodeId),
+              notesDone: true,
+            },
+          },
         },
       },
     }));
@@ -874,16 +903,14 @@ export default function CountryWindow({ countryId }) {
           <ProgressWindow
             countryId={countryId}
             stateDetails={selectedState}
+            progress={progress}
             assessmentResult={selectedAssessment}
             completedCities={completedCities}
             unlockedCities={unlockedCities}
             onLaunchCity={setActiveCity}
             onContinueJourney={launchNextAction}
-            learningResource={learningResource}
-            learningProgress={learningProgress}
-            notesSections={notesSections}
-            onOpenLesson={() => setLessonModalOpen(true)}
-            onMarkNotesRead={handleNotesRead}
+            onOpenLesson={setActiveConcept}
+            onMarkConceptNotesRead={handleNotesRead}
             assessmentLocked={assessmentLocked}
           />
 
@@ -901,9 +928,9 @@ export default function CountryWindow({ countryId }) {
       />
 
       <LessonVideoModal
-        resource={learningResource}
-        open={lessonModalOpen}
-        onClose={() => setLessonModalOpen(false)}
+        concept={activeConcept}
+        open={!!activeConcept}
+        onClose={() => setActiveConcept(null)}
         onVideoComplete={handleLessonComplete}
       />
     </div>

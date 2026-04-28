@@ -1,7 +1,8 @@
 const LESSON_LIBRARY = {
   ci_cd_pipelines: {
     stateId: 'ci_cd_pipelines',
-    title: 'CI/CD Pipelines Lesson Pack',
+    title: 'CI/CD Pipelines',
+    clipMinutes: 8,
     video: {
       id: 'qP8kir2GUgo',
       title: 'GitLab CI CD Tutorial for Beginners [Crash Course]',
@@ -13,7 +14,8 @@ const LESSON_LIBRARY = {
   },
   cloud_platforms: {
     stateId: 'cloud_platforms',
-    title: 'Cloud Platforms Lesson Pack',
+    title: 'Cloud Platforms',
+    clipMinutes: 10,
     video: {
       id: 'WkJ0xB1dPwM',
       title: 'AWS Cloud Practitioner Full Course [12 Hours]',
@@ -25,7 +27,8 @@ const LESSON_LIBRARY = {
   },
   containers_orchestration: {
     stateId: 'containers_orchestration',
-    title: 'Containers and Orchestration Lesson Pack',
+    title: 'Containers and Orchestration',
+    clipMinutes: 10,
     video: {
       id: 'X48VuDVv0do',
       title: 'Kubernetes Tutorial for Beginners [FULL COURSE in 4 Hours]',
@@ -37,7 +40,8 @@ const LESSON_LIBRARY = {
   },
   data_visualization: {
     stateId: 'data_visualization',
-    title: 'Data Visualization Lesson Pack',
+    title: 'Data Visualization',
+    clipMinutes: 9,
     video: {
       id: 'r-uOLxNrNk8',
       title: 'Data Analysis with Python - Full Course for Beginners',
@@ -49,10 +53,11 @@ const LESSON_LIBRARY = {
   },
   deep_learning: {
     stateId: 'deep_learning',
-    title: 'Deep Learning Lesson Pack',
+    title: 'Deep Learning',
+    clipMinutes: 12,
     video: {
       id: 'V_xro1bcAuA',
-      title: 'PyTorch for Deep Learning & Machine Learning – Full Course',
+      title: 'PyTorch for Deep Learning & Machine Learning - Full Course',
       channel: 'freeCodeCamp.org',
       duration: '9h+',
       url: 'https://www.youtube.com/watch?v=V_xro1bcAuA',
@@ -61,10 +66,11 @@ const LESSON_LIBRARY = {
   },
   machine_learning: {
     stateId: 'machine_learning',
-    title: 'Machine Learning Lesson Pack',
+    title: 'Machine Learning',
+    clipMinutes: 10,
     video: {
       id: 'i_LwzRVP7bg',
-      title: 'Machine Learning for Everybody – Full Course',
+      title: 'Machine Learning for Everybody - Full Course',
       channel: 'freeCodeCamp.org',
       duration: '4h',
       url: 'https://www.youtube.com/watch?v=i_LwzRVP7bg',
@@ -73,7 +79,8 @@ const LESSON_LIBRARY = {
   },
   mathematics_statistics: {
     stateId: 'mathematics_statistics',
-    title: 'Mathematics and Statistics Lesson Pack',
+    title: 'Mathematics and Statistics',
+    clipMinutes: 10,
     video: {
       id: 'cl1H0gY0mVo',
       title: 'Statistics For Data Science: COMPLETE Course For Beginners',
@@ -85,7 +92,8 @@ const LESSON_LIBRARY = {
   },
   networking_fundamentals: {
     stateId: 'networking_fundamentals',
-    title: 'Networking Fundamentals Lesson Pack',
+    title: 'Networking Fundamentals',
+    clipMinutes: 9,
     video: {
       id: 'PSX61FxgCzw',
       title: 'Computer Networking Full Course 2026',
@@ -97,7 +105,8 @@ const LESSON_LIBRARY = {
   },
   python_programming: {
     stateId: 'python_programming',
-    title: 'Python Programming Lesson Pack',
+    title: 'Python Programming',
+    clipMinutes: 9,
     video: {
       id: 'rfscVS0vtbw',
       title: 'Learn Python - Full Course for Beginners',
@@ -109,7 +118,8 @@ const LESSON_LIBRARY = {
   },
   system_design: {
     stateId: 'system_design',
-    title: 'System Design Lesson Pack',
+    title: 'System Design',
+    clipMinutes: 10,
     video: {
       id: 'm8Icp_Cid5o',
       title: 'System Design for Beginners Course',
@@ -121,7 +131,8 @@ const LESSON_LIBRARY = {
   },
   blockchain_fundamentals: {
     stateId: 'blockchain_fundamentals',
-    title: 'Blockchain Fundamentals Lesson Pack',
+    title: 'Blockchain Fundamentals',
+    clipMinutes: 8,
     video: {
       id: 'SyVMma1IkXM',
       title: 'Blockchain Full Course - 4 Hours',
@@ -133,7 +144,8 @@ const LESSON_LIBRARY = {
   },
   api_integration: {
     stateId: 'api_integration',
-    title: 'API Integration Lesson Pack',
+    title: 'API Integration',
+    clipMinutes: 10,
     video: {
       id: 'WXsD0ZgxjRw',
       title: 'APIs for Beginners - How to use an API (Full Course / Tutorial)',
@@ -145,7 +157,8 @@ const LESSON_LIBRARY = {
   },
   cybersecurity_fundamentals: {
     stateId: 'cybersecurity_fundamentals',
-    title: 'Cybersecurity Fundamentals Lesson Pack',
+    title: 'Cybersecurity Fundamentals',
+    clipMinutes: 10,
     video: {
       id: 'hXSFdwIOfnE',
       title: 'Cyber Security Full Course 2026 | Cyber Security Course Training For Beginners',
@@ -157,10 +170,11 @@ const LESSON_LIBRARY = {
   },
   devsecops_security: {
     stateId: 'devsecops_security',
-    title: 'DevSecOps Security Lesson Pack',
+    title: 'DevSecOps Security',
+    clipMinutes: 8,
     video: {
       id: 'JfiWi8RjN-8',
-      title: 'DevSecOps Course for Beginners – API Security',
+      title: 'DevSecOps Course for Beginners - API Security',
       channel: 'freeCodeCamp.org',
       duration: 'Long-form',
       url: 'https://www.youtube.com/watch?v=JfiWi8RjN-8',
@@ -169,7 +183,8 @@ const LESSON_LIBRARY = {
   },
   data_engineering: {
     stateId: 'data_engineering',
-    title: 'Data Engineering Lesson Pack',
+    title: 'Data Engineering',
+    clipMinutes: 10,
     video: {
       id: 'PHsC_t0j1dU',
       title: 'Data Engineering Course for Beginners',
@@ -181,7 +196,8 @@ const LESSON_LIBRARY = {
   },
   backend_development: {
     stateId: 'backend_development',
-    title: 'Backend Development Lesson Pack',
+    title: 'Backend Development',
+    clipMinutes: 10,
     video: {
       id: 'Oe421EPjeBE',
       title: 'Node.js and Express.js - Full Course',
@@ -193,7 +209,8 @@ const LESSON_LIBRARY = {
   },
   prompt_engineering: {
     stateId: 'prompt_engineering',
-    title: 'Prompt Engineering Lesson Pack',
+    title: 'Prompt Engineering',
+    clipMinutes: 6,
     video: {
       id: '2BpCk4d2Cc0',
       title: 'Prompt Engineering Full Course',
@@ -205,7 +222,8 @@ const LESSON_LIBRARY = {
   },
   frontend_development: {
     stateId: 'frontend_development',
-    title: 'Frontend Development Lesson Pack',
+    title: 'Frontend Development',
+    clipMinutes: 10,
     video: {
       id: 'zJSY8tbf_ys',
       title: 'Frontend Web Development Bootcamp Course (JavaScript, HTML, CSS)',
@@ -217,7 +235,8 @@ const LESSON_LIBRARY = {
   },
   sql_databases: {
     stateId: 'sql_databases',
-    title: 'SQL and Databases Lesson Pack',
+    title: 'SQL and Databases',
+    clipMinutes: 10,
     video: {
       id: 'q_JsgpiuY98',
       title: 'SQL Full Course In 10 Hours | SQL Tutorial | Complete SQL Course For Beginners',
@@ -229,45 +248,92 @@ const LESSON_LIBRARY = {
   },
 };
 
+function sanitizeTitle(title) {
+  return title.replace(/\uFFFD/g, '-');
+}
+
 export function getLearningResource(stateId) {
   return LESSON_LIBRARY[stateId] || null;
 }
 
+export function getConceptLearningPlan(stateDetails) {
+  if (!stateDetails) return [];
+  const resource = getLearningResource(stateDetails.state_id);
+  const clipMinutes = resource?.clipMinutes || 8;
+  const clipSeconds = clipMinutes * 60;
+
+  return (stateDetails.nodes || []).map((node, index) => {
+    const start = index * clipSeconds;
+    const end = start + clipSeconds;
+    return {
+      nodeId: node.id,
+      stateId: stateDetails.state_id,
+      title: node.title,
+      videoId: resource?.video?.id || '',
+      videoTitle: resource?.video?.title || `${stateDetails.title} concept walkthrough`,
+      channel: resource?.video?.channel || 'YouTube',
+      url: resource?.video?.url || '',
+      provider: resource?.video?.provider || 'YouTube',
+      duration: `${clipMinutes} min`,
+      startSeconds: start,
+      endSeconds: end,
+      startLabel: `${Math.floor(start / 60)}:${String(start % 60).padStart(2, '0')}`,
+      endLabel: `${Math.floor(end / 60)}:${String(end % 60).padStart(2, '0')}`,
+      description: sanitizeTitle(node.description),
+    };
+  });
+}
+
 export function getLearningProgress(progress, stateId) {
-  return progress?.learning?.[stateId] || {
-    notesRead: false,
-    watchedVideos: [],
+  return progress?.learning?.[stateId] || { concepts: {} };
+}
+
+export function getConceptProgress(progress, stateId, nodeId) {
+  const learning = getLearningProgress(progress, stateId);
+  return learning.concepts?.[nodeId] || {
+    videoDone: false,
+    notesDone: false,
   };
 }
 
-export function isLearningRequirementComplete(resource, learningProgress) {
-  if (!resource) return true;
-  const watchedVideos = learningProgress?.watchedVideos || [];
-  const notesRead = Boolean(learningProgress?.notesRead);
-  const videoDone = resource.video ? watchedVideos.includes(resource.video.id) : true;
-  return videoDone && notesRead;
+export function isConceptComplete(progress, stateId, nodeId) {
+  const concept = getConceptProgress(progress, stateId, nodeId);
+  return Boolean(concept.videoDone && concept.notesDone);
 }
 
-export function buildSkillNotes(stateDetails) {
-  if (!stateDetails) return [];
-  const nodes = stateDetails.nodes || [];
+export function isLearningRequirementComplete(stateDetails, progress) {
+  if (!stateDetails) return false;
+  return (stateDetails.nodes || []).every((node) => isConceptComplete(progress, stateDetails.state_id, node.id));
+}
+
+export function buildConceptNotes(stateDetails, node, index) {
+  if (!stateDetails || !node) return [];
+  const previous = stateDetails.nodes?.[index - 1];
+  const next = stateDetails.nodes?.[index + 1];
 
   return [
     {
-      title: 'Core Concepts',
-      items: nodes.slice(0, 3).map((node) => `${node.title}: ${node.description}`),
+      title: 'What to Learn',
+      items: [
+        `${node.title} is the focus concept for this step in ${stateDetails.title}.`,
+        sanitizeTitle(node.description),
+        `This concept is expected to prepare you for practical work worth ${node.xp_reward} XP.`,
+      ],
     },
     {
-      title: 'Applied Workflow',
-      items: nodes.slice(3).map((node) => `${node.title}: ${node.description}`),
+      title: 'How it Fits',
+      items: [
+        previous ? `Build on the previous concept: ${previous.title}.` : `This is the entry concept for ${stateDetails.title}.`,
+        next ? `You should be ready to apply this before moving to ${next.title}.` : `This concept prepares you for the final capstone in this skill.`,
+      ],
     },
     {
       title: 'Assessment Focus',
       items: [
-        `Know the full learning path for ${stateDetails.title}.`,
-        'Be able to explain key trade-offs, common mistakes, and practical use cases.',
-        'Be ready to identify the right tool, pattern, or debugging move in scenario-based questions.',
+        `Be able to explain ${node.title} in simple words.`,
+        `Be ready to identify a common mistake or bad practice related to ${node.title}.`,
+        `Expect scenario-based questions that test when and why this concept should be used.`,
       ],
     },
-  ].filter((section) => section.items.length > 0);
+  ];
 }
