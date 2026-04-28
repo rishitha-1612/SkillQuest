@@ -141,7 +141,7 @@ function WorldLobby() {
       const url = new URL(window.location.href);
       url.searchParams.set('window', 'country');
       url.searchParams.set('country', country.id);
-      window.open(url.toString(), '_blank', 'noopener,width=1480,height=940');
+      window.open(url.toString(), '_blank', 'noopener');
     } catch (e) {
       console.error(e);
     }

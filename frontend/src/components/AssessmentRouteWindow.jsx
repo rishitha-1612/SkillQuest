@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { api } from '../api/client';
 import { getClusterTheme, getRoleWorldProfile } from '../data/worldConfig';
+import {
+  getLearningProgress,
+  getLearningResource,
+  isLearningRequirementComplete,
+} from '../data/learningResources';
 import AssessmentWindow from './AssessmentWindow';
 import { clearAssessmentLock, setAssessmentLock } from '../data/assessmentLock';
 
@@ -82,6 +87,14 @@ export default function AssessmentRouteWindow({ countryId, stateId }) {
   const profile = getRoleWorldProfile(countryId);
   const theme = getClusterTheme(roleDetails?.continent_id || 'ai_data');
   const existingResult = progress.assessments?.[stateId] || null;
+  const learningResource = getLearningResource(stateId);
+  const learningProgress = getLearningProgress(progress, stateId);
+  const learningComplete = isLearningRequirementComplete(learningResource, learningProgress);
+  const routeComplete = Boolean(
+    stateDetails?.nodes?.length &&
+      stateDetails.nodes.every((node) => (progress.completedCities?.[stateId] || []).includes(node.id))
+  );
+  const assessmentUnlocked = learningComplete && routeComplete;
 
   function handleAssessmentComplete(result) {
     const stateOrder = roleDetails?.state_requirements?.map((req) => req.state_id) || [];
@@ -161,16 +174,40 @@ export default function AssessmentRouteWindow({ countryId, stateId }) {
                 <strong>Fresh Set Each Time</strong>
               </article>
             </div>
+            {!assessmentUnlocked && (
+              <div className="assessment-lock-note">
+                <strong>Assessment locked.</strong>
+                <div>
+                  Complete the required YouTube lesson, mark the notes as read, and clear every city in this skill before starting the boss battle.
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
-        <AssessmentWindow
-          stateDetails={stateDetails}
-          existingResult={existingResult}
-          onAssessmentComplete={handleAssessmentComplete}
-          integrityFailed={integrityFailed}
-          onResetIntegrity={() => setIntegrityFailed(false)}
-        />
+        {assessmentUnlocked ? (
+          <AssessmentWindow
+            stateDetails={stateDetails}
+            existingResult={existingResult}
+            onAssessmentComplete={handleAssessmentComplete}
+            integrityFailed={integrityFailed}
+            onResetIntegrity={() => setIntegrityFailed(false)}
+          />
+        ) : (
+          <section className="game-window">
+            <div className="window-bar">
+              <span className="dot green" />
+              <span className="dot yellow" />
+              <span className="dot blue" />
+              <strong>Boss Gate Locked</strong>
+            </div>
+            <div className="window-body">
+              <p className="panel-summary">
+                Return to the country window, finish the lesson pack, and clear the city route first.
+              </p>
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );

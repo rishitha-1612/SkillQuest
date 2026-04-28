@@ -2231,6 +2231,112 @@ body::before {
   box-shadow: inset 0 -4px 0 rgba(47, 122, 0, 0.24);
 }
 
+.lesson-gate-panel {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.lesson-gate-topline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.lesson-gate-topline h4 {
+  margin: 6px 0 0;
+  color: #234d71;
+}
+
+.lesson-gate-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.lesson-gate-status.locked {
+  background: rgba(255, 239, 191, 0.95);
+  color: #8f6500;
+}
+
+.lesson-gate-status.ready {
+  background: rgba(229, 252, 211, 0.95);
+  color: #3c7f00;
+}
+
+.lesson-resource-card,
+.lesson-notes-card {
+  padding: 16px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(238,249,255,0.96));
+  border: 1px solid rgba(135, 196, 240, 0.18);
+}
+
+.lesson-resource-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.lesson-resource-card strong,
+.lesson-notes-header strong {
+  color: #274f72;
+}
+
+.lesson-resource-card p {
+  margin: 6px 0 0;
+  color: #6588a8;
+  font-weight: 700;
+}
+
+.lesson-resource-card.is-complete,
+.lesson-notes-card.is-complete {
+  background: linear-gradient(180deg, rgba(243,255,226,0.98), rgba(233,252,214,0.96));
+  border-color: rgba(124, 211, 50, 0.24);
+}
+
+.lesson-resource-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lesson-notes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.lesson-notes-sections {
+  display: grid;
+  gap: 12px;
+}
+
+.lesson-notes-section h5 {
+  margin: 0 0 8px;
+  color: #436c8e;
+  font-size: 0.9rem;
+}
+
+.lesson-notes-section ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #587d9d;
+  line-height: 1.55;
+}
+
+.assessment-launch-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .assessment-launch-btn {
   margin-top: 14px;
   border: 0;
@@ -2241,6 +2347,60 @@ body::before {
   color: #ffffff;
   background: linear-gradient(180deg, #56b8ff, #3a90df);
   box-shadow: inset 0 -4px 0 rgba(35, 94, 150, 0.24);
+}
+
+.lesson-modal {
+  width: min(1040px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  border-radius: 28px;
+  background: rgba(255,255,255,0.97);
+  border: 1px solid rgba(140, 196, 241, 0.24);
+  box-shadow: 0 28px 72px rgba(92, 151, 197, 0.24);
+}
+
+.lesson-modal-body {
+  display: grid;
+  gap: 16px;
+}
+
+.lesson-modal-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.lesson-resource-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: #6487a7;
+  font-weight: 800;
+}
+
+.lesson-video-frame {
+  border-radius: 22px;
+  overflow: hidden;
+  background: #cdeeff;
+  min-height: 420px;
+}
+
+.lesson-video-frame iframe,
+.lesson-video-frame div {
+  width: 100%;
+  min-height: 420px;
+}
+
+.lesson-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.lesson-link-btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tutor-chat-body {
@@ -2650,6 +2810,13 @@ body::before {
 
   .assessment-layout {
     grid-template-columns: 1fr;
+  }
+
+  .lesson-resource-card,
+  .lesson-notes-header,
+  .lesson-gate-topline {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .battle-bars {
