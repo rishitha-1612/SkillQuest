@@ -24,7 +24,7 @@ When this project is reopened in a fresh chat, use this order:
 5. Open [frontend/src/store/playerStore.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/store/playerStore.js) for player identity, XP, unlocks, and persistence.
 6. Open [backend/data/role_blueprints.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/role_blueprints.json) and [backend/data/state_graphs.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/state_graphs.json) for the actual skill roadmap.
 7. Open [frontend/src/data/assessmentQuestionBank.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentQuestionBank.js) for the assessment content.
-8. Open [frontend/src/data/learningResources.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/learningResources.js) for the YouTube lesson packs and note helpers.
+8. Open [frontend/src/data/learningResources.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/learningResources.js) for the concept-level lesson catalog, fast-learning sites, and note helpers.
 9. Open [frontend/src/components/TutorChatPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx) and [backend/services/tutor_service.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/tutor_service.py) for the tutor flow.
 
 ## Product Architecture Target
@@ -91,8 +91,8 @@ The main country gameplay screen is in [frontend/src/components/CountryWindow.js
 Current game loop:
 
 - select a skill-state
-- complete the required YouTube lesson
-- read the required notes
+- complete the required concept lesson
+- read the required concept notes
 - open city quests
 - play a minigame
 - gain XP
@@ -145,8 +145,8 @@ Assessments are no longer just plain quizzes. The main assessment experience is 
 Current assessment behavior:
 
 - opens in a separate browser tab
-- stays locked until the required lesson video is completed
-- stays locked until the required notes are marked read
+- stays locked until all concept lessons in the skill are completed
+- stays locked until all concept notes are marked read
 - uses a 3-wave boss-fight presentation
 - has player HP
 - has boss HP
@@ -237,6 +237,55 @@ Important note:
 
 - South Korea has custom work from another contributor and should not be carelessly overwritten.
 
+## Learning Resource System
+
+The lesson system is now concept-based rather than one long video per skill.
+
+Implemented in [frontend/src/data/learningResources.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/learningResources.js) and surfaced in [frontend/src/components/CountryWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx).
+
+Current behavior:
+
+- each city concept has its own lesson resource entry
+- direct lesson links are curated for many concepts
+- remaining concepts fall back to a focused YouTube lesson search instead of a long sliced course
+- each skill can also show fast-learning sites and tools
+- the next concept unlocks after the current concept lesson is completed
+- city play stays gated behind lesson + notes completion
+- the skill assessment unlocks only after all concept lessons, notes, and city quests are done
+
+Current resource coverage status:
+
+- `AI Engineer` path: broad concept-level coverage seeded
+- `ML Engineer` path: broad concept-level coverage seeded
+- `Data Scientist` path: covered through overlap with SQL, Python, math, ML, and visualization concepts
+- `Cloud Architect` path: networking, cloud, containers, CI/CD, DevSecOps, and system-design concepts seeded
+- `Cybersecurity Specialist` path: cybersecurity, networking, backend, DevSecOps, and API/system concepts seeded
+- `Software Developer` path: covered through Python, backend, SQL, API, CI/CD, cloud, and system-design concepts
+- `Full Stack Engineer` path: frontend + backend + SQL + API + CI/CD + cloud + security concepts seeded
+- `Data Engineer` path: Python, SQL, data engineering, APIs, cloud, containers, CI/CD, backend, and system-design concepts seeded
+- `Blockchain Developer` path: blockchain fundamentals and supporting backend/security/API/cloud concepts seeded
+- `Prompt Engineer` path: prompt engineering + ML/deep learning + API/backend/frontend/system concepts seeded
+
+Fast-learning sites currently include examples like:
+
+- CheckiO
+- Exercism
+- Python Tutor
+- Kaggle Learn
+- Google ML Crash Course
+- TensorFlow Playground
+- Teachable Machine
+- Hoppscotch
+- Postman Academy
+- SQLBolt
+- Mode SQL Tutorial
+- Learn Prompting
+- Prompting Guide
+- AWS Skill Builder
+- Microsoft Learn
+- Excalidraw
+- ByteByteGo
+
 ## Country and Map Systems
 
 Map rendering components:
@@ -312,7 +361,7 @@ This is more game-like than before, but it still needs another serious polish pa
 - [frontend/src/minigames](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames)
   - quest minigame components
 - [frontend/src/data/learningResources.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/learningResources.js)
-  - curated YouTube lesson pack per skill-state plus notes helpers
+  - concept-level lesson catalog, fast-learning sites, and concept note helpers
 - [frontend/src/api/client.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/api/client.js)
   - frontend API wrapper
 - [frontend/src/data/worldConfig.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/worldConfig.js)
@@ -383,6 +432,10 @@ npm start
 - kept Ollama as a local fallback
 - expanded assessment banks to 100 questions per skill
 - kept assessments fresh on every attempt
+- replaced long skill videos with concept-level learning resources
+- added direct concept lesson links plus focused YouTube fallback searches
+- added fast-learning sites for many skill areas
+- seeded broad concept coverage across AI Engineer, ML Engineer, Data Scientist, Cloud Architect, Cybersecurity Specialist, Software Developer, Full Stack Engineer, Data Engineer, Blockchain Developer, and Prompt Engineer paths
 - preserved custom country flows like Korea
 - updated the UI toward a more game-academy structure
 - simplified the homepage back toward a cleaner, lighter, easier-to-understand style
@@ -392,7 +445,7 @@ npm start
 The project is improved, but it is not yet at the final target quality. These are the next major steps:
 
 1. Replace starter minigames with deeper subject-specific gameplay.
-2. Add real mini-lessons, not just quest cards and minigame entry points.
+2. Keep expanding direct handpicked lesson links so fewer concepts rely on search fallbacks.
 3. Add ranked drill mode as a standalone gameplay system.
 4. Make boss fights richer with stronger feedback, audio, and visual response.
 5. Add cinematic zoom and camera transition into countries on globe click.
