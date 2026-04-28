@@ -22,6 +22,7 @@ import {
   getConceptLearningPlan,
   getConceptProgress,
   getLearningProgress,
+  getPracticeResources,
   isLearningRequirementComplete,
 } from '../data/learningResources';
 import { usePlayerStore } from '../store/playerStore';
@@ -219,6 +220,7 @@ function ensureYouTubeApi() {
 }
 
 function LessonVideoModal({ concept, open, onClose, onVideoComplete }) {
+  const [externalOpened, setExternalOpened] = useState(false);
   const playerMountId = useMemo(
     () => `lesson-player-${concept?.videoId || 'empty'}-${Math.random().toString(36).slice(2)}`,
     [concept]
@@ -255,7 +257,11 @@ function LessonVideoModal({ concept, open, onClose, onVideoComplete }) {
     };
   }, [concept, open, onVideoComplete, playerMountId]);
 
-  if (!open || !concept?.videoId) return null;
+  useEffect(() => {
+    if (!open) setExternalOpened(false);
+  }, [open, concept]);
+
+  if (!open || !concept) return null;
 
   return (
     <div className="minigame-modal-backdrop" onClick={onClose}>
@@ -269,21 +275,45 @@ function LessonVideoModal({ concept, open, onClose, onVideoComplete }) {
         <div className="window-body lesson-modal-body">
           <div className="lesson-modal-copy">
             <p className="panel-summary">
-              Finish this concept clip before moving ahead. When the clip ends, this step is marked complete automatically.
+              Finish this concept lesson before moving ahead. Open the recommended video, learn the idea clearly, and then mark it complete.
             </p>
             <div className="lesson-resource-meta">
               <span>{concept.channel}</span>
-              <span>{`${concept.startLabel} - ${concept.endLabel}`}</span>
               <span>{concept.duration}</span>
             </div>
           </div>
           <div className="lesson-video-frame">
-            <div id={playerMountId} />
+            {concept.videoId ? (
+              <div id={playerMountId} />
+            ) : (
+              <div className="lesson-resource-card">
+                <div>
+                  <strong>{concept.videoTitle}</strong>
+                  <p>{concept.searchQuery}</p>
+                </div>
+              </div>
+            )}
           </div>
           <div className="lesson-modal-actions">
-            <a className="assessment-ghost-btn lesson-link-btn" href={`${concept.url}&t=${concept.startSeconds}s`} target="_blank" rel="noreferrer">
-              Open on YouTube
+            <a
+              className="assessment-ghost-btn lesson-link-btn"
+              href={concept.url}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => setExternalOpened(true)}
+            >
+              Open recommended video
             </a>
+            {!concept.videoId && (
+              <button
+                type="button"
+                className="assessment-submit-btn"
+                disabled={!externalOpened}
+                onClick={() => onVideoComplete(concept.nodeId)}
+              >
+                Mark lesson complete
+              </button>
+            )}
             <button type="button" className="assessment-submit-btn" onClick={onClose}>
               Close
             </button>
@@ -326,6 +356,7 @@ function ProgressWindow({
   const nodes = stateDetails.nodes || [];
   const edges = stateDetails.edges || [];
   const conceptPlan = getConceptLearningPlan(stateDetails);
+  const practiceResources = getPracticeResources(stateDetails);
   const completedSet = new Set(completedCities || []);
   const unlockedSet = new Set(unlockedCities || [nodes[0]?.id].filter(Boolean));
   const levels = buildLevels(nodes, edges);
@@ -427,9 +458,7 @@ function ProgressWindow({
             const previousNode = nodes[index - 1];
             const previousReady =
               !previousNode ||
-              (getConceptProgress(progress, stateDetails.state_id, previousNode.id).videoDone &&
-                getConceptProgress(progress, stateDetails.state_id, previousNode.id).notesDone &&
-                completedSet.has(previousNode.id));
+              getConceptProgress(progress, stateDetails.state_id, previousNode.id).videoDone;
             const videoDone = Boolean(conceptProgress.videoDone);
             const notesDone = Boolean(conceptProgress.notesDone);
             const conceptReady = videoDone && notesDone;
@@ -453,7 +482,7 @@ function ProgressWindow({
                 <article className={`lesson-resource-card${videoDone ? ' is-complete' : ''}`}>
                   <div>
                     <strong>{concept?.videoTitle || `${node.title} concept clip`}</strong>
-                    <p>{concept ? `${concept.channel} - ${concept.startLabel} to ${concept.endLabel}` : 'Concept clip'}</p>
+                    <p>{concept ? `${concept.channel} - ${concept.duration}` : 'Concept clip'}</p>
                   </div>
                   <div className="lesson-resource-actions">
                     <button
@@ -494,6 +523,27 @@ function ProgressWindow({
                     ))}
                   </div>
                 </article>
+                {!!practiceResources.length && (
+                  <article className="lesson-resource-card">
+                    <div>
+                      <strong>Fast practice</strong>
+                      <p>Use these quick tools to lock the concept in faster.</p>
+                    </div>
+                    <div className="lesson-resource-actions">
+                      {practiceResources.slice(0, 2).map((resource) => (
+                        <a
+                          key={resource.url}
+                          className="assessment-ghost-btn lesson-link-btn"
+                          href={resource.url}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {resource.title}
+                        </a>
+                      ))}
+                    </div>
+                  </article>
+                )}
                 <div className="quest-card-actions">
                   <button
                     className="assessment-ghost-btn"
