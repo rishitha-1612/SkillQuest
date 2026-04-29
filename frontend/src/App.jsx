@@ -11,7 +11,10 @@ import SearchPanel from './components/SearchPanel';
 import HelpPanel from './components/HelpPanel';
 import LeaderboardPanel from './components/LeaderboardPanel';
 import RealmOverviewPanel from './components/RealmOverviewPanel';
+import LandingPage from './components/LandingPage';
+import AuthPage from './components/AuthPage';
 import { getClusterTheme, isPlayableRealm, LOCKED_WORLD_REGIONS } from './data/worldConfig';
+import { useAuthStore } from './store/authStore';
 import { usePlayerStore } from './store/playerStore';
 
 const LEVEL_WEIGHT = {
@@ -273,10 +276,143 @@ function WorldLobby() {
 }
 
 export default function App() {
-  const params = new URLSearchParams(window.location.search);
+  const [search, setSearch] = useState(() => window.location.search);
+  const [authError, setAuthError] = useState('');
+  const [authBusy, setAuthBusy] = useState(false);
+  const authToken = useAuthStore((state) => state.token);
+  const authUser = useAuthStore((state) => state.user);
+  const authInitialized = useAuthStore((state) => state.initialized);
+  const authStatus = useAuthStore((state) => state.status);
+  const setSession = useAuthStore((state) => state.setSession);
+  const clearSession = useAuthStore((state) => state.clearSession);
+  const markAuthInitialized = useAuthStore((state) => state.markInitialized);
+  const setUsername = usePlayerStore((state) => state.setUsername);
+  const setAvatar = usePlayerStore((state) => state.setAvatar);
+
+  useEffect(() => {
+    function handleLocationChange() {
+      setSearch(window.location.search);
+    }
+
+    window.addEventListener('popstate', handleLocationChange);
+    return () => window.removeEventListener('popstate', handleLocationChange);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function bootstrapAuth() {
+      if (!authToken) {
+        markAuthInitialized();
+        return;
+      }
+
+      try {
+        const response = await api.me();
+        if (!isMounted) return;
+        setSession({ token: authToken, user: response.user });
+        setUsername(response.user.username);
+        setAvatar(response.user.username?.[0] || response.user.full_name?.[0] || 'Q');
+      } catch (error) {
+        if (!isMounted) return;
+        clearSession();
+      }
+    }
+
+    bootstrapAuth();
+    return () => {
+      isMounted = false;
+    };
+  }, [authToken, clearSession, markAuthInitialized, setAvatar, setSession, setUsername]);
+
+  const params = new URLSearchParams(search);
   const windowMode = params.get('window');
   const countryId = params.get('country');
   const stateId = params.get('state');
+  const view = params.get('view');
+
+  function updateView(nextView, options = {}) {
+    const nextParams = new URLSearchParams(window.location.search);
+    if (nextView) {
+      nextParams.set('view', nextView);
+    } else {
+      nextParams.delete('view');
+    }
+    if (options.resetWindowParams) {
+      nextParams.delete('window');
+      nextParams.delete('country');
+      nextParams.delete('state');
+    }
+    const query = nextParams.toString();
+    window.history.pushState({}, '', `${window.location.pathname}${query ? `?${query}` : ''}`);
+    setSearch(window.location.search);
+  }
+
+  function openLogin() {
+    setAuthError('');
+    updateView('login', { resetWindowParams: true });
+  }
+
+  function openSignup() {
+    setAuthError('');
+    updateView('signup', { resetWindowParams: true });
+  }
+
+  function openHome() {
+    setAuthError('');
+    updateView('', { resetWindowParams: true });
+  }
+
+  async function handleAuthSubmit(payload) {
+    setAuthBusy(true);
+    setAuthError('');
+    try {
+      const response = view === 'signup' ? await api.signup(payload) : await api.login(payload);
+      setSession({ token: response.token, user: response.user });
+      setUsername(response.user.username);
+      setAvatar(response.user.username?.[0] || response.user.full_name?.[0] || 'Q');
+      updateView('lobby', { resetWindowParams: true });
+    } catch (error) {
+      setAuthError(error.message.replace(/^Error:\s*/, ''));
+    } finally {
+      setAuthBusy(false);
+    }
+  }
+
+  if (!authInitialized) {
+    return (
+      <div className="auth-loading-screen">
+        <div className="auth-loading-card">Restoring your SkillQuest session...</div>
+      </div>
+    );
+  }
+
+  const isAuthenticated = authStatus === 'authenticated' && Boolean(authUser);
+  const wantsAuthPage = view === 'login' || view === 'signup';
+  const needsAuthGate =
+    !isAuthenticated && (wantsAuthPage || view === 'lobby' || windowMode === 'country' || windowMode === 'assessment');
+
+  useEffect(() => {
+    const shouldUseLandingMode = !needsAuthGate && view !== 'lobby' && !windowMode;
+    document.body.classList.toggle('landing-mode', shouldUseLandingMode);
+
+    return () => {
+      document.body.classList.remove('landing-mode');
+    };
+  }, [needsAuthGate, view, windowMode]);
+
+  if (needsAuthGate) {
+    return (
+      <AuthPage
+        mode={view === 'signup' ? 'signup' : 'login'}
+        onSubmit={handleAuthSubmit}
+        onSwitchMode={() => (view === 'signup' ? openLogin() : openSignup())}
+        onBackHome={openHome}
+        isBusy={authBusy}
+        serverError={authError}
+      />
+    );
+  }
 
   if (windowMode === 'country' && countryId) {
     return <CountryWindow countryId={countryId} />;
@@ -284,6 +420,10 @@ export default function App() {
 
   if (windowMode === 'assessment' && countryId && stateId) {
     return <AssessmentRouteWindow countryId={countryId} stateId={stateId} />;
+  }
+
+  if (view !== 'lobby') {
+    return <LandingPage onLogin={openLogin} onSignup={openSignup} />;
   }
 
   return <WorldLobby />;

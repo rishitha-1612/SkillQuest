@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from uuid import uuid4
 
 from fastapi.testclient import TestClient
 
@@ -9,9 +10,33 @@ from backend.main import app
 
 def main() -> None:
     client = TestClient(app)
+    auth_suffix = uuid4().hex[:8]
+    signup_payload = {
+        "full_name": "Smoke Test User",
+        "username": f"smoke_{auth_suffix}",
+        "email": f"smoke_{auth_suffix}@example.com",
+        "password": "skillquest123",
+    }
+    signup_response = client.post("/career-globe/auth/signup", json=signup_payload)
+    signup_json = signup_response.json()
+    login_response = client.post(
+        "/career-globe/auth/login",
+        json={"login": signup_payload["email"], "password": signup_payload["password"]},
+    )
+    login_json = login_response.json()
+    me_response = client.get(
+        "/career-globe/auth/me",
+        headers={"Authorization": f"Bearer {login_json['token']}"},
+    )
 
     responses = {
         "health": client.get("/career-globe/health").json(),
+        "auth": {
+            "signup_status": signup_response.status_code,
+            "login_status": login_response.status_code,
+            "me_username": me_response.json()["user"]["username"],
+            "token_present": bool(signup_json["token"]),
+        },
         "world_map_counts": {
             continent["title"]: continent["country_count"]
             for continent in client.get("/career-globe/world-map").json()["continents"]

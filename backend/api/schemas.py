@@ -34,3 +34,15 @@ class ProgressionRequest(BaseModel):
     score: int = Field(ge=0, le=100)
     player_level: int = Field(default=1, ge=1)
     player_xp: int = Field(default=0, ge=0)
+
+
+class SignupRequest(BaseModel):
+    full_name: str = Field(min_length=2, max_length=120)
+    username: str = Field(min_length=3, max_length=32, pattern=r"^[A-Za-z0-9_]+$")
+    email: str = Field(min_length=5, max_length=255)
+    password: str = Field(min_length=8, max_length=128)
+
+
+class LoginRequest(BaseModel):
+    login: str = Field(min_length=3, max_length=255)
+    password: str = Field(min_length=8, max_length=128)
