@@ -379,14 +379,6 @@ export default function App() {
     }
   }
 
-  if (!authInitialized) {
-    return (
-      <div className="auth-loading-screen">
-        <div className="auth-loading-card">Restoring your SkillQuest session...</div>
-      </div>
-    );
-  }
-
   const isAuthenticated = authStatus === 'authenticated' && Boolean(authUser);
   const wantsAuthPage = view === 'login' || view === 'signup';
   const needsAuthGate =
@@ -400,6 +392,14 @@ export default function App() {
       document.body.classList.remove('landing-mode');
     };
   }, [needsAuthGate, view, windowMode]);
+
+  if (!authInitialized) {
+    return (
+      <div className="auth-loading-screen">
+        <div className="auth-loading-card">Restoring your SkillQuest session...</div>
+      </div>
+    );
+  }
 
   if (needsAuthGate) {
     return (

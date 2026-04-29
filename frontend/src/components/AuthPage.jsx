@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
 import '../landing.css';
 
 const COPY = {
@@ -40,17 +39,17 @@ export default function AuthPage({ mode, onSubmit, onSwitchMode, onBackHome, isB
   const fields = useMemo(() => {
     if (mode === 'signup') {
       return [
-        { key: 'fullName', label: 'Full name', type: 'text', placeholder: 'Rishitha Kumar' },
-        { key: 'username', label: 'Username', type: 'text', placeholder: 'questpilot' },
-        { key: 'email', label: 'Email', type: 'email', placeholder: 'you@example.com' },
-        { key: 'password', label: 'Password', type: 'password', placeholder: 'At least 8 characters' },
-        { key: 'confirmPassword', label: 'Confirm password', type: 'password', placeholder: 'Repeat your password' },
+        { key: 'fullName', label: 'Full name', type: 'text' },
+        { key: 'username', label: 'Username', type: 'text' },
+        { key: 'email', label: 'Email', type: 'email' },
+        { key: 'password', label: 'Password', type: 'password' },
+        { key: 'confirmPassword', label: 'Confirm password', type: 'password' },
       ];
     }
 
     return [
-      { key: 'login', label: 'Email or username', type: 'text', placeholder: 'you@example.com or questpilot' },
-      { key: 'password', label: 'Password', type: 'password', placeholder: 'Your password' },
+      { key: 'login', label: 'Email or username', type: 'text' },
+      { key: 'password', label: 'Password', type: 'password' },
     ];
   }, [mode]);
 
@@ -103,12 +102,7 @@ export default function AuthPage({ mode, onSubmit, onSwitchMode, onBackHome, isB
   return (
     <main className="auth-page">
       <section className="auth-shell">
-        <motion.div
-          className="auth-form-wrap"
-          initial={{ opacity: 0, y: 28 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-        >
+        <div className="auth-form-wrap">
           <form className="auth-form" onSubmit={handleSubmit}>
             <button type="button" className="auth-home-link" onClick={onBackHome}>
               Back to home
@@ -132,7 +126,6 @@ export default function AuthPage({ mode, onSubmit, onSwitchMode, onBackHome, isB
                     type={field.type}
                     value={values[field.key]}
                     onChange={handleChange}
-                    placeholder={field.placeholder}
                     autoComplete={
                       field.key === 'email'
                         ? 'email'
@@ -154,15 +147,13 @@ export default function AuthPage({ mode, onSubmit, onSwitchMode, onBackHome, isB
 
             {serverError ? <div className="auth-server-error">{serverError}</div> : null}
 
-            <motion.button
+            <button
               type="submit"
               className="auth-submit-btn"
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.985 }}
               disabled={isBusy}
             >
               {isBusy ? 'Please wait...' : copy.submit}
-            </motion.button>
+            </button>
 
             <div className="auth-switch-row">
               <span>{copy.switchLabel}</span>
@@ -171,7 +162,7 @@ export default function AuthPage({ mode, onSubmit, onSwitchMode, onBackHome, isB
               </button>
             </div>
           </form>
-        </motion.div>
+        </div>
       </section>
     </main>
   );
