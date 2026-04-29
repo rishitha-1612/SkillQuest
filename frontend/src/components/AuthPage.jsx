@@ -5,16 +5,16 @@ import '../landing.css';
 const COPY = {
   login: {
     eyebrow: 'Welcome Back',
-    title: 'Log in to continue your expedition.',
-    subtitle: 'Pick up your progress, reopen your realms, and jump straight back into SkillQuest.',
+    title: 'Log in to continue.',
+    subtitle: 'Pick up your journey where you left off.',
     submit: 'Log In',
     switchLabel: "Don't have an account?",
     switchAction: 'Create one',
   },
   signup: {
     eyebrow: 'Start Your Journey',
-    title: 'Create your SkillQuest account.',
-    subtitle: 'Save your progress, keep your identity across sessions, and unlock a proper learner profile.',
+    title: 'Create your account.',
+    subtitle: 'Begin your SkillQuest journey.',
     submit: 'Sign Up',
     switchLabel: 'Already have an account?',
     switchAction: 'Log in',
@@ -102,49 +102,22 @@ export default function AuthPage({ mode, onSubmit, onSwitchMode, onBackHome, isB
 
   return (
     <main className="auth-page">
-      <div className="auth-backdrop-glow auth-backdrop-glow-1" />
-      <div className="auth-backdrop-glow auth-backdrop-glow-2" />
-
       <section className="auth-shell">
         <motion.div
-          className="auth-side-panel"
+          className="auth-form-wrap"
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <button type="button" className="auth-home-link" onClick={onBackHome}>
-            Back to home
-          </button>
-          <p className="auth-kicker">{copy.eyebrow}</p>
-          <h1>{copy.title}</h1>
-          <p className="auth-copy">{copy.subtitle}</p>
-
-          <div className="auth-side-highlights">
-            <article>
-              <span>Persistent account</span>
-              <strong>Real SQLite-backed users and sessions</strong>
-            </article>
-            <article>
-              <span>Protected entry</span>
-              <strong>Only authenticated players can enter the live world lobby</strong>
-            </article>
-            <article>
-              <span>Same visual language</span>
-              <strong>The auth flow keeps the cinematic SkillQuest landing theme intact</strong>
-            </article>
-          </div>
-        </motion.div>
-
-        <motion.div
-          className="auth-form-card"
-          initial={{ opacity: 0, y: 28 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.08 }}
-        >
           <form className="auth-form" onSubmit={handleSubmit}>
+            <button type="button" className="auth-home-link" onClick={onBackHome}>
+              Back to home
+            </button>
+
             <div className="auth-form-head">
-              <h2>{mode === 'signup' ? 'Create Account' : 'Account Login'}</h2>
-              <p>{mode === 'signup' ? 'Create your learner profile to begin.' : 'Use your account to continue.'}</p>
+              <p className="auth-kicker">{copy.eyebrow}</p>
+              <h1>{copy.title}</h1>
+              <p>{copy.subtitle}</p>
             </div>
 
             <div className="auth-field-grid">

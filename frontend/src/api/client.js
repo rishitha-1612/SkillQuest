@@ -21,10 +21,15 @@ function buildHeaders(options = {}) {
 
 async function request(path, options) {
   const { includeJsonHeader, headers, ...fetchOptions } = options || {};
-  const res = await fetch(`${API_BASE}${path}`, {
-    headers: buildHeaders({ headers, includeJsonHeader: false }),
-    ...fetchOptions,
-  });
+  let res;
+  try {
+    res = await fetch(`${API_BASE}${path}`, {
+      headers: buildHeaders({ headers, includeJsonHeader: false }),
+      ...fetchOptions,
+    });
+  } catch (error) {
+    throw new Error('Could not reach the SkillQuest backend. Please make sure the backend is running.');
+  }
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`API ${res.status}: ${text || res.statusText}`);
@@ -34,10 +39,15 @@ async function request(path, options) {
 
 async function requestJson(path, options) {
   const { includeJsonHeader, headers, ...fetchOptions } = options || {};
-  const res = await fetch(`${API_BASE}${path}`, {
-    headers: buildHeaders({ headers, includeJsonHeader }),
-    ...fetchOptions,
-  });
+  let res;
+  try {
+    res = await fetch(`${API_BASE}${path}`, {
+      headers: buildHeaders({ headers, includeJsonHeader }),
+      ...fetchOptions,
+    });
+  } catch (error) {
+    throw new Error('Could not reach the SkillQuest backend. Please make sure the backend is running.');
+  }
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`API ${res.status}: ${text || res.statusText}`);
