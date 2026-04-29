@@ -381,6 +381,7 @@ body::before {
 .country-map-window-body {
   display: grid;
   gap: 14px;
+  position: relative;
 }
 
 .country-map-topline {
@@ -412,6 +413,41 @@ body::before {
   border-radius: 24px;
   background:
     linear-gradient(180deg, #f9fdff 0%, #eef7ff 100%);
+}
+
+.map-journey-overlay {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 18px;
+  z-index: 3;
+  padding: 12px 14px 10px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(239,249,255,0.88));
+  border: 1px solid rgba(143, 206, 246, 0.22);
+  box-shadow: 0 16px 36px rgba(94, 156, 204, 0.14);
+  backdrop-filter: blur(10px);
+}
+
+.map-journey-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+  color: #5f86a7;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.map-journey-header strong {
+  color: #2f628b;
+}
+
+.map-journey-svg {
+  width: 100%;
+  height: 150px;
+  display: block;
 }
 
 .india-crafted-map-shell {
@@ -688,6 +724,146 @@ body::before {
   width: 100%;
   display: block;
   min-height: 680px;
+}
+
+.india-3d-map-shell {
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.india-3d-map-stage {
+  position: relative;
+  min-height: 680px;
+  border-radius: 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 16% 14%, rgba(255, 255, 255, 0.68), transparent 24%),
+    radial-gradient(circle at 82% 10%, rgba(255, 250, 231, 0.42), transparent 20%),
+    linear-gradient(180deg, #f7fcff 0%, #e5f6ff 100%);
+}
+
+.india-3d-map-svg {
+  width: 100%;
+  display: block;
+  min-height: 680px;
+}
+
+.india-3d-map-badge,
+.india-3d-map-tooltip {
+  position: absolute;
+  z-index: 3;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(138, 197, 241, 0.22);
+  box-shadow: 0 16px 36px rgba(91, 150, 197, 0.16);
+  backdrop-filter: blur(12px);
+}
+
+.india-3d-map-badge {
+  left: 18px;
+  bottom: 18px;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: 16px;
+}
+
+.india-3d-map-badge span {
+  color: #2a618d;
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.india-3d-map-badge small {
+  color: #6a8eac;
+  font-weight: 700;
+}
+
+.india-3d-map-tooltip {
+  right: 18px;
+  top: 18px;
+  min-width: 160px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  color: #355f84;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.india-topic-road-base,
+.india-topic-road-lane,
+.india-topic-road-progress {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.india-topic-road-base {
+  stroke: rgba(89, 124, 152, 0.32);
+  stroke-width: 26;
+}
+
+.india-topic-road-lane {
+  stroke: rgba(255, 255, 255, 0.96);
+  stroke-width: 15;
+  stroke-dasharray: 14 12;
+}
+
+.india-topic-road-progress {
+  stroke: rgba(130, 212, 255, 0.98);
+  stroke-width: 10;
+}
+
+.india-map-city {
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.india-map-city.locked {
+  opacity: 0.34;
+}
+
+.india-map-city.active {
+  transform: scale(1.06);
+}
+
+.india-map-city-aura {
+  fill: rgba(126, 215, 255, 0.14);
+}
+
+.india-map-city-core {
+  fill: rgba(255, 255, 255, 0.96);
+  stroke: rgba(141, 208, 245, 0.88);
+  stroke-width: 2.6;
+}
+
+.india-map-city-dot {
+  fill: #7ed4ff;
+}
+
+.india-map-city.completed .india-map-city-core {
+  stroke: rgba(98, 203, 247, 0.96);
+}
+
+.india-map-city.completed .india-map-city-dot {
+  fill: #5ec0f0;
+}
+
+.india-map-city.active .india-map-city-aura {
+  fill: rgba(255, 146, 146, 0.18);
+}
+
+.india-map-city.active .india-map-city-core {
+  stroke: rgba(255, 116, 116, 0.92);
+}
+
+.india-map-city.active .india-map-city-dot {
+  fill: #e24848;
+}
+
+.india-path-biker {
+  filter: drop-shadow(0 6px 8px rgba(72, 110, 144, 0.2));
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 .india-landmass {
@@ -1854,6 +2030,183 @@ body::before {
 .dag-edge {
   stroke: #57b8ff;
   stroke-width: 2.5;
+}
+
+.path-shell {
+  display: grid;
+  gap: 12px;
+  overflow: auto;
+  border-radius: 24px;
+  border: 1px solid rgba(145, 199, 244, 0.2);
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.58), transparent 22%),
+    linear-gradient(180deg, #eefbff 0%, #e4f7ff 100%);
+  padding: 12px 14px 16px;
+}
+
+.quest-road-map {
+  min-width: 760px;
+  display: block;
+}
+
+.quest-road-base {
+  fill: none;
+  stroke: rgba(112, 136, 156, 0.34);
+  stroke-width: 32;
+  stroke-linecap: round;
+}
+
+.quest-road-lane {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.92);
+  stroke-width: 20;
+  stroke-linecap: round;
+  stroke-dasharray: 22 16;
+}
+
+.quest-road-progress {
+  fill: none;
+  stroke: rgba(126, 214, 255, 0.96);
+  stroke-width: 18;
+  stroke-linecap: round;
+  transition: stroke-dasharray 420ms ease;
+}
+
+.road-stop {
+  transition: transform 280ms ease;
+}
+
+.road-stop-shadow {
+  fill: rgba(120, 201, 238, 0.14);
+}
+
+.road-stop-core {
+  fill: rgba(255, 255, 255, 0.98);
+  stroke: rgba(149, 211, 242, 0.82);
+  stroke-width: 3;
+}
+
+.road-stop-inner {
+  fill: rgba(235, 248, 255, 0.96);
+}
+
+.road-stop-index {
+  font-size: 10px;
+  font-weight: 900;
+  fill: #3c91bf;
+  text-transform: uppercase;
+}
+
+.road-stop-label {
+  font-size: 10px;
+  font-weight: 800;
+  fill: #6489a6;
+  text-transform: uppercase;
+}
+
+.road-stop-label.compact {
+  font-size: 8.5px;
+}
+
+.road-stop.completed .road-stop-core {
+  stroke: rgba(105, 206, 245, 0.95);
+}
+
+.road-stop.completed .road-stop-inner {
+  fill: rgba(214, 245, 255, 0.98);
+}
+
+.road-stop.active {
+  transform: scale(1.08);
+}
+
+.road-stop.active .road-stop-shadow {
+  fill: rgba(255, 169, 169, 0.18);
+}
+
+.road-stop.active .road-stop-core {
+  stroke: rgba(255, 121, 121, 0.94);
+}
+
+.road-stop.active .road-stop-inner {
+  fill: rgba(255, 241, 241, 0.98);
+}
+
+.road-stop.locked {
+  opacity: 0.62;
+}
+
+.quest-rider {
+  transition: transform 420ms ease;
+}
+
+.quest-rider.realistic {
+  filter: drop-shadow(0 5px 8px rgba(72, 110, 144, 0.22));
+}
+
+.quest-wheel {
+  fill: #2b3d4c;
+  stroke: #ffffff;
+  stroke-width: 1.7;
+}
+
+.quest-wheel-hub {
+  fill: #a9d8f3;
+}
+
+.quest-bike-frame {
+  fill: none;
+  stroke: #df4348;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.quest-bike-handle,
+.quest-bike-seat-line,
+.quest-rider-limbs,
+.quest-dog-legs,
+.quest-dog-tail {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.quest-bike-handle,
+.quest-bike-seat-line {
+  stroke: #314755;
+  stroke-width: 1.4;
+}
+
+.quest-rider-head {
+  fill: #ffd8c0;
+}
+
+.quest-rider-body {
+  fill: #de4b51;
+}
+
+.quest-rider-limbs {
+  stroke: #2d4b61;
+  stroke-width: 1.2;
+}
+
+.quest-dog-body {
+  fill: #f5f7fb;
+}
+
+.quest-dog-head {
+  fill: #ffffff;
+}
+
+.quest-dog-ear {
+  fill: #c88966;
+}
+
+.quest-dog-legs,
+.quest-dog-tail {
+  stroke: #8c9fb0;
+  stroke-width: 0.9;
 }
 
 .district-cell,
