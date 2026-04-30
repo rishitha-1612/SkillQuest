@@ -41,6 +41,11 @@ const INDIA_SKILL_STATES = {
   mathematics_statistics: 'Rajasthan',
   machine_learning: 'Maharashtra',
   deep_learning: 'Telangana',
+  data_engineering: 'Tamil Nadu',
+  prompt_engineering: 'Kerala',
+  api_integration: 'Andhra Pradesh',
+  system_design: 'Madhya Pradesh',
+  cloud_platforms: 'Gujarat',
   data_visualization: 'West Bengal',
 };
 
