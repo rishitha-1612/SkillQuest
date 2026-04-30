@@ -42,6 +42,10 @@ def _normalize_username(username: str) -> str:
     return username.strip()
 
 
+def _normalize_username_lookup(username: str) -> str:
+    return username.strip().lower()
+
+
 def _hash_password(password: str, salt: str) -> str:
     return hashlib.pbkdf2_hmac(
         "sha256",
@@ -68,6 +72,7 @@ def _session_token_hash(token: str) -> str:
 def create_user(*, email: str, username: str, full_name: str, password: str) -> AuthUser:
     email = _normalize_email(email)
     username = _normalize_username(username)
+    username_lookup = _normalize_username_lookup(username)
     full_name = full_name.strip()
     salt = secrets.token_hex(16)
     password_hash = _hash_password(password, salt)
@@ -75,8 +80,8 @@ def create_user(*, email: str, username: str, full_name: str, password: str) -> 
 
     with get_connection() as connection:
         existing = connection.execute(
-            "SELECT id FROM users WHERE email = ? OR username = ?",
-            (email, username),
+            "SELECT id FROM users WHERE email = ? OR lower(username) = ?",
+            (email, username_lookup),
         ).fetchone()
         if existing:
             raise ValueError("An account with that email or username already exists.")

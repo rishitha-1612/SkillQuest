@@ -232,29 +232,15 @@ export default function India3DMap({
 
   const labelItems = useMemo(() => {
     const items = [];
-    const seenGroup = new Set();
     for (const state of states) {
-      const group = groupOf(state.name);
-      if (group) {
-        if (seenGroup.has(group)) continue;
-        seenGroup.add(group);
-        const members = states.filter((entry) => groupOf(entry.name) === group);
-        items.push({
-          key: `group-${group}`,
-          cx: members.reduce((sum, entry) => sum + entry.cx, 0) / members.length,
-          cy: members.reduce((sum, entry) => sum + entry.cy, 0) / members.length,
-          shadow: state.shadow,
-          label: group === 'north' ? 'N' : 'NE',
-          group,
-        });
-      } else {
+      if (state.mappedSkill) {
         items.push({
           key: state.name,
           cx: state.cx,
           cy: state.cy,
           shadow: state.shadow,
-          label: state.mappedSkill ? state.mappedSkill.title : '',
-          group: null,
+          label: state.mappedSkill.title,
+          group: groupOf(state.name),
           stateName: state.name,
           mappedSkill: state.mappedSkill,
         });
@@ -554,14 +540,10 @@ export default function India3DMap({
           <small>Roads build as each skill state unlocks</small>
         </div>
 
-        {hovered && (
+        {hovered && skillLookup.get(hovered) && (
           <div className="india-3d-map-tooltip">
             <span>
-              {groupOf(hovered) === 'northeast'
-                ? 'North East India'
-                : groupOf(hovered) === 'north'
-                  ? 'North India'
-                  : skillLookup.get(hovered)?.title || hovered}
+              {skillLookup.get(hovered)?.title}
             </span>
           </div>
         )}

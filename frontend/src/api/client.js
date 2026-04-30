@@ -1,10 +1,11 @@
+import { getStoredAuthToken, useAuthStore } from '../store/authStore';
+
 const API_BASE =
   import.meta.env.VITE_API_BASE ||
-  'http://127.0.0.1:8010/career-globe';
+  '/career-globe';
 
 function getAuthToken() {
-  if (typeof window === 'undefined') return '';
-  return window.localStorage.getItem('skillquest-auth-token') || '';
+  return useAuthStore.getState().token || getStoredAuthToken();
 }
 
 function buildHeaders(options = {}) {

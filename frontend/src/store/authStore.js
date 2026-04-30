@@ -17,12 +17,14 @@ export function getStoredAuthToken() {
   return window.localStorage.getItem(AUTH_TOKEN_KEY) || '';
 }
 
+const initialToken = getStoredAuthToken();
+
 export const useAuthStore = create(
   persist(
     (set) => ({
-      token: '',
+      token: initialToken,
       user: null,
-      status: 'guest',
+      status: initialToken ? 'authenticating' : 'guest',
       initialized: false,
       setSession: ({ token, user }) => {
         writeToken(token);
@@ -42,7 +44,11 @@ export const useAuthStore = create(
           initialized: true,
         });
       },
-      markInitialized: () => set((state) => ({ initialized: true, status: state.token ? state.status : 'guest' })),
+      markInitialized: () =>
+        set((state) => ({
+          initialized: true,
+          status: state.token ? (state.user ? 'authenticated' : 'authenticating') : 'guest',
+        })),
     }),
     {
       name: 'skillquest-auth-store',
@@ -56,7 +62,7 @@ export const useAuthStore = create(
         if (!state) return;
         writeToken(state.token || '');
         state.initialized = true;
-        state.status = state.token ? 'authenticated' : 'guest';
+        state.status = state.token ? (state.user ? 'authenticated' : 'authenticating') : 'guest';
       },
     }
   )
