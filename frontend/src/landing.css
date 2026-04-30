@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;700;900&family=Alice&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Cinzel Decorative", serif;
+  --font-serif-header: "Cinzel", serif;
+  --font-body: "Alice", serif;
+  --font-accent: "Playfair Display", serif;
+  
+  --color-sky-light: #87CEEB;
+  --color-sky-vibrant: #4FC3F7;
+  --color-brand-lime: #A3E635;
+  --color-brand-green: #65A30D;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-body text-slate-800 antialiased overflow-x-hidden transition-colors duration-700;
+    background:
+      radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.42), transparent 28%),
+      radial-gradient(circle at 50% 72%, rgba(167, 220, 255, 0.24), transparent 34%),
+      linear-gradient(180deg, #a7defb 0%, #8fd4f8 42%, #79c7f2 100%);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(163, 230, 53, 0.3);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(163, 230, 53, 0.5);
+}
+
+.cinematic-glow {
+  text-shadow: 0 0 10px rgba(163, 230, 53, 0.8), 0 0 20px rgba(163, 230, 53, 0.4), 0 0 30px rgba(163, 230, 53, 0.2);
+}
+
+.cloud-blur {
+  filter: blur(40px);
+}
+
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}

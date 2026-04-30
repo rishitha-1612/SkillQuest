@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "workspace": {
+    "name": "SkillQuest-Ai",
+    "createdAt": 1777488704491,
+    "preset": "starter"
+  },
+  "authorizedRoots": [
+    "\\\\?\\C:\\Users\\RISHITHA\\OneDrive\\Desktop\\SkillQuest-Ai"
+  ]
+}

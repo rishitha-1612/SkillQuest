@@ -4,11 +4,12 @@ from dataclasses import asdict
 from functools import lru_cache
 from typing import Dict, List
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Header, HTTPException, Query, status
 
-from backend.api.schemas import ProgressionRequest, ReadinessRequest, TutorChatRequest, UnlockRequest
+from backend.api.schemas import LoginRequest, ProgressionRequest, ReadinessRequest, SignupRequest, TutorChatRequest, UnlockRequest
 from backend.models.career_models import RoleBlueprint, StateGraph
 from backend.services.data_loader import load_role_blueprints, load_state_graphs, load_world_map
+from backend.services.auth_service import authenticate_user, create_session, create_user, delete_session, get_user_by_token
 from backend.services.question_bank_service import get_question_slice
 from backend.services.progression_engine import serialize_progression_result, update_progression
 from backend.services.readiness_engine import get_readiness_score
@@ -65,9 +66,79 @@ def serialize_role_blueprint(role: RoleBlueprint) -> Dict[str, object]:
     }
 
 
+def extract_bearer_token(authorization: str | None) -> str | None:
+    if not authorization:
+        return None
+    scheme, _, value = authorization.partition(" ")
+    if scheme.lower() != "bearer" or not value:
+        return None
+    return value.strip()
+
+
+def serialize_auth_user(user) -> Dict[str, object]:
+    return {
+        "id": user.id,
+        "email": user.email,
+        "username": user.username,
+        "full_name": user.full_name,
+        "created_at": user.created_at,
+    }
+
+
 @router.get("/health")
 def healthcheck() -> Dict[str, str]:
     return {"status": "ok"}
+
+
+@router.post("/auth/signup", status_code=status.HTTP_201_CREATED)
+def signup(payload: SignupRequest) -> Dict[str, object]:
+    try:
+        user = create_user(
+            email=payload.email,
+            username=payload.username,
+            full_name=payload.full_name,
+            password=payload.password,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    session = create_session(user)
+    return {
+        "token": session.token,
+        "expires_at": session.expires_at,
+        "user": serialize_auth_user(session.user),
+    }
+
+
+@router.post("/auth/login")
+def login(payload: LoginRequest) -> Dict[str, object]:
+    user = authenticate_user(login=payload.login, password=payload.password)
+    if user is None:
+        raise HTTPException(status_code=401, detail="Invalid email/username or password.")
+
+    session = create_session(user)
+    return {
+        "token": session.token,
+        "expires_at": session.expires_at,
+        "user": serialize_auth_user(session.user),
+    }
+
+
+@router.get("/auth/me")
+def auth_me(authorization: str | None = Header(default=None)) -> Dict[str, object]:
+    token = extract_bearer_token(authorization)
+    user = get_user_by_token(token or "")
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication required.")
+    return {"user": serialize_auth_user(user)}
+
+
+@router.post("/auth/logout")
+def logout(authorization: str | None = Header(default=None)) -> Dict[str, object]:
+    token = extract_bearer_token(authorization)
+    if token:
+        delete_session(token)
+    return {"status": "logged_out"}
 
 
 @router.get("/world-map")

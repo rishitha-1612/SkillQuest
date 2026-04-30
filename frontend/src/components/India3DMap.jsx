@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { INDIA_STATES } from '../data/indiaStates';
 
 const PALETTE = [
@@ -41,12 +41,31 @@ const INDIA_SKILL_STATES = {
   mathematics_statistics: 'Rajasthan',
   machine_learning: 'Maharashtra',
   deep_learning: 'Telangana',
+  data_engineering: 'Tamil Nadu',
+  prompt_engineering: 'Kerala',
+  api_integration: 'Andhra Pradesh',
+  system_design: 'Madhya Pradesh',
+  cloud_platforms: 'Gujarat',
   data_visualization: 'West Bengal',
 };
 
 const DEPTH_LAYERS = 10;
 const DEPTH_STEP = 1.4;
 const HOVER_LIFT = 14;
+const DRAW_DURATION_MS = 1150;
+const MOVE_DURATION_MS = 1750;
+const BIKER_SCALE = 0.66;
+
+const ROUTE_PATH_BUILDERS = {
+  'Karnataka->Rajasthan': (from, to) =>
+    `M ${from.cx} ${from.cy} C ${from.cx - 68} ${from.cy - 72}, ${to.cx - 42} ${to.cy + 154}, ${to.cx} ${to.cy}`,
+  'Rajasthan->Maharashtra': (from, to) =>
+    `M ${from.cx} ${from.cy} C ${from.cx - 24} ${from.cy + 92}, ${to.cx - 36} ${to.cy - 34}, ${to.cx} ${to.cy}`,
+  'Maharashtra->Telangana': (from, to) =>
+    `M ${from.cx} ${from.cy} C ${from.cx + 44} ${from.cy - 6}, ${to.cx - 36} ${to.cy - 24}, ${to.cx} ${to.cy}`,
+  'Telangana->West Bengal': (from, to) =>
+    `M ${from.cx} ${from.cy} C ${from.cx + 124} ${from.cy - 68}, ${to.cx - 110} ${to.cy + 114}, ${to.cx} ${to.cy}`,
+};
 
 function groupOf(name) {
   if (NORTHEAST.has(name)) return 'northeast';
@@ -62,8 +81,100 @@ function colorFor(name, idx) {
   return PALETTE[(hash + idx) % PALETTE.length];
 }
 
-export default function India3DMap({ roleDetails, stateById, selectedStateId, onStateSelect }) {
+function segmentKey(fromName, toName) {
+  return `${fromName}->${toName}`;
+}
+
+function buildFallbackPath(from, to) {
+  const midX = (from.cx + to.cx) / 2;
+  const midY = (from.cy + to.cy) / 2;
+  const dx = to.cx - from.cx;
+  const dy = to.cy - from.cy;
+  const curveX = Math.abs(dy) * 0.18;
+  const curveY = Math.abs(dx) * 0.12;
+  return [
+    `M ${from.cx} ${from.cy}`,
+    `C ${from.cx + dx * 0.28 - curveX} ${from.cy + dy * 0.16 - curveY},`,
+    `${midX + curveX} ${midY + curveY},`,
+    `${to.cx} ${to.cy}`,
+  ].join(' ');
+}
+
+function buildRoutePath(from, to) {
+  const builder = ROUTE_PATH_BUILDERS[segmentKey(from.name, to.name)];
+  return builder ? builder(from, to) : buildFallbackPath(from, to);
+}
+
+function easeInOut(value) {
+  return 0.5 - Math.cos(Math.PI * value) / 2;
+}
+
+function animateValue(duration, onUpdate) {
+  return new Promise((resolve) => {
+    const start = performance.now();
+
+    function frame(now) {
+      const raw = Math.min((now - start) / duration, 1);
+      onUpdate(easeInOut(raw));
+      if (raw < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        resolve();
+      }
+    }
+
+    requestAnimationFrame(frame);
+  });
+}
+
+function RoadBike({ position, rotation }) {
+  if (!position) return null;
+
+  return (
+    <g
+      className="india-path-biker"
+      transform={`translate(${position.x} ${position.y}) rotate(${rotation}) scale(${BIKER_SCALE})`}
+      pointerEvents="none"
+    >
+      <g transform="translate(-22 -16)">
+        <circle cx="9" cy="20.8" r="5.6" className="quest-wheel" />
+        <circle cx="34.8" cy="20.8" r="5.6" className="quest-wheel" />
+        <circle cx="9" cy="20.8" r="1.9" className="quest-wheel-hub" />
+        <circle cx="34.8" cy="20.8" r="1.9" className="quest-wheel-hub" />
+        <path d="M9 20.8 L16.5 10.8 L28.8 10.8 L34.8 20.8 M16.5 10.8 L22.4 20.8 M22.4 20.8 L13.2 20.8 M28.8 10.8 L24.6 6.6" className="quest-bike-frame" />
+        <path d="M24.2 6.8 L30.2 7.3" className="quest-bike-handle" />
+        <path d="M15.7 9.2 L20.2 9.2" className="quest-bike-seat-line" />
+        <ellipse cx="18.4" cy="4.1" rx="3.4" ry="3.9" className="quest-rider-head" />
+        <path d="M17.8 7.9 L15.8 14.5 L21.8 14.5 L22.4 9.6 Z" className="quest-rider-body" />
+        <path d="M16.1 14.4 L12 18.7 M20.8 14.3 L24.5 18.9 M21.6 10 L25.8 11.4" className="quest-rider-limbs" />
+        <path d="M26.5 9.2 L31 11.3 L32.4 14.4 L28 13.9 Z" className="quest-dog-body" />
+        <circle cx="33" cy="10.5" r="2.1" className="quest-dog-head" />
+        <path d="M33.2 8.5 L34.8 7.3 L34.4 9.4 Z" className="quest-dog-ear" />
+        <path d="M28.8 14.3 L27.9 17.3 M30.8 14.1 L30.5 17.2" className="quest-dog-legs" />
+        <path d="M25.9 10.6 L23.8 9.3" className="quest-dog-tail" />
+      </g>
+    </g>
+  );
+}
+
+export default function India3DMap({
+  roleDetails,
+  stateById,
+  selectedStateId,
+  onStateSelect,
+  stateOrder = [],
+  highestUnlockedIndex = 0,
+}) {
   const [hovered, setHovered] = useState(null);
+  const [completedSegments, setCompletedSegments] = useState(() => Math.max(0, highestUnlockedIndex));
+  const [drawingSegmentIndex, setDrawingSegmentIndex] = useState(null);
+  const [drawingProgress, setDrawingProgress] = useState(0);
+  const [movingSegmentIndex, setMovingSegmentIndex] = useState(null);
+  const [movingProgress, setMovingProgress] = useState(0);
+  const [pathLengths, setPathLengths] = useState({});
+  const pathRefs = useRef([]);
+  const previousUnlockedIndex = useRef(Math.max(0, highestUnlockedIndex));
+  const mapId = useId().replace(/:/g, '');
 
   const skillLookup = useMemo(() => {
     const pairs = (roleDetails?.state_requirements || []).map((req) => {
@@ -85,6 +196,39 @@ export default function India3DMap({ roleDetails, stateById, selectedStateId, on
       mappedSkill,
     };
   }), [skillLookup]);
+
+  const topicStates = useMemo(
+    () =>
+      stateOrder.map((stateId, index) => {
+        const mapName = INDIA_SKILL_STATES[stateId];
+        const mapState = states.find((item) => item.name === mapName);
+        const stateDetails = stateById.get(stateId);
+        if (!mapState || !stateDetails) return null;
+        return {
+          index,
+          id: stateId,
+          title: stateDetails.title,
+          name: mapState.name,
+          cx: mapState.cx,
+          cy: mapState.cy,
+        };
+      }).filter(Boolean),
+    [stateById, stateOrder, states]
+  );
+
+  const routeSegments = useMemo(
+    () =>
+      topicStates.slice(0, -1).map((from, index) => {
+        const to = topicStates[index + 1];
+        return {
+          index,
+          from,
+          to,
+          d: buildRoutePath(from, to),
+        };
+      }),
+    [topicStates]
+  );
 
   const labelItems = useMemo(() => {
     const items = [];
@@ -119,6 +263,97 @@ export default function India3DMap({ roleDetails, stateById, selectedStateId, on
     return items;
   }, [states]);
 
+  useEffect(() => {
+    const nextLengths = {};
+    routeSegments.forEach((segment, index) => {
+      const pathNode = pathRefs.current[index];
+      if (pathNode) {
+        nextLengths[index] = pathNode.getTotalLength();
+      }
+    });
+    setPathLengths(nextLengths);
+  }, [routeSegments]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function run() {
+      const nextIndex = Math.max(0, Math.min(highestUnlockedIndex, topicStates.length - 1));
+      const previousIndex = previousUnlockedIndex.current;
+
+      if (nextIndex <= previousIndex) {
+        setCompletedSegments(nextIndex);
+        setDrawingSegmentIndex(null);
+        setDrawingProgress(0);
+        setMovingSegmentIndex(null);
+        setMovingProgress(0);
+        previousUnlockedIndex.current = nextIndex;
+        return;
+      }
+
+      for (let segmentIndex = previousIndex; segmentIndex < nextIndex; segmentIndex += 1) {
+        if (cancelled) return;
+        setDrawingSegmentIndex(segmentIndex);
+        setDrawingProgress(0);
+        await animateValue(DRAW_DURATION_MS, (value) => {
+          if (!cancelled) setDrawingProgress(value);
+        });
+        if (cancelled) return;
+        setCompletedSegments(segmentIndex + 1);
+        setDrawingSegmentIndex(null);
+        setMovingSegmentIndex(segmentIndex);
+        setMovingProgress(0);
+        await animateValue(MOVE_DURATION_MS, (value) => {
+          if (!cancelled) setMovingProgress(value);
+        });
+        if (cancelled) return;
+        setMovingSegmentIndex(null);
+        setMovingProgress(0);
+        previousUnlockedIndex.current = segmentIndex + 1;
+      }
+    }
+
+    run();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [highestUnlockedIndex, topicStates.length]);
+
+  const bikerState = useMemo(() => {
+    if (!topicStates.length) return null;
+
+    if (movingSegmentIndex !== null) {
+      const pathNode = pathRefs.current[movingSegmentIndex];
+      const totalLength = pathLengths[movingSegmentIndex];
+      if (pathNode && totalLength) {
+        const currentLength = totalLength * movingProgress;
+        const point = pathNode.getPointAtLength(currentLength);
+        const tangentPoint = pathNode.getPointAtLength(Math.min(totalLength, currentLength + 1.5));
+        return {
+          position: { x: point.x, y: point.y },
+          rotation: (Math.atan2(tangentPoint.y - point.y, tangentPoint.x - point.x) * 180) / Math.PI,
+        };
+      }
+    }
+
+    if (drawingSegmentIndex !== null) {
+      const startNode = topicStates[drawingSegmentIndex];
+      const nextNode = topicStates[drawingSegmentIndex + 1] || startNode;
+      return {
+        position: { x: startNode.cx, y: startNode.cy },
+        rotation: (Math.atan2(nextNode.cy - startNode.cy, nextNode.cx - startNode.cx) * 180) / Math.PI,
+      };
+    }
+
+    const activeNode = topicStates[Math.max(0, Math.min(highestUnlockedIndex, topicStates.length - 1))];
+    const previousNode = topicStates[Math.max(0, Math.min(highestUnlockedIndex - 1, topicStates.length - 1))] || activeNode;
+    return {
+      position: { x: activeNode.cx, y: activeNode.cy },
+      rotation: (Math.atan2(activeNode.cy - previousNode.cy, activeNode.cx - previousNode.cx || 1) * 180) / Math.PI,
+    };
+  }, [drawingSegmentIndex, highestUnlockedIndex, movingProgress, movingSegmentIndex, pathLengths, topicStates]);
+
   return (
     <div className="india-3d-map-shell">
       <div className="india-3d-map-stage">
@@ -129,17 +364,20 @@ export default function India3DMap({ roleDetails, stateById, selectedStateId, on
           aria-label="India 3D map"
         >
           <defs>
-            <radialGradient id="indiaSea" cx="50%" cy="40%" r="80%">
+            <radialGradient id={`indiaSea-${mapId}`} cx="50%" cy="40%" r="80%">
               <stop offset="0%" stopColor="#eefbff" />
               <stop offset="100%" stopColor="#d9f2ff" />
             </radialGradient>
-            <linearGradient id="indiaShine" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id={`indiaShine-${mapId}`} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#ffffff" stopOpacity="0.55" />
               <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
             </linearGradient>
+            <filter id={`indiaRoadGlow-${mapId}`} x="-40%" y="-40%" width="180%" height="180%">
+              <feDropShadow dx="0" dy="8" stdDeviation="8" floodColor="#6ab8e7" floodOpacity="0.28" />
+            </filter>
           </defs>
 
-          <rect width="1000" height="1100" fill="url(#indiaSea)" rx="32" />
+          <rect width="1000" height="1100" fill={`url(#indiaSea-${mapId})`} rx="32" />
           <g opacity="0.22">
             {Array.from({ length: 30 }).map((_, row) =>
               Array.from({ length: 28 }).map((__, col) => (
@@ -195,7 +433,7 @@ export default function India3DMap({ roleDetails, stateById, selectedStateId, on
                   cursor: state.mappedSkill ? 'pointer' : 'default',
                   transition: 'transform 350ms cubic-bezier(0.34,1.56,0.64,1)',
                   transform: isHover ? `translateY(-${HOVER_LIFT}px)` : 'translateY(0)',
-                  animation: `indiaPopIn 0.8s cubic-bezier(0.34,1.56,0.64,1) both`,
+                  animation: 'indiaPopIn 0.8s cubic-bezier(0.34,1.56,0.64,1) both',
                   animationDelay: `${index * 35}ms`,
                 }}
               >
@@ -210,11 +448,63 @@ export default function India3DMap({ roleDetails, stateById, selectedStateId, on
                     transition: 'filter 200ms ease',
                   }}
                 />
-                <path d={state.d} fill="url(#indiaShine)" pointerEvents="none" />
+                <path d={state.d} fill={`url(#indiaShine-${mapId})`} pointerEvents="none" />
                 <path d={state.d} fill="transparent" stroke="transparent" strokeWidth={8} />
               </g>
             );
           })}
+
+          <g className="india-map-road-layer" filter={`url(#indiaRoadGlow-${mapId})`}>
+            {routeSegments.map((segment) => {
+              const length = pathLengths[segment.index] || 0;
+              const isBuilt = segment.index < completedSegments;
+              const isDrawing = segment.index === drawingSegmentIndex;
+              const isMoving = segment.index === movingSegmentIndex;
+              const isVisible = isBuilt || isDrawing || isMoving;
+              if (!isVisible) return null;
+
+              const progress = isDrawing ? drawingProgress : 1;
+              const strokeStyle = length
+                ? {
+                    strokeDasharray: length,
+                    strokeDashoffset: length * (1 - progress),
+                  }
+                : undefined;
+
+              return (
+                <g key={segmentKey(segment.from.id, segment.to.id)}>
+                  <path
+                    ref={(node) => {
+                      pathRefs.current[segment.index] = node;
+                    }}
+                    d={segment.d}
+                    className="india-topic-road-base"
+                  />
+                  <path d={segment.d} className="india-topic-road-lane" style={strokeStyle} />
+                  <path d={segment.d} className="india-topic-road-progress" style={strokeStyle} />
+                </g>
+              );
+            })}
+          </g>
+
+          <g className="india-map-city-layer">
+            {topicStates.map((topic, index) => {
+              const locked = index > highestUnlockedIndex;
+              const active = index === highestUnlockedIndex;
+              const completed = index < highestUnlockedIndex;
+              return (
+                <g
+                  key={topic.id}
+                  className={`india-map-city${completed ? ' completed' : ''}${active ? ' active' : ''}${locked ? ' locked' : ''}`}
+                  transform={`translate(${topic.cx} ${topic.cy})`}
+                >
+                  <circle r="15" className="india-map-city-aura" />
+                  <circle r="9" className="india-map-city-core" />
+                  <circle r="4.2" className="india-map-city-dot" />
+                </g>
+              );
+            })}
+          </g>
 
           {labelItems.map((item, index) => {
             if (!item.label) return null;
@@ -227,7 +517,7 @@ export default function India3DMap({ roleDetails, stateById, selectedStateId, on
                 style={{
                   transition: 'transform 350ms cubic-bezier(0.34,1.56,0.64,1)',
                   transform: isHover ? `translateY(-${HOVER_LIFT}px)` : 'translateY(0)',
-                  animation: `indiaFadeUp 0.6s ease-out both`,
+                  animation: 'indiaFadeUp 0.6s ease-out both',
                   animationDelay: `${800 + index * 25}ms`,
                 }}
               >
@@ -255,11 +545,13 @@ export default function India3DMap({ roleDetails, stateById, selectedStateId, on
               </g>
             );
           })}
+
+          <RoadBike position={bikerState?.position} rotation={bikerState?.rotation || 0} />
         </svg>
 
         <div className="india-3d-map-badge">
           <span>India 3D Skill Map</span>
-          <small>Click highlighted states to switch skills</small>
+          <small>Roads build as each skill state unlocks</small>
         </div>
 
         {hovered && (

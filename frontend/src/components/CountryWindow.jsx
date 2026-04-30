@@ -354,30 +354,10 @@ function ProgressWindow({
   }
 
   const nodes = stateDetails.nodes || [];
-  const edges = stateDetails.edges || [];
   const conceptPlan = getConceptLearningPlan(stateDetails);
   const practiceResources = getPracticeResources(stateDetails);
   const completedSet = new Set(completedCities || []);
   const unlockedSet = new Set(unlockedCities || [nodes[0]?.id].filter(Boolean));
-  const levels = buildLevels(nodes, edges);
-  const grouped = new Map();
-  nodes.forEach((node) => {
-    const level = levels.get(node.id) || 0;
-    if (!grouped.has(level)) grouped.set(level, []);
-    grouped.get(level).push(node);
-  });
-
-  const cols = [...grouped.keys()].sort((a, b) => a - b);
-  const positions = new Map();
-  cols.forEach((colId, colIndex) => {
-    grouped.get(colId).forEach((node, rowIndex) => {
-      positions.set(node.id, {
-        x: 100 + colIndex * 170,
-        y: 80 + rowIndex * 92,
-      });
-    });
-  });
-
   return (
     <section className="game-window">
       <div className="window-bar">
@@ -408,46 +388,6 @@ function ProgressWindow({
             <strong>Clear</strong>
             <small>beat the state assessment</small>
           </article>
-        </div>
-
-        <div className="path-shell">
-          <svg width="100%" height={Math.max(320, 150 + nodes.length * 40)} viewBox={`0 0 820 ${Math.max(320, 150 + nodes.length * 40)}`}>
-            <defs>
-              <marker id="window-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-                <path d="M0,0 L8,4 L0,8 Z" fill="#56b8ff" />
-              </marker>
-            </defs>
-            {edges.map(([from, to]) => {
-              const a = positions.get(from);
-              const b = positions.get(to);
-              if (!a || !b) return null;
-              return (
-                <line
-                  key={`${from}-${to}`}
-                  x1={a.x + 42}
-                  y1={a.y}
-                  x2={b.x - 42}
-                  y2={b.y}
-                  className="state-path-edge"
-                  markerEnd="url(#window-arrow)"
-                />
-              );
-            })}
-            {nodes.map((node, index) => {
-              const point = positions.get(node.id);
-              return (
-                <g key={node.id} className="animated-node" style={{ '--delay': `${index * 80}ms` }}>
-                  <circle cx={point.x} cy={point.y} r="30" className="city-node" />
-                  <text x={point.x} y={point.y - 2} textAnchor="middle" className="city-label">
-                    {index + 1}
-                  </text>
-                  <text x={point.x} y={point.y + 52} textAnchor="middle" className="city-meta">
-                    {node.title}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
         </div>
 
         <div className="level-list">
@@ -867,6 +807,8 @@ export default function CountryWindow({ countryId }) {
                 stateById={stateById}
                 selectedStateId={selectedStateId}
                 onStateSelect={handleSelectState}
+                stateOrder={stateOrder}
+                highestUnlockedIndex={highestUnlockedIndex}
               />
             ) : useKoreaCraftedMap ? (
               <Korea3DMap

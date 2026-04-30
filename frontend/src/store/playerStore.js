@@ -54,6 +54,7 @@ export const usePlayerStore = create(
           unlockedSkills: Array.from(new Set([...state.unlockedSkills, skillId])),
         })),
       setCurrentRole: (roleId) => set({ currentRole: roleId }),
+      setUsername: (username) => set({ username: username?.trim() || 'QuestPilot' }),
       setAvatar: (avatar) => set({ avatar: avatar?.slice(0, 1)?.toUpperCase() || 'N' }),
       addMistake: (mistake) =>
         set((state) => ({
