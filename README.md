@@ -26,6 +26,14 @@ When this project is reopened in a fresh chat, use this order:
 7. Open [frontend/src/data/assessmentQuestionBank.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentQuestionBank.js) for the assessment content.
 8. Open [frontend/src/data/learningResources.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/learningResources.js) for the concept-level lesson catalog, fast-learning sites, and note helpers.
 9. Open [frontend/src/components/TutorChatPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx) and [backend/services/tutor_service.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/tutor_service.py) for the tutor flow.
+2. Open [frontend/src/App.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/App.jsx) for the top-level window flow.
+3. Open [frontend/src/components/WorldMap.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/WorldMap.jsx) for the lobby globe.
+4. Open [frontend/src/components/CountryWindow.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx) for the main gameplay loop.
+5. Open [frontend/src/store/playerStore.js](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/store/playerStore.js) for player identity, XP, unlocks, and persistence.
+6. Open [backend/data/role_blueprints.json](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/data/role_blueprints.json) and [backend/data/state_graphs.json](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/data/state_graphs.json) for the actual skill roadmap.
+7. Open [frontend/src/data/assessmentQuestionBank.js](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/data/assessmentQuestionBank.js) for the assessment content.
+8. Open [frontend/src/data/learningResources.js](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/data/learningResources.js) for the YouTube lesson packs and note helpers.
+9. Open [frontend/src/components/TutorChatPanel.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx) and [backend/services/tutor_service.py](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/services/tutor_service.py) for the tutor flow.
 
 ## Product Architecture Target
 
@@ -44,7 +52,7 @@ The current rebuild already covers meaningful parts of the first 5. Social + ret
 
 ### 1. Identity System
 
-Implemented in [frontend/src/store/playerStore.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/store/playerStore.js).
+Implemented in [frontend/src/store/playerStore.js](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/store/playerStore.js).
 
 Current player state includes:
 
@@ -71,7 +79,7 @@ Current capabilities:
 
 ### 2. Exploration System
 
-The world lobby is in [frontend/src/components/WorldMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/WorldMap.jsx).
+The world lobby is in [frontend/src/components/WorldMap.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/WorldMap.jsx).
 
 Current lobby behavior:
 
@@ -82,11 +90,11 @@ Current lobby behavior:
 - active countries glow more strongly
 - clicking a country opens a dedicated game tab
 
-Top-level lobby shell is in [frontend/src/App.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/App.jsx).
+Top-level lobby shell is in [frontend/src/App.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/App.jsx).
 
 ### 3. Gameplay System
 
-The main country gameplay screen is in [frontend/src/components/CountryWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx).
+The main country gameplay screen is in [frontend/src/components/CountryWindow.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx).
 
 Current game loop:
 
@@ -103,21 +111,21 @@ Current game loop:
 
 Current minigames:
 
-- [frontend/src/minigames/CodePuzzle.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/CodePuzzle.jsx)
-- [frontend/src/minigames/DragDropLogic.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/DragDropLogic.jsx)
-- [frontend/src/minigames/DebugChallenge.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/DebugChallenge.jsx)
-- [frontend/src/minigames/ArchitectureArena.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/ArchitectureArena.jsx)
-- [frontend/src/minigames/PromptDuel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/PromptDuel.jsx)
-- [frontend/src/minigames/DataDetective.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/DataDetective.jsx)
-- [frontend/src/minigames/ThreatHunt.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/ThreatHunt.jsx)
-- [frontend/src/minigames/ModelSculptor.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/ModelSculptor.jsx)
-- [frontend/src/minigames/ChainBuilder.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/ChainBuilder.jsx)
+- [frontend/src/minigames/CodePuzzle.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/minigames/CodePuzzle.jsx)
+- [frontend/src/minigames/DragDropLogic.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/minigames/DragDropLogic.jsx)
+- [frontend/src/minigames/DebugChallenge.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/minigames/DebugChallenge.jsx)
+- [frontend/src/minigames/ArchitectureArena.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/minigames/ArchitectureArena.jsx)
+- [frontend/src/minigames/PromptDuel.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/minigames/PromptDuel.jsx)
+- [frontend/src/minigames/DataDetective.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/minigames/DataDetective.jsx)
+- [frontend/src/minigames/ThreatHunt.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/minigames/ThreatHunt.jsx)
+- [frontend/src/minigames/ModelSculptor.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/minigames/ModelSculptor.jsx)
+- [frontend/src/minigames/ChainBuilder.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/minigames/ChainBuilder.jsx)
 
 These are lightweight gameplay components for now. They establish the minigame architecture, but they still need deeper subject-specific logic to feel like a full production platform.
 
 ### 4. Progression System
 
-Backend progression logic now exists in [backend/services/progression_engine.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/progression_engine.py).
+Backend progression logic now exists in [backend/services/progression_engine.py](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/services/progression_engine.py).
 
 Current progression rules:
 
@@ -128,19 +136,19 @@ Current progression rules:
 
 API route:
 
-- [backend/api/routes.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/api/routes.py) -> `POST /career-globe/states/{state_id}/progression`
+- [backend/api/routes.py](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/api/routes.py) -> `POST /career-globe/states/{state_id}/progression`
 
 Frontend API helper:
 
-- [frontend/src/api/client.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/api/client.js)
+- [frontend/src/api/client.js](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/api/client.js)
 
 Journey UI:
 
-- [frontend/src/components/SkillJourneyPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/SkillJourneyPanel.jsx)
+- [frontend/src/components/SkillJourneyPanel.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/SkillJourneyPanel.jsx)
 
 ### 5. Assessment System
 
-Assessments are no longer just plain quizzes. The main assessment experience is in [frontend/src/components/AssessmentWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentWindow.jsx).
+Assessments are no longer just plain quizzes. The main assessment experience is in [frontend/src/components/AssessmentWindow.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentWindow.jsx).
 
 Current assessment behavior:
 
@@ -160,12 +168,12 @@ Current assessment behavior:
 
 Assessment window shell:
 
-- [frontend/src/components/AssessmentRouteWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentRouteWindow.jsx)
+- [frontend/src/components/AssessmentRouteWindow.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentRouteWindow.jsx)
 
 Question generation:
 
-- [frontend/src/data/assessmentGenerator.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentGenerator.js)
-- [frontend/src/data/assessmentQuestionBank.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentQuestionBank.js)
+- [frontend/src/data/assessmentGenerator.js](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/data/assessmentGenerator.js)
+- [frontend/src/data/assessmentQuestionBank.js](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/data/assessmentQuestionBank.js)
 
 Current assessment format:
 
@@ -183,13 +191,13 @@ The tutor is now a guided companion, not just a textbox.
 
 Frontend:
 
-- [frontend/src/components/TutorChatPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx)
+- [frontend/src/components/TutorChatPanel.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx)
 
 Backend:
 
-- [backend/services/tutor_service.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/tutor_service.py)
-- [backend/api/routes.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/api/routes.py)
-- [backend/api/schemas.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/api/schemas.py)
+- [backend/services/tutor_service.py](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/services/tutor_service.py)
+- [backend/api/routes.py](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/api/routes.py)
+- [backend/api/schemas.py](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/api/schemas.py)
 
 Current tutor features:
 
@@ -213,11 +221,11 @@ Current provider order:
 
 These are the main content files:
 
-- [backend/data/world_map.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/world_map.json)
+- [backend/data/world_map.json](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/data/world_map.json)
   - continent and country mapping
-- [backend/data/role_blueprints.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/role_blueprints.json)
+- [backend/data/role_blueprints.json](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/data/role_blueprints.json)
   - job titles, summaries, tools, state requirements, and professional role structure
-- [backend/data/state_graphs.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/state_graphs.json)
+- [backend/data/state_graphs.json](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/data/state_graphs.json)
   - state-level city graphs and learning nodes
 
 These are the current major job countries:
@@ -290,15 +298,15 @@ Fast-learning sites currently include examples like:
 
 Map rendering components:
 
-- [frontend/src/components/CountryMap3D.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryMap3D.jsx)
-- [frontend/src/components/India3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/India3DMap.jsx)
-- [frontend/src/components/Korea3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/Korea3DMap.jsx)
-- [frontend/src/components/China3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/China3DMap.jsx)
-- [frontend/src/components/SaudiArabia3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/SaudiArabia3DMap.jsx)
+- [frontend/src/components/CountryMap3D.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/CountryMap3D.jsx)
+- [frontend/src/components/India3DMap.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/India3DMap.jsx)
+- [frontend/src/components/Korea3DMap.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/Korea3DMap.jsx)
+- [frontend/src/components/China3DMap.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/China3DMap.jsx)
+- [frontend/src/components/SaudiArabia3DMap.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/SaudiArabia3DMap.jsx)
 
 Local map assets:
 
-- [frontend/public/maps](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/public/maps)
+- [frontend/public/maps](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/public/maps)
 
 Current map status:
 
@@ -311,7 +319,7 @@ Current map status:
 
 ## UI Layer
 
-Global styling is in [frontend/src/styles.css](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/styles.css).
+Global styling is in [frontend/src/styles.css](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/styles.css).
 
 Current UI direction:
 
@@ -325,48 +333,48 @@ This is more game-like than before, but it still needs another serious polish pa
 
 ## Backend File Guide
 
-- [backend/main.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/main.py)
+- [backend/main.py](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/main.py)
   - FastAPI app startup
-- [backend/api/routes.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/api/routes.py)
+- [backend/api/routes.py](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/api/routes.py)
   - health, world map, role details, state details, tutor chat, progression
-- [backend/api/schemas.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/api/schemas.py)
+- [backend/api/schemas.py](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/api/schemas.py)
   - tutor request schema, progression request schema, unlock/readiness schemas
-- [backend/services/data_loader.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/data_loader.py)
+- [backend/services/data_loader.py](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/services/data_loader.py)
   - JSON loading
-- [backend/services/progression_engine.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/progression_engine.py)
+- [backend/services/progression_engine.py](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/services/progression_engine.py)
   - XP and node unlocking logic
-- [backend/services/tutor_service.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/tutor_service.py)
+- [backend/services/tutor_service.py](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/services/tutor_service.py)
   - Nova backend logic, provider selection, grounded fallback
-- [backend/services/question_bank_service.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/question_bank_service.py)
+- [backend/services/question_bank_service.py](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/backend/services/question_bank_service.py)
   - question slice utilities
 
 ## Frontend File Guide
 
-- [frontend/src/App.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/App.jsx)
+- [frontend/src/App.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/App.jsx)
   - lobby + country window + assessment window routing
-- [frontend/src/components/WorldMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/WorldMap.jsx)
+- [frontend/src/components/WorldMap.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/WorldMap.jsx)
   - lobby globe and country launch flow
-- [frontend/src/components/CountryWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx)
+- [frontend/src/components/CountryWindow.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx)
   - main playable country screen
-- [frontend/src/components/SkillJourneyPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/SkillJourneyPanel.jsx)
+- [frontend/src/components/SkillJourneyPanel.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/SkillJourneyPanel.jsx)
   - road progression display
-- [frontend/src/components/AssessmentRouteWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentRouteWindow.jsx)
+- [frontend/src/components/AssessmentRouteWindow.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentRouteWindow.jsx)
   - separate assessment tab shell and anti-cheat locking
-- [frontend/src/components/AssessmentWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentWindow.jsx)
+- [frontend/src/components/AssessmentWindow.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentWindow.jsx)
   - boss fight assessment gameplay
-- [frontend/src/components/TutorChatPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx)
+- [frontend/src/components/TutorChatPanel.jsx](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx)
   - Nova chat UI
-- [frontend/src/store/playerStore.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/store/playerStore.js)
+- [frontend/src/store/playerStore.js](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/store/playerStore.js)
   - persistent player identity and progress
-- [frontend/src/minigames](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames)
+- [frontend/src/minigames](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/minigames)
   - quest minigame components
-- [frontend/src/data/learningResources.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/learningResources.js)
-  - concept-level lesson catalog, fast-learning sites, and concept note helpers
-- [frontend/src/api/client.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/api/client.js)
+- [frontend/src/data/learningResources.js](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/data/learningResources.js)
+  - curated YouTube lesson pack per skill-state plus notes helpers
+- [frontend/src/api/client.js](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/api/client.js)
   - frontend API wrapper
-- [frontend/src/data/worldConfig.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/worldConfig.js)
+- [frontend/src/data/worldConfig.js](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/data/worldConfig.js)
   - world/country role config and realm metadata
-- [frontend/src/data/assessmentLock.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentLock.js)
+- [frontend/src/data/assessmentLock.js](C:/Users/RISHITHA/OneDrive/Desktop/SkillQuest-Ai/frontend/src/data/assessmentLock.js)
   - assessment lock state used to disable tutor during tests
 
 ## Tutor Setup
@@ -376,7 +384,7 @@ This is more game-like than before, but it still needs another serious polish pa
 Use Gemini free tier with an API key:
 
 ```powershell
-cd C:\Users\admin\Desktop\SkillQuest-Ai
+cd C:\Users\RISHITHA\OneDrive\Desktop\SkillQuest-Ai
 $env:GEMINI_API_KEY="your_key_here"
 $env:GEMINI_MODEL="gemini-2.5-flash-lite"
 python start_backend.py
@@ -388,7 +396,7 @@ Use Ollama if desired:
 
 ```powershell
 ollama pull qwen2.5:3b
-cd C:\Users\admin\Desktop\SkillQuest-Ai
+cd C:\Users\RISHITHA\OneDrive\Desktop\SkillQuest-Ai
 $env:OLLAMA_MODEL="qwen2.5:3b"
 python start_backend.py
 ```
@@ -398,7 +406,7 @@ python start_backend.py
 Backend:
 
 ```powershell
-cd C:\Users\admin\Desktop\SkillQuest-Ai
+cd C:\Users\RISHITHA\OneDrive\Desktop\SkillQuest-Ai
 pip install -r backend\requirements.txt
 python start_backend.py
 ```
@@ -406,7 +414,7 @@ python start_backend.py
 Frontend:
 
 ```powershell
-cd C:\Users\admin\Desktop\SkillQuest-Ai\frontend
+cd C:\Users\RISHITHA\OneDrive\Desktop\SkillQuest-Ai\frontend
 npm install
 npm start
 ```
@@ -488,11 +496,11 @@ AI:
 After major changes, run:
 
 ```powershell
-cd C:\Users\admin\Desktop\SkillQuest-Ai\frontend
+cd C:\Users\RISHITHA\OneDrive\Desktop\SkillQuest-Ai\frontend
 npm run build
 ```
 
 ```powershell
-cd C:\Users\admin\Desktop\SkillQuest-Ai
+cd C:\Users\RISHITHA\OneDrive\Desktop\SkillQuest-Ai
 python -m compileall backend
 ```
