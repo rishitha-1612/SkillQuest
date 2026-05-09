@@ -1,6 +1,6 @@
 # SkillQuest AI
 
-SkillQuest AI is being rebuilt as a professional learning-game platform inspired by the clarity of Duolingo, the challenge loop of LeetCode, and the world-building feel of a game map.
+SkillQuest AI is being built as a professional learning-game platform inspired by the clarity of Duolingo, the challenge loop of LeetCode, and the world-building feel of a game map.
 
 Current core fantasy:
 
