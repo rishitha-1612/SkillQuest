@@ -13,19 +13,7 @@ Current core fantasy:
 
 The goal is not a generic course site. The goal is a structured gaming platform where users learn job-ready skills by progressing through worlds, quests, minigames, and boss battles.
 
-## Resume Here
 
-When this project is reopened in a fresh chat, use this order:
-
-1. Read this README.
-2. Open [frontend/src/App.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/App.jsx) for the top-level window flow.
-3. Open [frontend/src/components/WorldMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/WorldMap.jsx) for the lobby globe.
-4. Open [frontend/src/components/CountryWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx) for the main gameplay loop.
-5. Open [frontend/src/store/playerStore.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/store/playerStore.js) for player identity, XP, unlocks, and persistence.
-6. Open [backend/data/role_blueprints.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/role_blueprints.json) and [backend/data/state_graphs.json](C:/Users/admin/Desktop/SkillQuest-Ai/backend/data/state_graphs.json) for the actual skill roadmap.
-7. Open [frontend/src/data/assessmentQuestionBank.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentQuestionBank.js) for the assessment content.
-8. Open [frontend/src/data/learningResources.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/learningResources.js) for the concept-level lesson catalog, fast-learning sites, and note helpers.
-9. Open [frontend/src/components/TutorChatPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx) and [backend/services/tutor_service.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/tutor_service.py) for the tutor flow.
 
 ## Product Architecture Target
 
@@ -42,9 +30,6 @@ The current rebuild already covers meaningful parts of the first 5. Social + ret
 
 ## What Exists Right Now
 
-### 1. Identity System
-
-Implemented in [frontend/src/store/playerStore.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/store/playerStore.js).
 
 Current player state includes:
 
@@ -101,23 +86,10 @@ Current game loop:
 - open boss assessment
 - unlock the next skill-state
 
-Current minigames:
-
-- [frontend/src/minigames/CodePuzzle.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/CodePuzzle.jsx)
-- [frontend/src/minigames/DragDropLogic.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/DragDropLogic.jsx)
-- [frontend/src/minigames/DebugChallenge.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/DebugChallenge.jsx)
-- [frontend/src/minigames/ArchitectureArena.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/ArchitectureArena.jsx)
-- [frontend/src/minigames/PromptDuel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/PromptDuel.jsx)
-- [frontend/src/minigames/DataDetective.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/DataDetective.jsx)
-- [frontend/src/minigames/ThreatHunt.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/ThreatHunt.jsx)
-- [frontend/src/minigames/ModelSculptor.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/ModelSculptor.jsx)
-- [frontend/src/minigames/ChainBuilder.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames/ChainBuilder.jsx)
-
 These are lightweight gameplay components for now. They establish the minigame architecture, but they still need deeper subject-specific logic to feel like a full production platform.
 
 ### 4. Progression System
 
-Backend progression logic now exists in [backend/services/progression_engine.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/progression_engine.py).
 
 Current progression rules:
 
@@ -284,21 +256,7 @@ Fast-learning sites currently include examples like:
 - AWS Skill Builder
 - Microsoft Learn
 - Excalidraw
-- ByteByteGo
 
-## Country and Map Systems
-
-Map rendering components:
-
-- [frontend/src/components/CountryMap3D.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryMap3D.jsx)
-- [frontend/src/components/India3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/India3DMap.jsx)
-- [frontend/src/components/Korea3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/Korea3DMap.jsx)
-- [frontend/src/components/China3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/China3DMap.jsx)
-- [frontend/src/components/SaudiArabia3DMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/SaudiArabia3DMap.jsx)
-
-Local map assets:
-
-- [frontend/public/maps](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/public/maps)
 
 Current map status:
 
@@ -340,34 +298,6 @@ This is more game-like than before, but it still needs another serious polish pa
 - [backend/services/question_bank_service.py](C:/Users/admin/Desktop/SkillQuest-Ai/backend/services/question_bank_service.py)
   - question slice utilities
 
-## Frontend File Guide
-
-- [frontend/src/App.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/App.jsx)
-  - lobby + country window + assessment window routing
-- [frontend/src/components/WorldMap.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/WorldMap.jsx)
-  - lobby globe and country launch flow
-- [frontend/src/components/CountryWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/CountryWindow.jsx)
-  - main playable country screen
-- [frontend/src/components/SkillJourneyPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/SkillJourneyPanel.jsx)
-  - road progression display
-- [frontend/src/components/AssessmentRouteWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentRouteWindow.jsx)
-  - separate assessment tab shell and anti-cheat locking
-- [frontend/src/components/AssessmentWindow.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/AssessmentWindow.jsx)
-  - boss fight assessment gameplay
-- [frontend/src/components/TutorChatPanel.jsx](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/components/TutorChatPanel.jsx)
-  - Nova chat UI
-- [frontend/src/store/playerStore.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/store/playerStore.js)
-  - persistent player identity and progress
-- [frontend/src/minigames](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/minigames)
-  - quest minigame components
-- [frontend/src/data/learningResources.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/learningResources.js)
-  - concept-level lesson catalog, fast-learning sites, and concept note helpers
-- [frontend/src/api/client.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/api/client.js)
-  - frontend API wrapper
-- [frontend/src/data/worldConfig.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/worldConfig.js)
-  - world/country role config and realm metadata
-- [frontend/src/data/assessmentLock.js](C:/Users/admin/Desktop/SkillQuest-Ai/frontend/src/data/assessmentLock.js)
-  - assessment lock state used to disable tutor during tests
 
 ## Tutor Setup
 
