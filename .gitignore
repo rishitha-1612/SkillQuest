@@ -19,3 +19,5 @@ build/
 .env.*
 .DS_Store
 Thumbs.db
+hf-space-clean/
+hf-space-inspect/

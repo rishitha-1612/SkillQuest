@@ -323,6 +323,7 @@ export default function App() {
   const countryId = params.get('country');
   const stateId = params.get('state');
   const view = params.get('view');
+  const preserveWindowDestination = Boolean(windowMode);
 
   function updateView(nextView, options = {}) {
     const nextParams = new URLSearchParams(window.location.search);
@@ -343,12 +344,12 @@ export default function App() {
 
   function openLogin() {
     setAuthError('');
-    updateView('login', { resetWindowParams: true });
+    updateView('login', { resetWindowParams: !preserveWindowDestination });
   }
 
   function openSignup() {
     setAuthError('');
-    updateView('signup', { resetWindowParams: true });
+    updateView('signup', { resetWindowParams: !preserveWindowDestination });
   }
 
   function openHome() {
@@ -364,7 +365,17 @@ export default function App() {
       setSession({ user: response.user });
       setUsername(response.user.username);
       setAvatar(response.user.username?.[0] || response.user.full_name?.[0] || 'Q');
-      updateView('lobby', { resetWindowParams: true });
+      const nextParams = new URLSearchParams(window.location.search);
+      nextParams.delete('view');
+      if (!preserveWindowDestination) {
+        nextParams.set('view', 'lobby');
+        nextParams.delete('window');
+        nextParams.delete('country');
+        nextParams.delete('state');
+      }
+      const query = nextParams.toString();
+      const nextUrl = `${window.location.pathname}${query ? `?${query}` : ''}`;
+      window.location.assign(nextUrl);
     } catch (error) {
       setAuthError(error.message.replace(/^Error:\s*/, ''));
     } finally {

@@ -3,7 +3,9 @@ from __future__ import annotations
 from contextlib import asynccontextmanager
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.api.routes import router
@@ -56,11 +58,35 @@ app.add_middleware(
 
 app.include_router(router)
 
+FRONTEND_DIST = Path(__file__).resolve().parents[1] / "frontend" / "dist"
 
-@app.get("/")
-def root():
+if FRONTEND_DIST.exists():
+    assets_dir = FRONTEND_DIST / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="frontend-assets")
+
+
+def serve_frontend_index():
+    index_file = FRONTEND_DIST / "index.html"
+    if index_file.exists():
+        return FileResponse(index_file)
     return {
         "name": "Career Globe Backend",
         "docs": "/docs",
         "health": "/career-globe/health",
     }
+
+
+@app.get("/")
+def root():
+    return serve_frontend_index()
+
+
+@app.get("/{full_path:path}")
+def spa_fallback(full_path: str):
+    if full_path.startswith(("career-globe", "docs", "openapi.json", "redoc", "assets")):
+        raise HTTPException(status_code=404, detail="Not Found")
+    requested_file = FRONTEND_DIST / full_path
+    if requested_file.exists() and requested_file.is_file():
+        return FileResponse(requested_file)
+    return serve_frontend_index()

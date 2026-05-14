@@ -46,6 +46,10 @@ def _normalize_username(username: str) -> str:
     return username.strip()
 
 
+def _normalize_username_lookup(username: str) -> str:
+    return username.strip().lower()
+
+
 def _hash_password(password: str, salt: str) -> str:
     return hashlib.pbkdf2_hmac(
         "sha256",
