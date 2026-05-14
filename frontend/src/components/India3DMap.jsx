@@ -2,11 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { INDIA_STATES } from '../data/indiaStates';
 
 const PALETTE = [
-  ['#dff8c7', '#63b840'],
-  ['#d8f6ed', '#4cae8a'],
-  ['#dff1ff', '#5ca6e8'],
-  ['#f8f0d2', '#c7af45'],
-  ['#ece5ff', '#8477df'],
+  ['#96F08E', '#3AC252'],
 ];
 
 const NORTHEAST = new Set([
@@ -32,9 +28,14 @@ const NORTH = new Set([
 ]);
 
 const GROUP_COLORS = {
-  northeast: ['#d8f6ed', '#4cae8a'],
-  north: ['#dff8c7', '#63b840'],
+  northeast: ['#96F08E', '#3AC252'],
+  north: ['#96F08E', '#3AC252'],
 };
+
+const ACTIVE_FILL = '#96F08E';
+const ACTIVE_BORDER = '#3AC252';
+const INACTIVE_FILL = '#d7dfd2';
+const INACTIVE_BORDER = '#a5b2a0';
 
 const INDIA_SKILL_STATES = {
   python_programming: 'Karnataka',
@@ -191,8 +192,8 @@ export default function India3DMap({
     const mappedSkill = skillLookup.get(state.name);
     return {
       ...state,
-      fill: mappedSkill ? '#9ee86e' : fill,
-      shadow: mappedSkill ? '#5ca236' : shadow,
+      fill: mappedSkill ? ACTIVE_FILL : INACTIVE_FILL,
+      shadow: mappedSkill ? ACTIVE_BORDER : INACTIVE_BORDER,
       mappedSkill,
     };
   }), [skillLookup]);
@@ -231,22 +232,18 @@ export default function India3DMap({
   );
 
   const labelItems = useMemo(() => {
-    const items = [];
-    for (const state of states) {
-      if (state.mappedSkill) {
-        items.push({
-          key: state.name,
-          cx: state.cx,
-          cy: state.cy,
-          shadow: state.shadow,
-          label: state.mappedSkill.title,
-          group: groupOf(state.name),
-          stateName: state.name,
-          mappedSkill: state.mappedSkill,
-        });
-      }
-    }
-    return items;
+    return states
+      .filter((state) => Boolean(state.mappedSkill))
+      .map((state) => ({
+        key: state.name,
+        cx: state.cx,
+        cy: state.cy,
+        shadow: state.shadow,
+        label: state.mappedSkill?.title || '',
+        group: null,
+        stateName: state.name,
+        mappedSkill: state.mappedSkill,
+      }));
   }, [states]);
 
   useEffect(() => {
@@ -383,16 +380,15 @@ export default function India3DMap({
             return (
               <g key={`layer-${layer}`} transform={`translate(0 ${offset})`} pointerEvents="none">
                 {states.map((state) => {
-                  const group = groupOf(state.name);
-                  const isHover = group ? hovered !== null && groupOf(hovered) === group : hovered === state.name;
+                  const isHover = hovered === state.name;
                   const isActive = state.mappedSkill?.id === selectedStateId;
                   return (
                     <path
                       key={`depth-${layer}-${state.name}`}
                       d={state.d}
                       fill={state.shadow}
-                      stroke={isActive ? '#1f5a96' : state.shadow}
-                      strokeWidth={isActive ? 2 : 1}
+                      stroke={state.shadow}
+                      strokeWidth={state.mappedSkill ? 2 : 1.3}
                       strokeLinejoin="round"
                       style={{
                         transition: 'transform 350ms cubic-bezier(0.34,1.56,0.64,1)',
@@ -406,8 +402,7 @@ export default function India3DMap({
           })}
 
           {states.map((state, index) => {
-            const group = groupOf(state.name);
-            const isHover = group ? hovered !== null && groupOf(hovered) === group : hovered === state.name;
+            const isHover = hovered === state.name;
             const isActive = state.mappedSkill?.id === selectedStateId;
             return (
               <g
@@ -426,8 +421,8 @@ export default function India3DMap({
                 <path
                   d={state.d}
                   fill={state.fill}
-                  stroke={group ? state.fill : isActive ? '#1f5a96' : 'white'}
-                  strokeWidth={group ? 0.5 : isActive ? 4 : 2}
+                  stroke={state.mappedSkill ? ACTIVE_BORDER : INACTIVE_BORDER}
+                  strokeWidth={state.mappedSkill ? 2.4 : 1.5}
                   strokeLinejoin="round"
                   style={{
                     filter: isHover ? 'brightness(1.08) saturate(1.05)' : 'none',
@@ -514,8 +509,8 @@ export default function India3DMap({
                   height={24}
                   rx={12}
                   fill="#ffffff"
-                  stroke={isActive ? '#1f5a96' : item.shadow}
-                  strokeWidth={isActive ? 3 : 2}
+                  stroke="#3AC252"
+                  strokeWidth={2}
                 />
                 <text
                   x={item.cx}
@@ -524,7 +519,7 @@ export default function India3DMap({
                   fontFamily="'Nunito', system-ui, sans-serif"
                   fontWeight={800}
                   fontSize={item.group ? 11 : 10}
-                  fill={isActive ? '#1f5a96' : item.shadow}
+                  fill="#2f7d2d"
                 >
                   {item.label.length > 12 ? `${item.label.slice(0, 10)}..` : item.label}
                 </text>
@@ -542,9 +537,7 @@ export default function India3DMap({
 
         {hovered && skillLookup.get(hovered) && (
           <div className="india-3d-map-tooltip">
-            <span>
-              {skillLookup.get(hovered)?.title}
-            </span>
+            <span>{skillLookup.get(hovered)?.title || hovered}</span>
           </div>
         )}
       </div>

@@ -279,12 +279,10 @@ export default function App() {
   const [search, setSearch] = useState(() => window.location.search);
   const [authError, setAuthError] = useState('');
   const [authBusy, setAuthBusy] = useState(false);
-  const authToken = useAuthStore((state) => state.token);
   const authUser = useAuthStore((state) => state.user);
   const authInitialized = useAuthStore((state) => state.initialized);
   const authStatus = useAuthStore((state) => state.status);
   const setSession = useAuthStore((state) => state.setSession);
-  const clearSession = useAuthStore((state) => state.clearSession);
   const markAuthInitialized = useAuthStore((state) => state.markInitialized);
   const setUsername = usePlayerStore((state) => state.setUsername);
   const setAvatar = usePlayerStore((state) => state.setAvatar);
@@ -302,20 +300,15 @@ export default function App() {
     let isMounted = true;
 
     async function bootstrapAuth() {
-      if (!authToken) {
-        markAuthInitialized();
-        return;
-      }
-
       try {
         const response = await api.me();
         if (!isMounted) return;
-        setSession({ token: authToken, user: response.user });
+        setSession({ user: response.user });
         setUsername(response.user.username);
         setAvatar(response.user.username?.[0] || response.user.full_name?.[0] || 'Q');
       } catch (error) {
         if (!isMounted) return;
-        clearSession();
+        markAuthInitialized();
       }
     }
 
@@ -323,7 +316,7 @@ export default function App() {
     return () => {
       isMounted = false;
     };
-  }, [authToken, clearSession, markAuthInitialized, setAvatar, setSession, setUsername]);
+  }, [markAuthInitialized, setAvatar, setSession, setUsername]);
 
   const params = new URLSearchParams(search);
   const windowMode = params.get('window');
@@ -369,7 +362,7 @@ export default function App() {
     setAuthError('');
     try {
       const response = view === 'signup' ? await api.signup(payload) : await api.login(payload);
-      setSession({ token: response.token, user: response.user });
+      setSession({ user: response.user });
       setUsername(response.user.username);
       setAvatar(response.user.username?.[0] || response.user.full_name?.[0] || 'Q');
       const nextParams = new URLSearchParams(window.location.search);
@@ -392,17 +385,17 @@ export default function App() {
 
   const isAuthenticated = authStatus === 'authenticated' && Boolean(authUser);
   const wantsAuthPage = view === 'login' || view === 'signup';
-  const needsAuthGate =
-    !isAuthenticated && (wantsAuthPage || view === 'lobby' || windowMode === 'country' || windowMode === 'assessment');
+  const needsProtectedAuthGate =
+    !isAuthenticated && (view === 'lobby' || windowMode === 'country' || windowMode === 'assessment');
 
   useEffect(() => {
-    const shouldUseLandingMode = !needsAuthGate && view !== 'lobby' && !windowMode;
+    const shouldUseLandingMode = !wantsAuthPage && !needsProtectedAuthGate && view !== 'lobby' && !windowMode;
     document.body.classList.toggle('landing-mode', shouldUseLandingMode);
 
     return () => {
       document.body.classList.remove('landing-mode');
     };
-  }, [needsAuthGate, view, windowMode]);
+  }, [needsProtectedAuthGate, view, wantsAuthPage, windowMode]);
 
   if (!authInitialized) {
     return (
@@ -412,7 +405,7 @@ export default function App() {
     );
   }
 
-  if (needsAuthGate) {
+  if (wantsAuthPage || needsProtectedAuthGate) {
     return (
       <AuthPage
         mode={view === 'signup' ? 'signup' : 'login'}

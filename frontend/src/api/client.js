@@ -1,23 +1,17 @@
-import { getStoredAuthToken, useAuthStore } from '../store/authStore';
+const DEFAULT_API_BASE =
+  typeof window === 'undefined'
+    ? 'http://127.0.0.1:8010/career-globe'
+    : `${window.location.protocol}//${window.location.hostname}:8010/career-globe`;
 
 const API_BASE =
   import.meta.env.VITE_API_BASE ||
-  '/career-globe';
-
-function getAuthToken() {
-  return useAuthStore.getState().token || getStoredAuthToken();
-}
+  DEFAULT_API_BASE;
 
 function buildHeaders(options = {}) {
-  const headers = {
+  return {
     ...(options.includeJsonHeader === false ? {} : { 'Content-Type': 'application/json' }),
     ...(options.headers || {}),
   };
-  const token = getAuthToken();
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-  return headers;
 }
 
 async function request(path, options) {
@@ -26,6 +20,7 @@ async function request(path, options) {
   try {
     res = await fetch(`${API_BASE}${path}`, {
       headers: buildHeaders({ headers, includeJsonHeader: false }),
+      credentials: 'include',
       ...fetchOptions,
     });
   } catch (error) {
@@ -44,6 +39,7 @@ async function requestJson(path, options) {
   try {
     res = await fetch(`${API_BASE}${path}`, {
       headers: buildHeaders({ headers, includeJsonHeader }),
+      credentials: 'include',
       ...fetchOptions,
     });
   } catch (error) {

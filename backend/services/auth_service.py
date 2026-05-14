@@ -12,6 +12,10 @@ from backend.services.auth_db import get_connection
 
 SESSION_TTL_DAYS = 14
 PBKDF2_ITERATIONS = 120_000
+LOGIN_RATE_LIMIT = 5
+LOGIN_RATE_WINDOW_MINUTES = 15
+SIGNUP_RATE_LIMIT = 5
+SIGNUP_RATE_WINDOW_MINUTES = 60
 
 
 @dataclass
@@ -69,10 +73,109 @@ def _session_token_hash(token: str) -> str:
     return hashlib.sha256(token.encode("utf-8")).hexdigest()
 
 
+def _coerce_datetime(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    return datetime.fromisoformat(value)
+
+
+def _sanitize_rate_key(value: str) -> str:
+    cleaned = value.strip().lower()
+    return cleaned or "unknown"
+
+
+def get_rate_limit_retry_after(*, scope: str, rate_key: str) -> int:
+    now = utc_now()
+    safe_key = _sanitize_rate_key(rate_key)
+
+    with get_connection() as connection:
+        row = connection.execute(
+            """
+            SELECT blocked_until
+            FROM auth_rate_limits
+            WHERE scope = ? AND rate_key = ?
+            """,
+            (scope, safe_key),
+        ).fetchone()
+
+        if row is None:
+            return 0
+
+        blocked_until = _coerce_datetime(row["blocked_until"])
+        if blocked_until is None or blocked_until <= now:
+            connection.execute(
+                "DELETE FROM auth_rate_limits WHERE scope = ? AND rate_key = ?",
+                (scope, safe_key),
+            )
+            return 0
+
+        return max(1, int((blocked_until - now).total_seconds()))
+
+
+def register_rate_limit_failure(*, scope: str, rate_key: str, limit: int, window_minutes: int) -> int:
+    now = utc_now()
+    window = timedelta(minutes=window_minutes)
+    safe_key = _sanitize_rate_key(rate_key)
+
+    with get_connection() as connection:
+        row = connection.execute(
+            """
+            SELECT failures, first_failure_at, blocked_until
+            FROM auth_rate_limits
+            WHERE scope = ? AND rate_key = ?
+            """,
+            (scope, safe_key),
+        ).fetchone()
+
+        failures = 0
+        first_failure_at = now
+        blocked_until = None
+
+        if row is not None:
+            blocked_until = _coerce_datetime(row["blocked_until"])
+            if blocked_until and blocked_until > now:
+                return max(1, int((blocked_until - now).total_seconds()))
+
+            first_failure_at = _coerce_datetime(row["first_failure_at"]) or now
+            if now - first_failure_at >= window:
+                failures = 0
+                first_failure_at = now
+            else:
+                failures = row["failures"]
+
+        failures += 1
+        next_blocked_until = (now + window).isoformat() if failures >= limit else None
+
+        connection.execute(
+            """
+            INSERT INTO auth_rate_limits (scope, rate_key, failures, first_failure_at, blocked_until)
+            VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(scope, rate_key) DO UPDATE SET
+                failures = excluded.failures,
+                first_failure_at = excluded.first_failure_at,
+                blocked_until = excluded.blocked_until
+            """,
+            (scope, safe_key, failures, first_failure_at.isoformat(), next_blocked_until),
+        )
+
+    if next_blocked_until:
+        return max(1, int((datetime.fromisoformat(next_blocked_until) - now).total_seconds()))
+    return 0
+
+
+def clear_rate_limit(*, scope: str, rate_key: str) -> None:
+    safe_key = _sanitize_rate_key(rate_key)
+    with get_connection() as connection:
+        connection.execute(
+            "DELETE FROM auth_rate_limits WHERE scope = ? AND rate_key = ?",
+            (scope, safe_key),
+        )
+
+
 def create_user(*, email: str, username: str, full_name: str, password: str) -> AuthUser:
     email = _normalize_email(email)
     username = _normalize_username(username)
-    username_lookup = _normalize_username_lookup(username)
+    username_lookup = username.lower()
     full_name = full_name.strip()
     salt = secrets.token_hex(16)
     password_hash = _hash_password(password, salt)
