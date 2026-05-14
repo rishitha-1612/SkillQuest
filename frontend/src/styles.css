@@ -1,6 +1,6 @@
 :root {
-  --ink: #f7fbff;
-  --muted: rgba(239, 249, 255, 0.78);
+  --ink: #2f5f3d;
+  --muted: #4f7e5c;
   --surface: rgba(255, 255, 255, 0.14);
   --surface-strong: rgba(255, 255, 255, 0.2);
   --border: rgba(255, 255, 255, 0.24);
@@ -87,6 +87,7 @@ body:not(.landing-mode)::before {
   letter-spacing: 0.02em;
   text-transform: uppercase;
   font-family: "Cinzel Decorative", serif;
+  color: #3AC252;
   text-shadow:
     0 0 16px rgba(163, 230, 53, 0.22),
     0 8px 24px rgba(17, 88, 131, 0.2);
@@ -94,7 +95,7 @@ body:not(.landing-mode)::before {
 
 .hero-text {
   margin: 12px 0 0;
-  color: rgba(244, 251, 255, 0.9);
+  color: #4f7e5c;
   font-size: 1.02rem;
   line-height: 1.7;
 }
@@ -132,7 +133,7 @@ body:not(.landing-mode)::before {
 .mission-card span,
 .mini-stats span {
   display: block;
-  color: rgba(234, 247, 255, 0.72);
+  color: #96F08E;
   font-size: 0.8rem;
   margin-bottom: 6px;
 }
@@ -142,7 +143,7 @@ body:not(.landing-mode)::before {
 .mini-stats strong {
   display: block;
   font-size: 1.15rem;
-  color: #ffffff;
+  color: #3AC252;
   font-family: "Cinzel", serif;
 }
 
@@ -373,7 +374,7 @@ body:not(.landing-mode)::before {
   padding: 12px 16px;
   background: linear-gradient(180deg, #ffffff, #eef9ff);
   border-bottom: 1px solid rgba(117, 189, 243, 0.18);
-  color: #3c6f99;
+  color: #3AC252;
   font-weight: 900;
 }
 
@@ -407,17 +408,19 @@ body:not(.landing-mode)::before {
   border-radius: 18px;
   background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(237,248,255,0.96));
   border: 1px solid rgba(131, 194, 240, 0.2);
-  color: #4b7293;
+  color: #4f7e5c;
 }
 
 .country-map-topline span {
   font-size: 0.84rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  color: #96F08E;
 }
 
 .country-map-topline strong {
   font-size: 1rem;
+  color: #3AC252;
 }
 
 .country-live-map {
@@ -448,13 +451,13 @@ body:not(.landing-mode)::before {
   gap: 12px;
   flex-wrap: wrap;
   margin-bottom: 6px;
-  color: #5f86a7;
+  color: #96F08E;
   font-size: 0.82rem;
   font-weight: 800;
 }
 
 .map-journey-header strong {
-  color: #2f628b;
+  color: #3AC252;
 }
 
 .map-journey-svg {
@@ -512,13 +515,13 @@ body:not(.landing-mode)::before {
 }
 
 .korea-3d-map-badge span {
-  color: #2a618d;
+  color: #3AC252;
   font-size: 0.95rem;
   font-weight: 900;
 }
 
 .korea-3d-map-badge small {
-  color: #6a8eac;
+  color: #96F08E;
   font-weight: 700;
 }
 
@@ -528,7 +531,7 @@ body:not(.landing-mode)::before {
   left: 0;
   pointer-events: none;
   background: rgba(255, 255, 255, 0.96);
-  color: #2f7a64;
+  color: #3AC252;
   font-weight: 800;
   font-size: 12px;
   letter-spacing: 0.01em;
@@ -536,9 +539,9 @@ body:not(.landing-mode)::before {
   padding: 7px 11px;
   border-radius: 999px;
   box-shadow:
-    0 8px 18px -8px rgba(47, 122, 100, 0.35),
-    0 1px 0 rgba(47, 122, 100, 0.08) inset,
-    0 0 0 1px rgba(47, 122, 100, 0.08);
+    0 8px 18px -8px rgba(58, 194, 82, 0.24),
+    0 1px 0 rgba(58, 194, 82, 0.08) inset,
+    0 0 0 1px rgba(58, 194, 82, 0.12);
   white-space: nowrap;
   opacity: 0;
   will-change: transform, opacity;
@@ -550,11 +553,11 @@ body:not(.landing-mode)::before {
 }
 
 .korea-subject-label.is-hovered {
-  background: #fff7dc;
-  color: #8a6a1f;
+  background: #f4ffef;
+  color: #3AC252;
   box-shadow:
-    0 12px 24px -8px rgba(245, 185, 74, 0.5),
-    0 0 0 1px rgba(245, 185, 74, 0.35);
+    0 12px 24px -8px rgba(58, 194, 82, 0.26),
+    0 0 0 1px rgba(58, 194, 82, 0.2);
 }
 
 .china-3d-map-shell {
@@ -600,13 +603,13 @@ body:not(.landing-mode)::before {
 }
 
 .china-3d-map-badge span {
-  color: #2a618d;
+  color: #3AC252;
   font-size: 0.95rem;
   font-weight: 900;
 }
 
 .china-3d-map-badge small {
-  color: #6a8eac;
+  color: #96F08E;
   font-weight: 700;
 }
 
@@ -616,7 +619,7 @@ body:not(.landing-mode)::before {
   left: 0;
   pointer-events: none;
   background: rgba(255, 255, 255, 0.96);
-  color: #2f7a64;
+  color: #3AC252;
   font-weight: 800;
   font-size: 12px;
   letter-spacing: 0.01em;
@@ -624,9 +627,9 @@ body:not(.landing-mode)::before {
   padding: 7px 11px;
   border-radius: 999px;
   box-shadow:
-    0 8px 18px -8px rgba(47, 122, 100, 0.35),
-    0 1px 0 rgba(47, 122, 100, 0.08) inset,
-    0 0 0 1px rgba(47, 122, 100, 0.08);
+    0 8px 18px -8px rgba(58, 194, 82, 0.24),
+    0 1px 0 rgba(58, 194, 82, 0.08) inset,
+    0 0 0 1px rgba(58, 194, 82, 0.12);
   white-space: nowrap;
   opacity: 0;
   will-change: transform, opacity;
@@ -638,11 +641,11 @@ body:not(.landing-mode)::before {
 }
 
 .china-subject-label.is-hovered {
-  background: #fff7dc;
-  color: #8a6a1f;
+  background: #f4ffef;
+  color: #3AC252;
   box-shadow:
-    0 12px 24px -8px rgba(245, 185, 74, 0.5),
-    0 0 0 1px rgba(245, 185, 74, 0.35);
+    0 12px 24px -8px rgba(58, 194, 82, 0.26),
+    0 0 0 1px rgba(58, 194, 82, 0.2);
 }
 
 .saudi-3d-map-shell {
@@ -688,13 +691,13 @@ body:not(.landing-mode)::before {
 }
 
 .saudi-3d-map-badge span {
-  color: #2a618d;
+  color: #3AC252;
   font-size: 0.95rem;
   font-weight: 900;
 }
 
 .saudi-3d-map-badge small {
-  color: #6a8eac;
+  color: #96F08E;
   font-weight: 700;
 }
 
@@ -704,7 +707,7 @@ body:not(.landing-mode)::before {
   left: 0;
   pointer-events: none;
   background: rgba(255, 255, 255, 0.96);
-  color: #2f7a64;
+  color: #3AC252;
   font-weight: 800;
   font-size: 12px;
   letter-spacing: 0.01em;
@@ -712,9 +715,9 @@ body:not(.landing-mode)::before {
   padding: 7px 11px;
   border-radius: 999px;
   box-shadow:
-    0 8px 18px -8px rgba(47, 122, 100, 0.35),
-    0 1px 0 rgba(47, 122, 100, 0.08) inset,
-    0 0 0 1px rgba(47, 122, 100, 0.08);
+    0 8px 18px -8px rgba(58, 194, 82, 0.24),
+    0 1px 0 rgba(58, 194, 82, 0.08) inset,
+    0 0 0 1px rgba(58, 194, 82, 0.12);
   white-space: nowrap;
   opacity: 0;
   will-change: transform, opacity;
@@ -726,11 +729,11 @@ body:not(.landing-mode)::before {
 }
 
 .saudi-subject-label.is-hovered {
-  background: #fff7dc;
-  color: #8a6a1f;
+  background: #f4ffef;
+  color: #3AC252;
   box-shadow:
-    0 12px 24px -8px rgba(245, 185, 74, 0.5),
-    0 0 0 1px rgba(245, 185, 74, 0.35);
+    0 12px 24px -8px rgba(58, 194, 82, 0.26),
+    0 0 0 1px rgba(58, 194, 82, 0.2);
 }
 
 .india-crafted-map {
@@ -781,13 +784,13 @@ body:not(.landing-mode)::before {
 }
 
 .india-3d-map-badge span {
-  color: #2a618d;
+  color: #3AC252;
   font-size: 0.95rem;
   font-weight: 900;
 }
 
 .india-3d-map-badge small {
-  color: #6a8eac;
+  color: #96F08E;
   font-weight: 700;
 }
 
@@ -797,7 +800,7 @@ body:not(.landing-mode)::before {
   min-width: 160px;
   padding: 10px 14px;
   border-radius: 16px;
-  color: #355f84;
+  color: #3AC252;
   font-size: 0.88rem;
   font-weight: 800;
 }
@@ -1002,7 +1005,7 @@ body:not(.landing-mode)::before {
 .quest-loop-step strong,
 .mission-rank-card strong {
   display: block;
-  color: #27567f;
+  color: #3AC252;
   font-size: 0.94rem;
 }
 
@@ -1010,7 +1013,7 @@ body:not(.landing-mode)::before {
 .mission-rank-card span {
   display: block;
   margin-top: 4px;
-  color: #6c90af;
+  color: #96F08E;
   font-weight: 700;
 }
 
@@ -1181,7 +1184,7 @@ body:not(.landing-mode)::before {
   font-size: 1.45rem;
   letter-spacing: 0.01em;
   font-family: "Cinzel", serif;
-  color: #ffffff;
+  color: #3AC252;
 }
 
 .muted {
@@ -1189,7 +1192,7 @@ body:not(.landing-mode)::before {
 }
 
 .panel-summary {
-  color: rgba(242, 250, 255, 0.84);
+  color: #4f7e5c;
   line-height: 1.75;
 }
 
@@ -1240,9 +1243,9 @@ body:not(.landing-mode)::before {
   align-items: center;
   padding: 8px 12px;
   border-radius: 999px;
-  background: rgba(117, 215, 255, 0.22);
-  border: 1px solid rgba(117, 215, 255, 0.28);
-  color: #2f618d;
+  background: rgba(150, 240, 142, 0.2);
+  border: 1px solid rgba(58, 194, 82, 0.2);
+  color: #3AC252;
   font-size: 0.88rem;
   font-weight: 700;
 }
@@ -1396,13 +1399,13 @@ body:not(.landing-mode)::before {
   font-size: 1.45rem;
   letter-spacing: 0.01em;
   font-family: "Cinzel", serif;
-  color: #ffffff;
+  color: #3AC252;
 }
 
 .overlay-close-btn {
   border: 0;
-  background: linear-gradient(180deg, rgba(255,255,255,0.28), rgba(255,255,255,0.14));
-  color: #f7fbff;
+  background: linear-gradient(180deg, #ffffff, #f4ffef);
+  color: #3AC252;
   border-radius: 50%;
   width: 36px;
   height: 36px;
@@ -1416,7 +1419,7 @@ body:not(.landing-mode)::before {
 
 .overlay-panel-body {
   padding: 20px 24px;
-  color: rgba(242, 250, 255, 0.88);
+  color: #4f7e5c;
 }
 
 .search-panel {

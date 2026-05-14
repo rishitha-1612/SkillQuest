@@ -152,7 +152,7 @@ export default function China3DMap({ roleDetails, stateById, selectedStateId, on
 
       const mappedSkill = regionSkillMap.get(feature.properties.name);
       const isActive = Boolean(mappedSkill);
-      const baseColor = new THREE.Color(isActive ? mappedSkill.color : INACTIVE_FILL);
+      const baseColor = new THREE.Color(isActive ? REGION_FILL : INACTIVE_FILL);
       const sideColor = new THREE.Color(isActive ? REGION_SIDE : INACTIVE_SIDE);
       const outlineColor = isActive ? OUTLINE_COLOR : INACTIVE_BORDER;
       const depth = isActive ? ACTIVE_DEPTH : INACTIVE_DEPTH;
