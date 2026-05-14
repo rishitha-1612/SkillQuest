@@ -381,17 +381,17 @@ export default function App() {
 
   const isAuthenticated = authStatus === 'authenticated' && Boolean(authUser);
   const wantsAuthPage = view === 'login' || view === 'signup';
-  const needsAuthGate =
-    !isAuthenticated && (wantsAuthPage || view === 'lobby' || windowMode === 'country' || windowMode === 'assessment');
+  const needsProtectedAuthGate =
+    !isAuthenticated && (view === 'lobby' || windowMode === 'country' || windowMode === 'assessment');
 
   useEffect(() => {
-    const shouldUseLandingMode = !needsAuthGate && view !== 'lobby' && !windowMode;
+    const shouldUseLandingMode = !wantsAuthPage && !needsProtectedAuthGate && view !== 'lobby' && !windowMode;
     document.body.classList.toggle('landing-mode', shouldUseLandingMode);
 
     return () => {
       document.body.classList.remove('landing-mode');
     };
-  }, [needsAuthGate, view, windowMode]);
+  }, [needsProtectedAuthGate, view, wantsAuthPage, windowMode]);
 
   if (!authInitialized) {
     return (
@@ -401,7 +401,7 @@ export default function App() {
     );
   }
 
-  if (needsAuthGate) {
+  if (wantsAuthPage || needsProtectedAuthGate) {
     return (
       <AuthPage
         mode={view === 'signup' ? 'signup' : 'login'}

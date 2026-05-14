@@ -1,5 +1,8 @@
 # SkillQuest AI
 
+**Active & Accurately Displayed Country Maps: India, China, Korea, Saudi Arabia.**
+**Remaining countries will be added soon.**
+
 SkillQuest AI is being rebuilt as a professional learning-game platform inspired by the clarity of Duolingo, the challenge loop of LeetCode, and the world-building feel of a game map.
 
 Current core fantasy:
