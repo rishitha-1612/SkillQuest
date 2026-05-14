@@ -2,14 +2,30 @@ from __future__ import annotations
 
 from dataclasses import asdict
 from functools import lru_cache
+import os
 from typing import Dict, List
 
-from fastapi import APIRouter, Header, HTTPException, Query, status
+from fastapi import APIRouter, Cookie, Depends, Header, HTTPException, Query, Request, Response, status
 
 from backend.api.schemas import LoginRequest, ProgressionRequest, ReadinessRequest, SignupRequest, TutorChatRequest, UnlockRequest
 from backend.models.career_models import RoleBlueprint, StateGraph
 from backend.services.data_loader import load_role_blueprints, load_state_graphs, load_world_map
-from backend.services.auth_service import authenticate_user, create_session, create_user, delete_session, get_user_by_token
+from backend.services.auth_service import (
+    LOGIN_RATE_LIMIT,
+    LOGIN_RATE_WINDOW_MINUTES,
+    SIGNUP_RATE_LIMIT,
+    SIGNUP_RATE_WINDOW_MINUTES,
+    SESSION_TTL_DAYS,
+    AuthUser,
+    authenticate_user,
+    clear_rate_limit,
+    create_session,
+    create_user,
+    delete_session,
+    get_rate_limit_retry_after,
+    get_user_by_token,
+    register_rate_limit_failure,
+)
 from backend.services.question_bank_service import get_question_slice
 from backend.services.progression_engine import serialize_progression_result, update_progression
 from backend.services.readiness_engine import get_readiness_score
@@ -20,6 +36,8 @@ from backend.services.unlock_engine import build_graph_snapshot, get_locked_node
 
 
 router = APIRouter(prefix="/career-globe", tags=["career-globe"])
+SESSION_COOKIE_NAME = "skillquest_session"
+SESSION_COOKIE_SECURE = os.getenv("SKILLQUEST_COOKIE_SECURE", "false").lower() == "true"
 
 
 @lru_cache(maxsize=1)
@@ -85,13 +103,67 @@ def serialize_auth_user(user) -> Dict[str, object]:
     }
 
 
+def get_client_ip(request: Request) -> str:
+    forwarded_for = request.headers.get("x-forwarded-for", "")
+    if forwarded_for:
+        return forwarded_for.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
+
+def set_session_cookie(response: Response, token: str, _expires_at: str) -> None:
+    response.set_cookie(
+        key=SESSION_COOKIE_NAME,
+        value=token,
+        httponly=True,
+        secure=SESSION_COOKIE_SECURE,
+        samesite="lax",
+        path="/",
+        max_age=SESSION_TTL_DAYS * 24 * 60 * 60,
+    )
+
+
+def clear_session_cookie(response: Response) -> None:
+    response.delete_cookie(
+        key=SESSION_COOKIE_NAME,
+        httponly=True,
+        secure=SESSION_COOKIE_SECURE,
+        samesite="lax",
+        path="/",
+    )
+
+
+def require_auth_user(
+    authorization: str | None = Header(default=None),
+    session_cookie: str | None = Cookie(default=None, alias=SESSION_COOKIE_NAME),
+) -> AuthUser:
+    token = extract_bearer_token(authorization) or session_cookie or ""
+    user = get_user_by_token(token)
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication required.")
+    return user
+
+
+def enforce_rate_limit(scope: str, rate_key: str) -> None:
+    retry_after = get_rate_limit_retry_after(scope=scope, rate_key=rate_key)
+    if retry_after <= 0:
+        return
+    raise HTTPException(
+        status_code=429,
+        detail=f"Too many attempts. Try again in {retry_after} seconds.",
+        headers={"Retry-After": str(retry_after)},
+    )
+
+
 @router.get("/health")
 def healthcheck() -> Dict[str, str]:
     return {"status": "ok"}
 
 
 @router.post("/auth/signup", status_code=status.HTTP_201_CREATED)
-def signup(payload: SignupRequest) -> Dict[str, object]:
+def signup(payload: SignupRequest, request: Request, response: Response) -> Dict[str, object]:
+    client_ip = get_client_ip(request)
+    enforce_rate_limit("signup-ip", client_ip)
+
     try:
         user = create_user(
             email=payload.email,
@@ -100,9 +172,23 @@ def signup(payload: SignupRequest) -> Dict[str, object]:
             password=payload.password,
         )
     except ValueError as exc:
+        retry_after = register_rate_limit_failure(
+            scope="signup-ip",
+            rate_key=client_ip,
+            limit=SIGNUP_RATE_LIMIT,
+            window_minutes=SIGNUP_RATE_WINDOW_MINUTES,
+        )
+        if retry_after > 0:
+            raise HTTPException(
+                status_code=429,
+                detail=f"Too many signup attempts. Try again in {retry_after} seconds.",
+                headers={"Retry-After": str(retry_after)},
+            ) from exc
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     session = create_session(user)
+    clear_rate_limit(scope="signup-ip", rate_key=client_ip)
+    set_session_cookie(response, session.token, session.expires_at)
     return {
         "token": session.token,
         "expires_at": session.expires_at,
@@ -111,12 +197,39 @@ def signup(payload: SignupRequest) -> Dict[str, object]:
 
 
 @router.post("/auth/login")
-def login(payload: LoginRequest) -> Dict[str, object]:
+def login(payload: LoginRequest, request: Request, response: Response) -> Dict[str, object]:
+    client_ip = get_client_ip(request)
+    normalized_login = payload.login.strip().lower()
+    enforce_rate_limit("login-ip", client_ip)
+    enforce_rate_limit("login-identifier", normalized_login)
+
     user = authenticate_user(login=payload.login, password=payload.password)
     if user is None:
+        ip_retry_after = register_rate_limit_failure(
+            scope="login-ip",
+            rate_key=client_ip,
+            limit=LOGIN_RATE_LIMIT,
+            window_minutes=LOGIN_RATE_WINDOW_MINUTES,
+        )
+        login_retry_after = register_rate_limit_failure(
+            scope="login-identifier",
+            rate_key=normalized_login,
+            limit=LOGIN_RATE_LIMIT,
+            window_minutes=LOGIN_RATE_WINDOW_MINUTES,
+        )
+        retry_after = max(ip_retry_after, login_retry_after)
+        if retry_after > 0:
+            raise HTTPException(
+                status_code=429,
+                detail=f"Too many login attempts. Try again in {retry_after} seconds.",
+                headers={"Retry-After": str(retry_after)},
+            )
         raise HTTPException(status_code=401, detail="Invalid email/username or password.")
 
     session = create_session(user)
+    clear_rate_limit(scope="login-ip", rate_key=client_ip)
+    clear_rate_limit(scope="login-identifier", rate_key=normalized_login)
+    set_session_cookie(response, session.token, session.expires_at)
     return {
         "token": session.token,
         "expires_at": session.expires_at,
@@ -125,24 +238,25 @@ def login(payload: LoginRequest) -> Dict[str, object]:
 
 
 @router.get("/auth/me")
-def auth_me(authorization: str | None = Header(default=None)) -> Dict[str, object]:
-    token = extract_bearer_token(authorization)
-    user = get_user_by_token(token or "")
-    if user is None:
-        raise HTTPException(status_code=401, detail="Authentication required.")
+def auth_me(user: AuthUser = Depends(require_auth_user)) -> Dict[str, object]:
     return {"user": serialize_auth_user(user)}
 
 
 @router.post("/auth/logout")
-def logout(authorization: str | None = Header(default=None)) -> Dict[str, object]:
-    token = extract_bearer_token(authorization)
+def logout(
+    response: Response,
+    authorization: str | None = Header(default=None),
+    session_cookie: str | None = Cookie(default=None, alias=SESSION_COOKIE_NAME),
+) -> Dict[str, object]:
+    token = extract_bearer_token(authorization) or session_cookie
     if token:
         delete_session(token)
+    clear_session_cookie(response)
     return {"status": "logged_out"}
 
 
 @router.get("/world-map")
-def world_map() -> Dict[str, object]:
+def world_map(_: AuthUser = Depends(require_auth_user)) -> Dict[str, object]:
     continents = get_continents()
     return {
         "continents": [
@@ -159,7 +273,7 @@ def world_map() -> Dict[str, object]:
 
 
 @router.get("/roles")
-def list_roles(continent_id: str | None = Query(default=None)) -> Dict[str, List[Dict[str, object]]]:
+def list_roles(continent_id: str | None = Query(default=None), _: AuthUser = Depends(require_auth_user)) -> Dict[str, List[Dict[str, object]]]:
     roles = get_role_blueprints().values()
     if continent_id:
         roles = [role for role in roles if role.continent_id == continent_id]
@@ -167,7 +281,7 @@ def list_roles(continent_id: str | None = Query(default=None)) -> Dict[str, List
 
 
 @router.get("/roles/{role_id}")
-def role_details(role_id: str) -> Dict[str, object]:
+def role_details(role_id: str, _: AuthUser = Depends(require_auth_user)) -> Dict[str, object]:
     roles = get_role_blueprints()
     if role_id not in roles:
         raise HTTPException(status_code=404, detail=f"Unknown role: {role_id}")
@@ -175,7 +289,7 @@ def role_details(role_id: str) -> Dict[str, object]:
 
 
 @router.get("/states")
-def list_states() -> Dict[str, List[Dict[str, object]]]:
+def list_states(_: AuthUser = Depends(require_auth_user)) -> Dict[str, List[Dict[str, object]]]:
     return {
         "states": [
             {
@@ -190,7 +304,7 @@ def list_states() -> Dict[str, List[Dict[str, object]]]:
 
 
 @router.get("/states/{state_id}")
-def state_details(state_id: str) -> Dict[str, object]:
+def state_details(state_id: str, _: AuthUser = Depends(require_auth_user)) -> Dict[str, object]:
     graphs = get_state_graphs()
     if state_id not in graphs:
         raise HTTPException(status_code=404, detail=f"Unknown state: {state_id}")
@@ -198,7 +312,7 @@ def state_details(state_id: str) -> Dict[str, object]:
 
 
 @router.get("/states/{state_id}/recommended-path")
-def state_recommended_path(state_id: str) -> Dict[str, object]:
+def state_recommended_path(state_id: str, _: AuthUser = Depends(require_auth_user)) -> Dict[str, object]:
     graphs = get_state_graphs()
     if state_id not in graphs:
         raise HTTPException(status_code=404, detail=f"Unknown state: {state_id}")
@@ -210,7 +324,7 @@ def state_recommended_path(state_id: str) -> Dict[str, object]:
 
 
 @router.post("/states/{state_id}/unlock")
-def state_unlocks(state_id: str, payload: UnlockRequest) -> Dict[str, object]:
+def state_unlocks(state_id: str, payload: UnlockRequest, _: AuthUser = Depends(require_auth_user)) -> Dict[str, object]:
     graphs = get_state_graphs()
     if state_id not in graphs:
         raise HTTPException(status_code=404, detail=f"Unknown state: {state_id}")
@@ -225,7 +339,12 @@ def state_unlocks(state_id: str, payload: UnlockRequest) -> Dict[str, object]:
 
 
 @router.get("/states/{state_id}/nodes/{node_id}/questions")
-def node_questions(state_id: str, node_id: str, count: int | None = Query(default=None, ge=1, le=25)) -> Dict[str, object]:
+def node_questions(
+    state_id: str,
+    node_id: str,
+    count: int | None = Query(default=None, ge=1, le=25),
+    _: AuthUser = Depends(require_auth_user),
+) -> Dict[str, object]:
     graphs = get_state_graphs()
     if state_id not in graphs:
         raise HTTPException(status_code=404, detail=f"Unknown state: {state_id}")
@@ -248,7 +367,7 @@ def node_questions(state_id: str, node_id: str, count: int | None = Query(defaul
 
 
 @router.post("/readiness/{country_id}")
-def readiness(country_id: str, payload: ReadinessRequest) -> Dict[str, object]:
+def readiness(country_id: str, payload: ReadinessRequest, _: AuthUser = Depends(require_auth_user)) -> Dict[str, object]:
     try:
         result = get_readiness_score(
             continents=get_continents(),
@@ -272,7 +391,7 @@ def readiness(country_id: str, payload: ReadinessRequest) -> Dict[str, object]:
 
 
 @router.post("/tutor/chat")
-def tutor_chat(payload: TutorChatRequest) -> Dict[str, object]:
+def tutor_chat(payload: TutorChatRequest, _: AuthUser = Depends(require_auth_user)) -> Dict[str, object]:
     roles = get_role_blueprints()
     graphs = get_state_graphs()
 
@@ -300,7 +419,7 @@ def tutor_chat(payload: TutorChatRequest) -> Dict[str, object]:
 
 
 @router.post("/states/{state_id}/progression")
-def state_progression(state_id: str, payload: ProgressionRequest) -> Dict[str, object]:
+def state_progression(state_id: str, payload: ProgressionRequest, _: AuthUser = Depends(require_auth_user)) -> Dict[str, object]:
     graphs = get_state_graphs()
     if state_id not in graphs:
         raise HTTPException(status_code=404, detail=f"Unknown state: {state_id}")

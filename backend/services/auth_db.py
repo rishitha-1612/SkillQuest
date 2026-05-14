@@ -31,6 +31,15 @@ CREATE TABLE IF NOT EXISTS sessions (
 
 CREATE INDEX IF NOT EXISTS idx_sessions_token_hash ON sessions(token_hash);
 CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
+
+CREATE TABLE IF NOT EXISTS auth_rate_limits (
+    scope TEXT NOT NULL,
+    rate_key TEXT NOT NULL,
+    failures INTEGER NOT NULL,
+    first_failure_at TEXT NOT NULL,
+    blocked_until TEXT,
+    PRIMARY KEY (scope, rate_key)
+);
 """
 
 

@@ -10,20 +10,14 @@ const KOREA_SKILL_REGIONS = {
   system_design: 'Jeju-do',
 };
 
-const ACTIVE_REGION_COLORS = {
-  'Gyeongsangbuk-do': '#b6e3c6',
-  'Gangwon-do': '#d7f0f7',
-  'Gyeonggi-do': '#b6e3c6',
-  Busan: '#9fd9c0',
-  'Jeju-do': '#fde9a9',
-};
-
-const INACTIVE_COLOR = '#dde6df';
-const INACTIVE_SIDE = '#b9c4bd';
-const ACTIVE_SIDE = '#6fb89e';
-const HOVER_EMISSIVE = '#f5b94a';
-const OUTLINE_COLOR_ACTIVE = '#3f8f76';
-const OUTLINE_COLOR_INACTIVE = '#a9b6ad';
+const REGION_FILL = '#96F08E';
+const REGION_BORDER = '#3AC252';
+const REGION_SIDE = '#74d96c';
+const INACTIVE_FILL = '#d7dfd2';
+const INACTIVE_SIDE = '#b8c3b2';
+const INACTIVE_BORDER = '#a5b2a0';
+const HOVER_EMISSIVE = '#3AC252';
+const OUTLINE_COLOR = '#3AC252';
 const SEA_COLOR = '#d6f0ee';
 
 const ACTIVE_DEPTH = 0.6;
@@ -57,7 +51,7 @@ export default function Korea3DMap({ roleDetails, stateById, selectedStateId, on
           {
             id: req.state_id,
             title: state.title,
-            color: ACTIVE_REGION_COLORS[regionName] || '#b6e3c6',
+            color: REGION_FILL,
           },
         ];
       })
@@ -158,9 +152,9 @@ export default function Korea3DMap({ roleDetails, stateById, selectedStateId, on
 
       const mappedSkill = regionSkillMap.get(feature.properties.name);
       const isActive = Boolean(mappedSkill);
-      const baseColor = new THREE.Color(isActive ? mappedSkill.color : INACTIVE_COLOR);
-      const sideColor = new THREE.Color(isActive ? ACTIVE_SIDE : INACTIVE_SIDE);
-      const outlineColor = isActive ? OUTLINE_COLOR_ACTIVE : OUTLINE_COLOR_INACTIVE;
+      const baseColor = new THREE.Color(isActive ? mappedSkill.color : INACTIVE_FILL);
+      const sideColor = new THREE.Color(isActive ? REGION_SIDE : INACTIVE_SIDE);
+      const outlineColor = isActive ? OUTLINE_COLOR : INACTIVE_BORDER;
       const depth = isActive ? ACTIVE_DEPTH : INACTIVE_DEPTH;
 
       const group = new THREE.Group();
@@ -330,7 +324,7 @@ export default function Korea3DMap({ roleDetails, stateById, selectedStateId, on
             if (!topMaterial || !('color' in topMaterial)) return;
 
             tmpColor.copy(region.baseColor);
-            tmpColor.lerp(new THREE.Color('#ffffff'), region.hoverT * 0.18);
+            tmpColor.lerp(new THREE.Color(REGION_FILL), region.hoverT * 0.18);
             topMaterial.color.copy(tmpColor);
             if (topMaterial.emissive) {
               topMaterial.emissive.copy(black).lerp(hoverEmissive, region.hoverT * 0.5);

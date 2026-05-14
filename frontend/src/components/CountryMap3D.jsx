@@ -4,13 +4,15 @@ import { geoMercator, geoPath } from 'd3-geo';
 function colorFor(index, active) {
   if (active) {
     return {
-      fill: '#dff7bf',
-      stroke: '#58cc02',
+      fill: '#96F08E',
+      stroke: '#3AC252',
     };
   }
 
-  const palette = ['#dff3e5', '#d9f0ff', '#efe6ff', '#fff0d9', '#e2f9ef'];
-  return { fill: palette[index % palette.length], stroke: '#4b83b3' };
+  return {
+    fill: '#d7dfd2',
+    stroke: '#a5b2a0',
+  };
 }
 
 function isSelectedFeature(feature, selectedStateId) {

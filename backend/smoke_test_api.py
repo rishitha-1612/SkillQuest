@@ -11,6 +11,7 @@ from backend.main import app
 def main() -> None:
     client = TestClient(app)
     auth_suffix = uuid4().hex[:8]
+    unauth_world_map = client.get("/career-globe/world-map")
     signup_payload = {
         "full_name": "Smoke Test User",
         "username": f"smoke_{auth_suffix}",
@@ -24,17 +25,24 @@ def main() -> None:
         json={"login": signup_payload["email"], "password": signup_payload["password"]},
     )
     login_json = login_response.json()
-    me_response = client.get(
-        "/career-globe/auth/me",
-        headers={"Authorization": f"Bearer {login_json['token']}"},
+    me_response = client.get("/career-globe/auth/me")
+    logout_response = client.post("/career-globe/auth/logout")
+    post_logout_me = client.get("/career-globe/auth/me")
+    relogin_response = client.post(
+        "/career-globe/auth/login",
+        json={"login": signup_payload["username"], "password": signup_payload["password"]},
     )
 
     responses = {
         "health": client.get("/career-globe/health").json(),
         "auth": {
+            "unauth_world_map_status": unauth_world_map.status_code,
             "signup_status": signup_response.status_code,
             "login_status": login_response.status_code,
             "me_username": me_response.json()["user"]["username"],
+            "logout_status": logout_response.status_code,
+            "post_logout_me_status": post_logout_me.status_code,
+            "relogin_status": relogin_response.status_code,
             "token_present": bool(signup_json["token"]),
         },
         "world_map_counts": {
